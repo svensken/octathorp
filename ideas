@@ -1,0 +1,45 @@
+functions
+=========
+pymol
+    get coordinates
+        xyz = cmd.get_model('sele', 1).get_coord_list()
+    show selected residues
+        show spheres, sele (or res 52)
+rosetta
+    
+prody
+    fetchPDB('1GPL')
+    atoms = parsePDB('1GPL.pdb.gz')
+
+http://jolecule.appspot.com/
+    jump distances
+- ac's?
+- biopython?
+
+
+algorithms
+==========
+Levenshtein automata: for string comparisonn, "nearness", to grade matches quickly
+    http://blog.notdot.net/2010/07/Damn-Cool-Algorithms-Levenshtein-Automata
+    http://en.wikipedia.org/wiki/Levenshtein_automaton
+Vantange-point tree: for finding points close to a vantage point on a 'tree'
+    http://en.wikipedia.org/wiki/Vantage-point_tree
+
+code
+====
+rough draft in python
+mockup in go or c++
+final draft in go?
+
+relevant O'Reilly books
+==========================
+Python for Data Analysis
+Algorithms in a Nutshell
+Version Control with Git
+Code Complete (?)
+
+data structures and file formats
+================================
+111 - Intro to CS
+112 - Data Structures
+214 - Systems Programming
