@@ -58,9 +58,9 @@ Vantange-point tree: for finding points close to a vantage point on a 'tree'
 
 code
 ====
-rough draft in python
-mockup in go or c++
-final draft in go?
+rough draft in python, use libraries liberally
+mockup in go or c++, start coding own functions
+final draft in go? go for blazing fast
 
 optimizing
 ==========
