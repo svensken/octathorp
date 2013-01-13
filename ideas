@@ -28,7 +28,9 @@ pyrosetta
         http://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
         http://www.lfd.uci.edu/~gohlke/code/transformations.py.html
         http://en.wikipedia.org/wiki/Euler_angles
-
+    dig through source for good calls to use
+        [pyrosetta]/demos/D010_Pose_structure.py
+    
     export to pymol
         http://www.pyrosetta.org/pymol_mover-tutorial
 prody
