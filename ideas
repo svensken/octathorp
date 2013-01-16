@@ -30,7 +30,10 @@ pyrosetta
         http://en.wikipedia.org/wiki/Euler_angles
     dig through source for good calls to use
         [pyrosetta]/demos/D010_Pose_structure.py
-    
+        * code block around line 100 shows how to judge loop composition (n% helical, etc)
+    foldtree for docking
+        DockingProtocol.setup_foldtree(pose)
+        http://www.pyrosetta.org/screenshots
     export to pymol
         http://www.pyrosetta.org/pymol_mover-tutorial
 prody
@@ -57,6 +60,9 @@ Levenshtein automata: for string comparisonn, "nearness", to grade matches quick
     http://en.wikipedia.org/wiki/Levenshtein_automaton
 Vantange-point tree: for finding points close to a vantage point on a 'tree'
     http://en.wikipedia.org/wiki/Vantage-point_tree
+finding nearby residues
+    models of hydrogen-bonding, Dunbrack side-chain, Ramachandran backbone energies
+        must have an intelligent way of quickly finding nearest atoms/residues in cartesian
 
 code
 ====
