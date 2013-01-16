@@ -47,6 +47,12 @@ pymol
         show spheres, sele (or res 52)
     import from pyrosetta
         http://www.pyrosetta.org/pymol_mover-tutorial
+    ihome.cuhk.edu.hk ... pymol_tutorial.html
+        color purple,ss h; color yellow,ss s; color green, ss ""
+        mset 1 x120
+        util.mroll 1,120 | util.mrock 1,120,180
+        mplay
+        mstop
 http://jolecule.appspot.com/
     jump distances
 - ac's?
