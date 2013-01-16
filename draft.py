@@ -40,13 +40,15 @@ residue2 = 33
 s1a1 = AtomID(1, residue1 - 1)
 s1a2 = AtomID(1, residue1)
 s1a3 = AtomID(1, residue1 + 1)
+stub1 = StubID(s1a1, s1a2, s1a3)
 # Stub 2
 s2a1 = AtomID(1, residue2 - 1)
 s2a2 = AtomID(1, residue2)
 s2a3 = AtomID(1, residue2 + 1)
+stub2 = StubID(s2a1, s2a2, s2a3)
 
-
-
+print "Stub 1: " + stub1
+print "Stub 2: " + stub2
 
 
 
