@@ -81,14 +81,16 @@ final draft in go? go for blazing fast
 optimizing
 ==========
 http://docs.python.org/2/library/profile.html
+centroid mode
 
 
-relevant O'Reilly books
+
+relevant books
 ==========================
 Python for Data Analysis
 Algorithms in a Nutshell
 Version Control with Git
-Code Complete (?)
+search books.google.com for "internal, atomtree" within "Computer Methods, Part 3". Seems like an in-depth explanation of Rosetta's 
 
 data structures and file formats
 ================================

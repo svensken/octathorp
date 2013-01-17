@@ -2,8 +2,10 @@
 
 #from rosetta import Pose, pose_from_pdb
 #from rosetta.core import kinematics
+#from rosetta.core.kinematics import AtomTree
+#from rosetta import init, Pose, pose_from_pdb, AtomID, StubID
+from rosetta import *
 import sys
-from rosetta import init, Pose, pose_from_pdb, AtomID, StubID
 init()
 
 
@@ -47,11 +49,33 @@ s2a2 = AtomID(1, residue2)
 s2a3 = AtomID(1, residue2 + 1)
 stub2 = StubID(s2a1, s2a2, s2a3)
 
-print "Stub 1: " + stub1
-print "Stub 2: " + stub2
+print stub1
+print stub2
 
 
+# how to find RT between stubs
+# 1: RT core.kinematics.jump.jump(stub1,stub2), "ZERO rb_delta"
+# 2: void core.kinematics.jump.from_stubs(stub1,stub2), "note: we don't reset rb_center!!!"
+# 3: RT core.kinematics.RT.RT(stub1,stub2)
+# 4: RT core.kinematics.AtomTree.get_stub_transform(stub1,stub2)
+pose_atom_tree = pose.atom_tree()
+jump = pose_atom_tree.get_stub_transform(stub1, stub2)
 
+transl_list = [float(n) for n in str(jump.get_translation()).split()]
+rotatn_list = [float(n) for n in str(jump.get_rotation()).split()]
+
+# friggin all other RTs
+# headless benchmark?
+
+
+# check match against tolerance
+transl_diff = [a/b for a,b in zip(transl_list1, transl_list2)]
+rotatn_diff = [a/b for a,b in zip(rotatn_list1, rotatn_list2)]
+
+comprehensive_diff = transl_diff + rotatn_diff
+if [diff for diff in comprehensive_diff 
+
+# would be faster with izip and immediate checks to break
 
 
 ########
@@ -60,5 +84,4 @@ print "Stub 2: " + stub2
 ss = pose.secstruct()
 percent_helical = 100. * ss.count("H") / len(ss)
 #H=helical, E=sheet, L=loop
-
-
+print str(percent_helical) + "% Helical"
