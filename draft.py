@@ -73,7 +73,17 @@ transl_diff = [a/b for a,b in zip(transl_list1, transl_list2)]
 rotatn_diff = [a/b for a,b in zip(rotatn_list1, rotatn_list2)]
 
 comprehensive_diff = transl_diff + rotatn_diff
-if [diff for diff in comprehensive_diff 
+#if [diff for diff in comprehensive_diff 
+for diff in comprehensive_diff:
+    if abs(diff - 1) >= .1 :
+        print "no match"
+        break
+    else
+        print "good"
+        print stub1
+        print stub2
+
+
 
 # would be faster with izip and immediate checks to break
 
