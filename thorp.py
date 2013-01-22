@@ -86,30 +86,50 @@ try:
     pose_from_pdb(new_pose, 'sample_pdbs/' + pdb_file)
 except:
     print 'good good'
-total_residues = pose.total_residue()
-new_pose_atom_tree = pose.atom_tree()
 
-print 'clip here'
 
-n = 0
+# define all stubs THREE RESIDUES
+#stub_list = []
+#n = 1
+#for middle_residue in range(2,new_pose.total_residue()):
+#    # first stub's central residue is #2
+#    # last stub's central residue is #last-1
+#    print 'middle residue: ', middle_residue
+#    n = n + 1
+#    print 'iteration: ', n
+#    # Stub 1
+#    n_s1a1 = AtomID(1, middle_residue - 1)
+#    n_s1a2 = AtomID(1, middle_residue)
+#    n_s1a3 = AtomID(1, middle_residue + 1)
+#    n_stub = StubID(n_s1a1, n_s1a2, n_s1a3)
+#    print n_stub
+#    stub_list.append(n_stub)
 
-for first_res_num in range(1,total_residues+1):
-    for second_res_num in range(1,total_residues+1):
-        # Stub 1
-        n_s1a1 = AtomID(1, first_res_num - 1)
-        n_s1a2 = AtomID(1, first_res_num)
-        n_s1a3 = AtomID(1, first_res_num + 1)
-        n_stub1 = StubID(n_s1a1, n_s1a2, n_s1a3)
-        # Stub 2
-        n_s2a1 = AtomID(1, second_res_num - 1)
-        n_s2a2 = AtomID(1, second_res_num)
-        n_s2a3 = AtomID(1, second_res_num + 1)
-        n_stub2 = StubID(n_s2a1, n_s2a2, n_s2a3)
-        
-        n = n + 1
-        print n
-        
-#new_jump = new_pose_atom_tree.get_stub_transform(n_stub1, n_stub2)
+# define all stubs ONE RESIDUE
+stub_list = []
+for residue in range(1,new_pose.total_residue()+1):
+    # first stub consists of atomno's 1, 2, and 3 of res#1
+    # last stub consists of atomno's 1, 2, and 3 of res#last
+    # Stub 1
+    n_s1a1 = AtomID(1, residue - 1)
+    n_s1a2 = AtomID(1, residue)
+    n_s1a3 = AtomID(1, residue + 1)
+    n_stub = StubID(n_s1a1, n_s1a2, n_s1a3)
+    print n_stub
+    stub_list.append(n_stub)
+
+
+raw_input('hit enter to continue')
+#print stub_list[57].atom(2) # middle
+
+
+new_pose_atom_tree = new_pose.atom_tree()
+jump_list = []
+for first_stub in stub_list:
+    for second_stub in stub_list:
+        new_jump = new_pose_atom_tree.get_stub_transform(first_stub, second_stub)
+        print new_jump
+        jump_list.append(new_jump)
 
 
 #temp_transl_list = [float(n) for n in str(jump.get_translation()).split()]
@@ -143,3 +163,6 @@ for first_res_num in range(1,total_residues+1):
 ####################################################
 #### For Loop done #################################
 
+#find_stub_transform (?)
+# last but not least;
+# http://graylab.jhu.edu/pyrosetta/downloads/scripts/demos/D120_Ligand_interface.py
