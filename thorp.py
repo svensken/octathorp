@@ -166,3 +166,5 @@ for first_stub in stub_list:
 #find_stub_transform (?)
 # last but not least;
 # http://graylab.jhu.edu/pyrosetta/downloads/scripts/demos/D120_Ligand_interface.py
+# http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/d7/d60/classnumeric_1_1xyz_vector.html
+# http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/de/d93/classnumeric_1_1xyz_matrix.html

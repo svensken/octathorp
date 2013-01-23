@@ -13,19 +13,7 @@ pyrosetta
         pose2.jump(1).set_rotation(pose1.jump(1).get_rotation())
         pose2.jump(1).get_translation()
             "the contents of src/protocols/moves/RotateJumpAxisMover may be valuable. They show (well, not with enough comments) how to separate the two "stubs" (coordinate frames) out of the Jump, modify one of the Stubs, and then reassemble it into a Jump."
-            http://www.rosettacommons.org/content/jump-question
-        http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/d0/dd2/classcore_1_1kinematics_1_1_jump.html
-            http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/d1/dce/classcore_1_1kinematics_1_1tree_1_1_jump_atom.html#details
-        *** http://www.rosettacommons.org/manuals/rosetta3.2_user_guide/atomtree_overview.html
-        file:///home/svensken/Downloads/extract_coords_pose.py
-        http://www.pyrosetta.org/faq#TOC-Structure-PDB-file-and-Pose-Questions
-            11.  How do I change Pose coordinates?
-        *** http://graylab.jhu.edu/publications/2010Bioinformatics.pdf
-            3 PYROSETTA FEATURES
-                ‘jumps’ which deﬁne the relative
-                position and orientation of multiple continuous polypeptide chains
-                in the system.
-    pure code approach
+    recoding approach
         http://nipy.sourceforge.net/nibabel/generated/nibabel.eulerangles.html
         http://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
         http://www.lfd.uci.edu/~gohlke/code/transformations.py.html
@@ -83,7 +71,10 @@ optimizing
 http://docs.python.org/2/library/profile.html
 centroid mode
 
-
+parallelizing
+=============
+router as switch
+PXE network booting
 
 relevant books
 ==========================
