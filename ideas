@@ -1,6 +1,8 @@
 functions
 =========
 pyrosetta
+    manual
+        http://graylab.jhu.edu/pyrosetta/downloads/documentation/PyRosetta_Manual.pdf
     relevant commands
         pose = Pose()
         pose_from_pdb(pose, 'the/file.pdb')
@@ -14,6 +16,10 @@ pyrosetta
         pose2.jump(1).get_translation()
             "the contents of src/protocols/moves/RotateJumpAxisMover may be valuable. They show (well, not with enough comments) how to separate the two "stubs" (coordinate frames) out of the Jump, modify one of the Stubs, and then reassemble it into a Jump."
     recoding approach
+        distance
+            atomN = pose.residue(33).atom('N')
+            NCbond = atomN.xyz() - atomC.xyz()
+            print NCbond.norm()
         http://nipy.sourceforge.net/nibabel/generated/nibabel.eulerangles.html
         http://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
         http://www.lfd.uci.edu/~gohlke/code/transformations.py.html
