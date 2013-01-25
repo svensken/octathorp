@@ -1,29 +1,26 @@
 #!/usr/bin/env python
 
-#from rosetta import Pose, pose_from_pdb
-#from rosetta.core import kinematics
-#from rosetta.core.kinematics import AtomTree
-#from rosetta import init, Pose, pose_from_pdb, AtomID, StubID
 from rosetta import *
 # init, Pose, pose_from_pdb, kinematics, kinematics.AtomTree, AtomID, StubID
 import sys
 
-
-#sys.stdout = os.devnull
 init() # assigning to variable won't silence it :(
-#sys.stdout = sys.__stdout__
 
 
 
 # input 'file1.pdb', res1, res2
 try:
     pdb_file = [arg for arg in sys.argv if arg[-4:] == ".pdb"][0]
-    print "accepted file: " + pdb_file
+    print "\naccepted file: ", pdb_file
+    # last two args are residues, hopefully
+    residue1 = int(sys.argv[-2])
+    residue2 = int(sys.argv[-1])
+    print "accepted residues: ", residue1,' & ',residue2
 except:
     print "\nUsage: \n\
     $ thorp.py [file.pdb] [int residue 1] [int residue 2] \n\
     \n\
-    Please put all relevant PDB files in the current directory.\n"
+    Please put all relevant PDB files in the pdb directory.\n"
     #Please indicate path to PDB file relative to working directory
     sys.exit(0)
 
@@ -33,14 +30,14 @@ except:
 pose = Pose()
 try:
     silence = pose_from_pdb( pose, 'sample_pdbs/' + pdb_file )
-except:
+except PyRosettaException:
     print "alles klar"
 
-print pose
+#print pose
 
-# recieve as input
-residue1 = 22
-residue2 = 33
+## recieve as input
+#residue1 = 22
+#residue2 = 33
 
 
 
@@ -69,8 +66,8 @@ s2a2 = AtomID(2, residue2)
 s2a3 = AtomID(3, residue2)
 stub2 = StubID(s2a1, s2a2, s2a3)
 
-print stub1
-print stub2
+#print stub1
+#print stub2
 
 
 # how to find RT between stubs
@@ -97,7 +94,7 @@ reference_rotatn_list = [float(n) for n in str(reference_jump.get_rotation()).sp
 new_pose = Pose()
 try:
     pose_from_pdb(new_pose, 'sample_pdbs/' + pdb_file)
-except:
+except PyRosettaException:
     print 'good good'
 
 
@@ -128,10 +125,10 @@ for residue in range(1,new_pose.total_residue()+1):
     n_s1a2 = AtomID(2, residue)
     n_s1a3 = AtomID(3, residue)
     n_stub = StubID(n_s1a1, n_s1a2, n_s1a3)
-    print n_stub
+    #print n_stub
     stub_list.append(n_stub)
 
-raw_input('hit enter to continue')
+raw_input('press enter')
 #print stub_list[57].atom(2) # middle
 
 # build jump list
@@ -148,30 +145,32 @@ for first_stub in stub_list:
         jump_list.append(jump_list_element)
     n = n + 1
 
+transl_diff = []
+rotatn_diff = []
 for jamp in jump_list:
     temp_transl_list = [float(n) for n in str(jamp[2].get_translation()).split()]
     temp_rotatn_list = [float(n) for n in str(jamp[2].get_rotation()).split()]
     
     # check comparison against tolerance
-    try:
-        transl_diff = [a/b for a,b in zip(reference_transl_list, temp_transl_list)]
-    except ZeroDivisionError:
-        pass
-    try:
-        rotatn_diff = [a/b for a,b in zip(reference_rotatn_list, temp_rotatn_list)]
-    except ZeroDivisionError:
-        pass
-    try:
-        comprehensive_diff = transl_diff + rotatn_diff
-        for diff in comprehensive_diff:
-            if abs(diff - 1) >= .1 :
-                print index, " is no match"
-                # is one bad value enough to ignore whole jump?
-                break
-            else:
-                print "found a close one; ", jamp[0], ' to ', jamp[1]
-    except:
-        print "figure out how to handle zeroes"
+    for a,b in zip(reference_transl_list, temp_transl_list):
+        if a == 0 or b == 0:
+            transl_diff.append(1) # 100% difference
+        else:
+            transl_diff.append( (max(a,b) - min(a,b)) / max(a,b) )
+    for a,b in zip(reference_rotatn_list, temp_rotatn_list):
+        if a == 0 or b == 0:
+            rotatn_diff.append(1)
+        else:
+            rotatn_diff.append( (max(a,b) - min(a,b)) / max(a,b) )
+
+    comprehensive_diff = transl_diff + rotatn_diff
+    for diff in comprehensive_diff:
+        if diff >= .3 :
+            # is one bad value enough to ignore whole jump?
+            break # or keep going?
+        else:
+            print "################################# MATCH FOUND #################################"
+            print jamp[0], ' to ', jamp[1]
 
 
 ########
