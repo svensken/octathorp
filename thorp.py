@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
 from rosetta import *
-# init, Pose, pose_from_pdb, kinematics, kinematics.AtomTree, AtomID, StubID
-import sys
+import sys, time, numpy
 
-init() # assigning to variable won't silence it :(
+init()
 
 
 
@@ -77,11 +76,12 @@ stub2 = StubID(s2a1, s2a2, s2a3)
 # 4: RT core.kinematics.AtomTree.get_stub_transform(stub1,stub2)
 
 pose_atom_tree = pose.atom_tree()
-reference_jump = pose_atom_tree.get_stub_transform(stub1, stub2)
+reference_transform = pose_atom_tree.get_stub_transform(stub1, stub2)
 
 # break the numbers down
-reference_transl_list = [float(n) for n in str(reference_jump.get_translation()).split()]
-reference_rotatn_list = [float(n) for n in str(reference_jump.get_rotation()).split()]
+#reference_transl_list = [float(n) for n in str(reference_jump.get_translation()).split()]
+#reference_rotatn_list = [float(n) for n in str(reference_jump.get_rotation()).split()]
+reference_jump = [ float(n) for n in str(reference_transform).split()[1:] ]
 
 
 ####################################################
@@ -128,7 +128,7 @@ for residue in range(1,new_pose.total_residue()+1):
     #print n_stub
     stub_list.append(n_stub)
 
-raw_input('press enter')
+print 'stub_list built'
 #print stub_list[57].atom(2) # middle
 
 # build jump list
@@ -140,37 +140,58 @@ for first_stub in stub_list:
         new_jump_obj = new_pose_atom_tree.get_stub_transform(first_stub, second_stub)
         jump_list_element = [first_stub, second_stub, new_jump_obj]
         # structure of jump_list elements:
-        # [ ---   int   int   obj    --- ]
         # [ ..., [res1, res2, jump], ... ]
         jump_list.append(jump_list_element)
     n = n + 1
 
+print 'jump_list built'
+
 transl_diff = []
 rotatn_diff = []
+grade_list = []
+t0 = time.time()
 for jamp in jump_list:
-    temp_transl_list = [float(n) for n in str(jamp[2].get_translation()).split()]
-    temp_rotatn_list = [float(n) for n in str(jamp[2].get_rotation()).split()]
-    
-    # check comparison against tolerance
-    for a,b in zip(reference_transl_list, temp_transl_list):
-        if a == 0 or b == 0:
-            transl_diff.append(1) # 100% difference
-        else:
-            transl_diff.append( (max(a,b) - min(a,b)) / max(a,b) )
-    for a,b in zip(reference_rotatn_list, temp_rotatn_list):
-        if a == 0 or b == 0:
-            rotatn_diff.append(1)
-        else:
-            rotatn_diff.append( (max(a,b) - min(a,b)) / max(a,b) )
+    #temp_transl_list = [float(n) for n in str(jamp[2].get_translation()).split()]
+    #temp_rotatn_list = [float(n) for n in str(jamp[2].get_rotation()).split()]
+    temp_jump = [ float(t) for t in str( jamp[2] ).split() [1:] ] # omit 'RT'
+    #print i+1, temp_jump
+    big_diff = [ (a-b) / b for a,b in zip(temp_jump, reference_jump) ]
+    avg_diff = numpy.average(big_diff)
+    print ''
+    #print str(jamp[0]).split()[5]
+    #print str(jamp[1]).split()[5]
+    #print 'ref: ', reference_jump
+    #print 'tmp: ', temp_jump
+    #print 'diff list: ', big_diff
+    #print 'avg diff:  ', avg_diff
+    if abs(avg_diff) < .2:
+        grade_element = [ str(jamp[0]).split()[5], str(jamp[1]).split()[5], avg_diff ]
+        print grade_element
+        grade_list.append(grade_element)
 
-    comprehensive_diff = transl_diff + rotatn_diff
-    for diff in comprehensive_diff:
-        if diff >= .3 :
-            # is one bad value enough to ignore whole jump?
-            break # or keep going?
-        else:
-            print "################################# MATCH FOUND #################################"
-            print jamp[0], ' to ', jamp[1]
+print '\ngrading time\n', time.time() - t0
+
+
+#    for a in temp_jump:
+#        big_diff = 
+#        if a == 0 or b == 0:
+#            transl_diff.append(1) # 100% difference
+#        else:
+#            transl_diff.append( (max(a,b) - min(a,b)) / max(a,b) )
+#    for a,b in zip(reference_rotatn_list, temp_rotatn_list):
+#        if a == 0 or b == 0:
+#            rotatn_diff.append(1)
+#        else:
+#            rotatn_diff.append( (max(a,b) - min(a,b)) / max(a,b) )
+
+#    comprehensive_diff = transl_diff + rotatn_diff
+#    for diff in comprehensive_diff:
+#        if diff >= .3 :
+#            # is one bad value enough to ignore whole jump?
+#            break # or keep going?
+#        else:
+#            print "################################# MATCH FOUND #################################"
+#            print jamp[0], ' to ', jamp[1]
 
 
 ########
