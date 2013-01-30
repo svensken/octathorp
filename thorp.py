@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from rosetta import *
-import sys, time, numpy
+import os, sys, time, numpy
 
 init()
 
@@ -15,7 +15,7 @@ init()
 # input 'file1.pdb', res1, res2
 try:
     pdb_file = [arg for arg in sys.argv if arg[-4:] == ".pdb"][0]
-    print "\naccepted file: ", pdb_file
+    print "\naccepted reference pdb: ", pdb_file
     # last two args are residues, hopefully
     residue1 = int(sys.argv[-2])
     residue2 = int(sys.argv[-1])
@@ -33,17 +33,40 @@ except:
 
 
 
-# load the PDB
-# Always error like this?
+# load reference PDB
+# (why does Pose error out?)
 pose = Pose()
 try:
     silence = pose_from_pdb( pose, 'sample_pdbs/' + pdb_file )
+    print 'no error'
 except PyRosettaException:
-    print 'reference pose (', pdb_file, ') loaded'
+    print 'error...'
+print 'reference pose (', pdb_file, ') loaded'
 
-print 'total residues in ', pdb_file, ' = ', pose.total_residue()
+print 'total residues in [ref] ', pdb_file, ' = ', pose.total_residue()
 
+# load all other PDB's
+# cleaned pdb's end with 'A'
+clean_pdb_file_list = [item for item in os.listdir('alpha-beta-hydrolases/') if item[-5:] == 'A.pdb']
+print 'clean pdbs found! ', len(clean_pdb_file_list), ' of them!'
+print clean_pdb_file_list
 
+clean_pose_list = []
+# load all the poses... O_o *gulp*...
+n=0
+#TODO time elapsed, output to 'log' file
+for thing in clean_pdb_file_list:
+    n = n+1
+    try:
+        pose = Pose()
+        quietly = pose_from_pdb( pose, 'alpha-beta-hydrolases/' + thing )
+        print '###'
+        print thing, 'loaded a-ok, pose ', n
+        print '###'
+    except PyRosettaException:
+        print 'error, but should be ok.'
+    clean_pose_list.append(pose)
+"""
 
 ##################################################
 #- Get reference jump ---------------------------#
@@ -137,7 +160,9 @@ for jamp in jump_list:
 
 print '\ngrading time\n', time.time() - t0
 sorted_grades = sorted(grade_list, key=lambda tup: abs(tup[2]))
-print '\nSorted grades: ', '\n'.join(sorted_grades) # seperate lines
+print '\nSorted grades:'
+for j in sorted_grades: # seperate lines
+    print j
 
 #------------------------------------------------#
 ##################################################
@@ -160,3 +185,6 @@ print '\nSorted grades: ', '\n'.join(sorted_grades) # seperate lines
 # http://graylab.jhu.edu/pyrosetta/downloads/scripts/demos/D120_Ligand_interface.py
 # http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/d7/d60/classnumeric_1_1xyz_vector.html
 # http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/de/d93/classnumeric_1_1xyz_matrix.html
+
+
+"""
