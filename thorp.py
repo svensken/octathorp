@@ -6,9 +6,12 @@ import sys, time, numpy
 init()
 
 
+
 ##################################################
 #- Define original stubs ------------------------#
-
+#  Here we read manual input.
+#  Next step is to detect domains to snip
+#    -> ExPASy Prosite, Conserved Domain database, ESTHER Database
 # input 'file1.pdb', res1, res2
 try:
     pdb_file = [arg for arg in sys.argv if arg[-4:] == ".pdb"][0]
@@ -134,7 +137,7 @@ for jamp in jump_list:
 
 print '\ngrading time\n', time.time() - t0
 sorted_grades = sorted(grade_list, key=lambda tup: abs(tup[2]))
-print '\nSorted grades: ', sorted_grades
+print '\nSorted grades: ', '\n'.join(sorted_grades) # seperate lines
 
 #------------------------------------------------#
 ##################################################
