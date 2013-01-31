@@ -6,13 +6,17 @@ import os, sys, time, numpy
 init()
 
 
+# open file for log things
+f = open('loggy', 'w')
+
 
 ##################################################
-#- Define original stubs ------------------------#
-#  Here we read manual input.
-#  Next step is to detect domains to snip
-#    -> ExPASy Prosite, Conserved Domain database, ESTHER Database
-# input 'file1.pdb', res1, res2
+#- Load all poses -------------------------------#
+
+#TODO detect domains instead of manually specifying residues
+## --> ExPASy's Prosite, Conserved Domain db, ESTHER db, ...
+#TODO run entirely without input
+
 try:
     pdb_file = [arg for arg in sys.argv if arg[-4:] == ".pdb"][0]
     print "\naccepted reference pdb: ", pdb_file
@@ -28,11 +32,6 @@ except:
     #Please indicate path to PDB file relative to working directory
     sys.exit(0)
 
-#------------------------------------------------#
-##################################################
-
-
-
 # load reference PDB
 # (why does Pose error out?)
 pose = Pose()
@@ -42,15 +41,12 @@ try:
 except PyRosettaException:
     print 'error...'
 print 'reference pose (', pdb_file, ') loaded'
-
 print 'total residues in [ref] ', pdb_file, ' = ', pose.total_residue()
 
 # load all other PDB's
 # cleaned pdb's end with 'A'
 clean_pdb_file_list = [item for item in os.listdir('alpha-beta-hydrolases/') if item[-5:] == 'A.pdb']
 print 'clean pdbs found! ', len(clean_pdb_file_list), ' of them!'
-print clean_pdb_file_list
-
 clean_pose_list = []
 # load all the poses... O_o *gulp*...
 n=0
@@ -66,11 +62,17 @@ for thing in clean_pdb_file_list:
     except PyRosettaException:
         print 'error, but should be ok.'
     clean_pose_list.append(pose)
+
+#------------------------------------------------#
+##################################################
+
+
 """
 
 ##################################################
-#- Get reference jump ---------------------------#
+#- Get all jumps --------------------------------#
 
+# start with reference
 # Stub 1
 s1a1 = AtomID(1, residue1 - 1)
 s1a2 = AtomID(1, residue1)
@@ -87,14 +89,7 @@ reference_transform = pose_atom_tree.get_stub_transform(stub1, stub2)
 # break the numbers down
 reference_jump = [ float(n) for n in str(reference_transform).split()[1:] ] # no 'RT'
 
-#------------------------------------------------#
-##################################################
-
-
-
-##################################################
-#- Build big list of other jumps ----------------#
-
+# now all other jumps
 new_pose = Pose()
 try:
     pose_from_pdb(new_pose, 'sample_pdbs/' + pdb_file)
@@ -188,3 +183,6 @@ for j in sorted_grades: # seperate lines
 
 
 """
+
+# close log file
+f.close()
