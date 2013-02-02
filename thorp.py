@@ -10,9 +10,12 @@ init()
 f = open('loggy', 'w')
 raw_input("please run 'tail -f loggy' to see all script output, then press enter")
 
+
+
 ##################################################
 #- Load all poses -------------------------------#
-
+#TODO make inline functions
+#TODO pickle the objects, though skipping the py part might take care of this
 #TODO detect domains instead of manually specifying residues
 ## --> ExPASy's Prosite, Conserved Domain db, ESTHER db, ...
 #TODO run entirely without input
@@ -35,39 +38,49 @@ except:
 pose = Pose()
 try:
     pose_from_pdb( pose, 'sample_pdbs/' + pdb_file )
-    pose_load_error = 'no error'
+    pose_load_result = 'no error'
 except PyRosettaException:
-    pose_load_error = 'slight error'
+    pose_load_result = 'slight error'
 
-f.write( 'OUTPUT FOR SCRIPT thorp.py'+ \
-         '\nINVOKED AT '+str(time.strftime("%Y-%m-%d %H:%M:%S"))+'\n')
-f.write( '\nReference PDB: '+ str(pdb_file)+ \
-         '\nReference jump residues: '+str(residue1)+' and '+str(residue2)+ \
-         '\n'+str(pose_load_error)+' loading the reference pose (no need to worry)'+ \
-         '\ntotal reference residues: '+str(pose.total_residue())+'\n' )
+output_string = \
+    'This file contains output from the thorp.py script\n'+ \
+    'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'+ \
+    'Reference PDB: '+str(pdb_file)+'\n'+ \
+    'Reference jump residues: '+str(residue1)+' and '+str(residue2)+'\n'+ \
+    str(pose_load_result)+' loading the reference pose (no need to worry)\n'+ \
+    'total reference residues: '+str(pose.total_residue())+'\n\n'
+f.write(output_string)
 f.flush()
+
 
 # load all other PDB's
 # cleaned pdb's end with 'A'
 clean_pdb_file_list = [item for item in os.listdir('alpha-beta-hydrolases/') if item[-5:] == 'A.pdb']
-f.write('\n'+str(len(clean_pdb_file_list))+' clean pdbs [****A.pdb] found')
+output_string = '\n'+str(len(clean_pdb_file_list))+' PDBs to process into poses:\n'
+f.write(output_string)
 f.flush()
 
 clean_pose_list = []
 # load all the poses... O_o *gulp*...
 n=0
-#TODO time elapsed
+t0 = time.time()
 for thing in clean_pdb_file_list:
-    n = n+1
+    n=n+1
     try:
         pose = Pose()
         pose_from_pdb( pose, 'alpha-beta-hydrolases/' + thing )
-        pose_load_error = 'no error'
+        pose_load_result = '.'
     except PyRosettaException:
-        pose_load_error = 'mini error'
-    f.write( '\n\n'+pose_load_error+' loading pose '+thing[:4] )
+        pose_load_result = '*'
+    f.write(pose_load_result)
+    if n%50==0 or n==len(clean_pdb_file_list):
+        f.write(str(n))
     f.flush()
-    clean_pose_list.append(pose)
+    # this is where we need to pickle the Pose objects
+    #clean_pose_list.append(pose)
+f.write( '\n\nAlles Klar\nTime taken to load all other poses: '+str(time.time()-t0) )
+f.flush()
+# writing to log files has never been uglier
 
 #------------------------------------------------#
 ##################################################
