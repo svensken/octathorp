@@ -14,7 +14,7 @@ raw_input("please run 'tail -f loggy' to see all script output, then press enter
 
 ##################################################
 #- Load all poses -------------------------------#
-#TODO make inline functions
+#TODO make inline functions, distributable
 #TODO pickle the objects, though skipping the py part might take care of this
 #TODO detect domains instead of manually specifying residues
 ## --> ExPASy's Prosite, Conserved Domain db, ESTHER db, ...
@@ -86,7 +86,6 @@ f.flush()
 ##################################################
 
 
-"""
 
 ##################################################
 #- Get all jumps --------------------------------#
@@ -201,7 +200,6 @@ for j in sorted_grades: # seperate lines
 # http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/de/d93/classnumeric_1_1xyz_matrix.html
 
 
-"""
 
 # close log file
 f.close()

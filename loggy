@@ -1,0 +1,12 @@
+This file contains output from the thorp.py script
+invoked at: 2013/02/02 13:35:41
+
+
+Reference PDB: 5PEP.pdb
+Reference jump residues: 22 and 33
+slight error loading the reference pose (no need to worry)
+total reference residues: 326
+
+
+969 PDBs to process:
+..............................**..................50................................**................100..................................................150.............................
