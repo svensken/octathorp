@@ -1,3 +1,11 @@
+thorp's TODO's
+==============
+grade each loop's ss
+    pose.secstruct()
+    percent_helical = 100*ss.count('H') / len(ss)
+ligand interface (example script D120)
+analyze classes xyz_vector and xyz_matrix
+
 functions
 =========
 pyrosetta
@@ -7,6 +15,7 @@ pyrosetta
         pose = Pose()
         pose_from_pdb(pose, 'the/file.pdb')
         print pose.residue(33)
+        what is find_stub_transform() for?
     possibly useful
         rosetta.core.kinematics.AtomTree.jump
         rosetta.core.kinematics.AtomTree.get_stub_transform
