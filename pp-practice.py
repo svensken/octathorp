@@ -1,8 +1,14 @@
 import pp
 from multiprocessing import Process
+import time
 
 def miin(a):
+    time.sleep(20)
     return min(a)
+
+def maax(a):
+    time.sleep(3)
+    return max(a)
 
 
 if __name__ == '__main__':
@@ -11,10 +17,10 @@ if __name__ == '__main__':
     
     a = [1,2,3,4,5,6,7,8,9,10]
 
-    job1 = job_server.submit(miin, (a,),(),())
-    job2 = job_server.submit(miin, (a,),(),())
-    job3 = job_server.submit(miin, (a,),(),())
+    job1 = job_server.submit(miin, (a,), (), ('time',) )
+    job2 = job_server.submit(maax, (a,), (), ('time',) )
 
     j1 = job1()
     j2 = job2()
-    j3 = job3()
+    print j2
+    print j1
