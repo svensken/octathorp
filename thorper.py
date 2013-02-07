@@ -2,7 +2,7 @@
 
 from rosetta import *
 import os, sys, time, numpy, datetime, operator
-import pp
+import pp, pickle
 
 init()
 #init(['app', '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ) ]) # pass flags here
@@ -71,9 +71,6 @@ def find_similar_transforms( pdb_file, residue1, residue2 ):
     f.write(output_string)
     f.flush()
 
-    #clean_pose_list = []
-    # to debug:
-    global best_jumps
     best_jumps = []
     # load the poses one by one, check each against reference jump
     n=0
@@ -100,30 +97,49 @@ def find_similar_transforms( pdb_file, residue1, residue2 ):
             n_stub = StubID(n_s1a1, n_s1a2, n_s1a3)
             stub_list.append(n_stub)
 
+        # populate pose's secstruct
+        DsspMover().apply(new_pose) # populate secstruct
+        full_ss = new_pose.secstruct()
+        # infotize
+        pdb_info = new_pose.pdb_info()
+
         new_pose_atom_tree = new_pose.atom_tree()
-        i = 0 # or should be 1?
-        global first_stub
+        i = 1
         for first_stub in stub_list:
             for second_stub in stub_list[ i: ]: # start at subsequent stub (to first_stub)
 
                 new_jump = new_pose_atom_tree.get_stub_transform(first_stub, second_stub)
-                #new_jump = [ float(t) for t in str(new_jump).split() [1:] ] # omit 'RT'
-                #big_diff = [ (a-b) / b for a,b in zip(new_jump, reference_jump) ]
-                #avg_diff = numpy.average(big_diff)
-                rms_deviation = distance(reference_jump, new_jump) 
 
-                pdb_info = new_pose.pdb_info() # to store relevant info
-                if rms_deviation < 20:
+                chunk_ss = full_ss[ first_stub.atom(2).rsd() : second_stub.atom(2).rsd() ]
+
+                
+                # define things to store
+                this_jump    = str(new_jump)
+                this_pdb_id  = clean_pdb_file_name
+                # pdb_info already defined
+                this_1st_res = pdb_info.pose2pdb( first_stub.atom(2).rsd() )
+                this_2nd_res = pdb_info.pose2pdb( second_stub.atom(2).rsd() )
+                this_rmsd    = distance( reference_jump, new_jump )
+                this_ss_L    = chunk_ss.count('L') / len(chunk_ss)
+                this_ss_E    = chunk_ss.count('E') / len(chunk_ss)
+                this_ss_H    = chunk_ss.count('H') / len(chunk_ss)
+
+
+                # define tolerances
+                q_rmsd = this_rmsd < 5
+                q_len  = new_pose.total_residue() < 500 # just to speed up first run
+                # minimum E and H in ss
+                
+                if q_rmsd and q_len:
                     # structure of a good_jump:
                     # [ pdb, res1, res2, diff ]
-                    ## what does rsd() return in terms of different chains?
-                    ### should be pose's rsd, one sequence of numbers encapsulating all chains
                     # name could also be clean_pdb_file_name
-                    good_jump = [                   \
-                        pdb_info.name(),            \
-                        pdb_info.pose2pdb( first_stub.atom(2).rsd() ),   \
-                        pdb_info.pose2pdb( second_stub.atom(2).rsd() ),  \
-                        rms_deviation ]
+                    good_jump = [          \
+                        this_jump,         \
+                        this_pdb_id,       \
+                        this_1st_res,      \
+                        this_2nd_res,      \
+                        this_rmsd ]
                     best_jumps.append(good_jump)
             i = i + 1
 
@@ -140,8 +156,8 @@ def find_similar_transforms( pdb_file, residue1, residue2 ):
 
     output_string = \
         '\n\nAlles Klar\n\
-         Time taken to load and grade all possible jumps: '+str(time.time()-t0)+' seconds\n'+ \
-        'Best 10 jumps: \n\n'+ \
+         Time taken to load and grade all possible jumps: '+str(time.time()-t0)+' seconds\n\n'+ \
+        'Best 10 jumps: \n'+ \
         '\n'.join( [str(L) for L in best_10_jumps_string] )
     f.write(output_string)
     f.flush()
