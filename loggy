@@ -1,12 +1,30 @@
+
+
+##################################################
 This file contains output from the thorp.py script
-invoked at: 2013/02/03 23:45:33
+invoked at: 2013/02/06 18:54:39
 
 
-Reference PDB: 5PEP.pdb
+Reference PDB: 1whtA.pdb
 Reference jump residues: 22 and 33
-slight error loading the reference pose (no need to worry)
-total reference residues: 326
+no error loading the reference pose (no need to worry)
+total reference residues: 256
 
 
 969 PDBs to posify and check jumps from:
-2.805s, 1.194s, 1.429s, 1.181s, 1.216s, 1.362s, 4.555s, 1.694s, 0.955s, 1.686s, 2.666s, 0.669s, 0.928s, 0.748s, 3.447s, 5.548s, 2.479s, 0.934s, 3.774s, 1.495s, 0.961s, 4.026s, 4.498s, 1.212s, 3.039s, 1.071s, 4.767s, 2.836s, 3.272s, 3.226s, 1.365s, 4.32s, 1.411s, 4.267s, 4.326s, 1.213s, 0.785s, 1.063s, 2.721s, 0.304s, 2.663s, 1.085s, 1.242s, 1.689s, 1.109s, 4.813s, 
+0.723s, 0.714s, 0.715s, 
+
+Alles Klar
+         Time taken to load and grade all possible jumps: 2.17217898369 seconds
+Best 10 jumps: 
+
+['alpha-beta-hydrolases/1a88A.pdb', '117 A', '256 A', 2.181920166555547]
+['alpha-beta-hydrolases/1a8qA.pdb', '49 A', '57 A', 2.3003944511785757]
+['alpha-beta-hydrolases/1a88A.pdb', '51 A', '59 A', 2.333435915809053]
+['alpha-beta-hydrolases/1a7uA.pdb', '119 A', '258 A', 2.352914995101551]
+['alpha-beta-hydrolases/1a8qA.pdb', '51 A', '65 A', 2.415011005923223]
+['alpha-beta-hydrolases/1a8qA.pdb', '115 A', '253 A', 2.521051292401075]
+['alpha-beta-hydrolases/1a88A.pdb', '202 A', '225 A', 2.5574330410055652]
+['alpha-beta-hydrolases/1a8qA.pdb', '51 A', '66 A', 2.5792865178614024]
+['alpha-beta-hydrolases/1a7uA.pdb', '13 A', '29 A', 2.5995975865490695]
+['alpha-beta-hydrolases/1a8qA.pdb', '23 A', '30 A', 2.6067436467143996]

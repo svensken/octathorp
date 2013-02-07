@@ -5,18 +5,19 @@ import os, sys, time, numpy, datetime, operator
 import pp
 
 init()
+#init(['app', '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ) ]) # pass flags here
+# (pass flag to ignore unrecognized residues)
 
 
 def find_similar_transforms( pdb_file, residue1, residue2 ):
 
     raw_input("please run 'tail -f loggy' to see all script output, then press enter")
     
-    #TODO more generators!
-    #TODO pickle the objects, though skipping the py part might take care of this
-    #  --> or replace loads with scans of precomputed
-    #TODO detect domains instead of manually specifying residues
+    #TODO check chain of res
+    #TODO disect workings of distance()
+    #TODO pickle the overall jump_list to begin with
+    #TODO detect domains (for res select without input)
     ## --> ExPASy's Prosite, Conserved Domain db, ESTHER db, ...
-    #TODO no input
 
     ##################################################
     #- Get reference jump----------------------------#
@@ -24,12 +25,12 @@ def find_similar_transforms( pdb_file, residue1, residue2 ):
     ## load reference pose
     pose = Pose()
     try:
-        pose_from_pdb( pose, 'sample_pdbs/' + pdb_file )
+        pose_from_pdb( pose, 'alpha-beta-hydrolases/' + pdb_file )
         pose_load_result = 'no error'
     except PyRosettaException:
         pose_load_result = 'slight error'
 
-    output_string = \
+    output_string = '\n\n##################################################\n'+ \
         'This file contains output from the thorp.py script\n'+ \
         'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'+ \
         'Reference PDB: '+str(pdb_file)+'\n'+ \
@@ -70,12 +71,15 @@ def find_similar_transforms( pdb_file, residue1, residue2 ):
     f.write(output_string)
     f.flush()
 
-    clean_pose_list = []
+    #clean_pose_list = []
+    # to debug:
+    global best_jumps
     best_jumps = []
     # load the poses one by one, check each against reference jump
     n=0
     t0 = time.time()
-    for clean_pdb_file_name in clean_pdb_file_list:
+#TODO remove list limit
+    for clean_pdb_file_name in clean_pdb_file_list[:3]: # first 100 files only
         n=n+1
         t1 = time.time()
         try:
@@ -96,27 +100,32 @@ def find_similar_transforms( pdb_file, residue1, residue2 ):
             n_stub = StubID(n_s1a1, n_s1a2, n_s1a3)
             stub_list.append(n_stub)
 
-        good_jump_list = []
         new_pose_atom_tree = new_pose.atom_tree()
         i = 0 # or should be 1?
+        global first_stub
         for first_stub in stub_list:
             for second_stub in stub_list[ i: ]: # start at subsequent stub (to first_stub)
+
                 new_jump = new_pose_atom_tree.get_stub_transform(first_stub, second_stub)
                 #new_jump = [ float(t) for t in str(new_jump).split() [1:] ] # omit 'RT'
                 #big_diff = [ (a-b) / b for a,b in zip(new_jump, reference_jump) ]
                 #avg_diff = numpy.average(big_diff)
-                rms_deviation = distance(reference_jump, new_jump) # how'd i miss that method!?
-                if rms_deviation < 5:
+                rms_deviation = distance(reference_jump, new_jump) 
+
+                pdb_info = new_pose.pdb_info() # to store relevant info
+                if rms_deviation < 20:
                     # structure of a good_jump:
                     # [ pdb, res1, res2, diff ]
+                    ## what does rsd() return in terms of different chains?
+                    ### should be pose's rsd, one sequence of numbers encapsulating all chains
+                    # name could also be clean_pdb_file_name
                     good_jump = [                   \
-                        clean_pdb_file_name,        \
-                        first_stub.atom(2).rsd(),   \
-                        second_stub.atom(2).rsd(),  \
+                        pdb_info.name(),            \
+                        pdb_info.pose2pdb( first_stub.atom(2).rsd() ),   \
+                        pdb_info.pose2pdb( second_stub.atom(2).rsd() ),  \
                         rms_deviation ]
-                    good_jump_list.append(good_jump)
+                    best_jumps.append(good_jump)
             i = i + 1
-        best_jumps.append(good_jump_list)
 
         if n%50==0 or n==len(clean_pdb_file_list):
             f.write('\n###'+str(n)+'###\n')
@@ -131,7 +140,7 @@ def find_similar_transforms( pdb_file, residue1, residue2 ):
 
     output_string = \
         '\n\nAlles Klar\n\
-         Time taken to load and grade all possible jumps: '+str(time.time()-t0)+'\n'+ \
+         Time taken to load and grade all possible jumps: '+str(time.time()-t0)+' seconds\n'+ \
         'Best 10 jumps: \n\n'+ \
         '\n'.join( [str(L) for L in best_10_jumps_string] )
     f.write(output_string)
@@ -159,11 +168,12 @@ def find_similar_transforms( pdb_file, residue1, residue2 ):
 if __name__ == '__main__':
 
     with open( 'loggy', 'w') as f:
-
+        
         try:
-            pdb_file = [arg for arg in sys.argv if arg[-4:] == ".pdb"][0]
-            residue1 = int(sys.argv[-2])
-            residue2 = int(sys.argv[-1])
+            # just some lazy defaults
+            pdb_file = '1whtA.pdb' #[arg for arg in sys.argv if arg[-4:] == ".pdb"][0]
+            residue1 = 22 #int(sys.argv[-2])
+            residue2 = 33 #int(sys.argv[-1])
         except:
             print "\nUsage: \n\
             $ ./thorp.py [file.pdb] [int residue 1] [int residue 2] \n"
@@ -174,9 +184,7 @@ if __name__ == '__main__':
         #for cup in job_server.get_ncpus():
 
         find_similar_transforms( pdb_file, residue1, residue2 )
-            # parse input
-            # with file
-            # 
+            
 # close log file
 f.close()
 
