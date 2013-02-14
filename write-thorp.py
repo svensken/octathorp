@@ -24,16 +24,16 @@ def get_all_transforms( ):
     # cleaned pdb's end with 'A'
     pdb_file_list = [item for item in os.listdir('alpha-beta-hydrolases/') if item[-5:] == 'A.pdb']
 
-    output_string = '\n'+str(len(pdb_file_list))+' PDBs to posify and check jumps from:\n'
-    f.write(output_string)
-    f.flush()
+    output_string = str(len(pdb_file_list))+' PDBs to posify and check jumps from:\n'
+    loggy.write(output_string)
+    loggy.flush()
 
     best_jumps = []
     # load the poses one by one, check each against reference jump
     n=0
     t0 = time.time()
 #TODO remove list limit
-    for pdb_file_name in pdb_file_list[:3]: # first 100 files only
+    for pdb_file_name in pdb_file_list:
         n=n+1
         t1 = time.time()
         try:
@@ -42,6 +42,9 @@ def get_all_transforms( ):
             pose_load_result = '.'
         except PyRosettaException:
             pose_load_result = '*'
+            print '#'*5000
+            #TODO remove 'continue', pass --ignore-unrecognized-rsd flag instead
+            continue #skip this iteration
 
         stub_list = []
         for middle_residue in range(2, pose.total_residue()):
@@ -75,22 +78,26 @@ def get_all_transforms( ):
                 this_pdb_id  = pdb_file_name
                 this_1st_res = pdb_info.pose2pdb( first_stub.atom(2).rsd() )
                 this_2nd_res = pdb_info.pose2pdb( second_stub.atom(2).rsd() )
-                this_ss_L    = chunk_ss.count('L') / len(chunk_ss)
-                this_ss_E    = chunk_ss.count('E') / len(chunk_ss)
-                this_ss_H    = chunk_ss.count('H') / len(chunk_ss)
+                this_length  = jump.get_translation().length
+                this_ss_L    = chunk_ss.count('L') #/ float( len(chunk_ss) )
+                this_ss_E    = chunk_ss.count('E') #/ float( len(chunk_ss) )
+                this_ss_H    = chunk_ss.count('H') #/ float( len(chunk_ss) )
 
                 # define tolerances
-                q_len  = pose.total_residue() < 500 # just to speed up first run
+                q_nrsd  = pose.total_residue() < 500 
+                q_len   = this_length < 6
+                q_loop  = int(this_2nd_res.split()[0]) - int(this_1st_res.split()[0]) > 10
                 # minimum E and H in ss
                 
-                if True and q_len:
+                if True and q_len and q_loop:
                     # structure of a good_jump:
-                    # [ jump, pdb-id, res1, res2, ss_L, ss_E, ss_H ]
+                    # [ jump, pdb-id, res1, res2, length, ss_L, ss_E, ss_H ]
                     good_jump = [           \
                         this_jump,          \
                         this_pdb_id,        \
                         this_1st_res,       \
                         this_2nd_res,       \
+                        this_length,        \
                         this_ss_L,          \
                         this_ss_E,          \
                         this_ss_H  ]
@@ -98,40 +105,24 @@ def get_all_transforms( ):
             i = i + 1
 
         if n%50==0 or n==len(pdb_file_list):
-            f.write('\n###'+str(n)+'###\n')
+            loggy.write('\n###'+str(n)+'###\n')
         else:
-            f.write(str(round(time.time()-t1,3))+'s, ')
-        f.flush()
-        # this is where we need to pickle the Pose objects
-        #clean_pose_list.append(pose)
-
-
-    best_10_jumps_string = sorted( best_jumps, key=operator.itemgetter(3) )[ :10 ]
-
-    return best_10_jumps_string
-
+            loggy.write(str(round(time.time()-t1,3))+'s, ')
+        loggy.flush()
+        
     output_string = \
-        '\n\nAlles Klar\n\
-         Time taken to load and grade all possible jumps: '+str(time.time()-t0)+' seconds\n\n'+ \
-        'Best 10 jumps: \n'+ \
-        '' #'\n'.join( [str(L) for L in best_10_jumps_string] )
-    f.write(output_string)
-    f.flush()
+        '\n\nAlles Klar\n' + \
+        'total run time: '+str(time.time()-t0)+' seconds\n\n'
+    loggy.write(output_string)
+    loggy.flush()
 
+    RTs_string = \
+        'This list from *** directory, ### pdbs, *** tolerances, etc \n' + \
+        'saved at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n' + \
+        '\n'.join( [str(L) for L in best_jumps] ) 
+    RTs.write(RTs_string)
 
-        ## Alternatives;
-        # check if 0 first
-        # (max-min)/max
-        # shift all +10
-        # (need a better way)
-        #print ''
-        #print str(jamp[0]).split()[5]#10
-        #print str(jamp[1]).split()[5]#10
-        #print 'ref: ', reference_jump
-        #print 'tmp: ', temp_jump
-        #print 'diff list: ', big_diff
-        #print 'avg diff:  ', avg_diff
-
+    #return stub_list, best_jumps
 
     #------------------------------------------------#
     ##################################################
@@ -139,7 +130,9 @@ def get_all_transforms( ):
 
 if __name__ == '__main__':
 
-    with open( 'loggy', 'w') as f:
+
+    with open( 'loggy', 'w') as loggy, open('all_transforms', 'w') as RTs:
+        #TODO backup RTs file if already populated
         
         try:
             # just some lazy defaults
@@ -151,12 +144,17 @@ if __name__ == '__main__':
             $ ./thorp.py [file.pdb] [int residue 1] [int residue 2] \n"
             sys.exit(0)
         
+        output_string = '\n\n#######################################\n'+ \
+            'This file contains output from thorp.py\n'+ \
+            'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'
+        loggy.write(output_string)
+        loggy.flush()
+
         # parallelize
         #job_server = pp.Server()
         #for cup in job_server.get_ncpus():
 
-        best_jumps = get_all_transforms( )
+        #stubs, best_jumps = get_all_transforms( )
+        get_all_transforms()
             
-# close log file
-f.close()
 
