@@ -21,10 +21,8 @@ def get_all_transforms( ):
     loggy.write(output_string)
     loggy.flush()
 
-    best_jumps = []
     n=0
     t0 = time.time()
-
     for pdb_file_name in pdb_file_list:
         n=n+1
         t1 = time.time()
@@ -76,7 +74,7 @@ def get_all_transforms( ):
                 #TODO define at top of script, exec string (so we can print tolerances into all_transforms file later)
                 # define tolerances
                 q_nrsd  = pose.total_residue() < 500 
-                q_len   = this_length < 6
+                q_len   = this_length < 8
                 q_loop  = int(this_2nd_res.split()[0]) - int(this_1st_res.split()[0]) > 10
                 # minimum E and H in ss
                 
@@ -92,7 +90,9 @@ def get_all_transforms( ):
                         this_ss_L,          \
                         this_ss_E,          \
                         this_ss_H  ]
-                    best_jumps.append(good_jump)
+                    # OUPUT
+                    RTs.write( str([str(L) for L in good_jump]) )
+                    RTs.flush()
             i = i + 1
 
         if n%50==0 or n==len(pdb_file_list):
@@ -100,6 +100,7 @@ def get_all_transforms( ):
         else:
             loggy.write(str(round(time.time()-t1,3))+'s, ')
         loggy.flush()
+
         
     # OUTPUT
     output_string = \
@@ -108,13 +109,7 @@ def get_all_transforms( ):
     loggy.write(output_string)
     loggy.flush()
 
-    # OUTPUT
-    RTs_string = \
-        'This list from *** directory, ### pdbs, *** tolerances, etc \n' + \
-        'saved at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n' + \
-        '\n'.join( [str(L) for L in best_jumps] ) 
-    RTs.write(RTs_string)
-
+    
 
 
 if __name__ == '__main__':
@@ -129,6 +124,14 @@ if __name__ == '__main__':
             'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'
         loggy.write(output_string)
         loggy.flush()
+
+        # OUTPUT
+        RTs_string = \
+            'This list from *** directory, ### pdbs, *** tolerances, etc \n' + \
+            'saved at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'
+        RTs.write(RTs_string)
+        RTs.flush()
+
 
         get_all_transforms()
             
