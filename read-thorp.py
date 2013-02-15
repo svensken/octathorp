@@ -1,11 +1,18 @@
 from rosetta import *
-
+import sys
 init()
 
 
-
-##################################################
-#- Get reference jump----------------------------#
+## GET MANUALLY-DEFINED REFERENCE JUMP
+try:
+    pdb_file = [arg for arg in sys.argv if arg[-4:] == '.pdb'][0]
+    residue1 = int(sys.argv[-2]
+    residue2 = int(sys.argv[-1]
+except:
+    print "input not recognized                         \n\
+           Usage:                                       \n\
+           $ ./read-thorp.py [pdb_file] [res1] [res2]   \n"
+    sys.exit(1)
 
 ## load reference pose
 pose = Pose()
@@ -54,18 +61,6 @@ rt.set_translation(v)
 #print rt
 #print rt.get_translation()
 #print rt.get_rotation()
-
-all_s = ''
-for life in os.listdir('alpha-beta-hydrolases/')[:10]:
-    try:
-        pose=Pose()
-        pose_from_pdb(pose, 'alpha-beta-hydrolases/'+life)
-    except:
-        pass
-    
-    DsspMover().apply(pose)
-    all_s +=  pose.secstruct()
-
 
 
 
