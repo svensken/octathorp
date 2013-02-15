@@ -11,28 +11,20 @@ init()
 
 def get_all_transforms( ):
 
-    raw_input("please run 'tail -f loggy' to see all script output, then press enter")
+    raw_input("please run 'tail -f loggy' to see clean script output, then press enter")
     
-    #TODO detect domains (for res select without input)
-    ## --> ExPASy's Prosite, Conserved Domain db, ESTHER db, ...
-
-
-    ##################################################
-    #- Get all other jumps and compare --------------#
-
-    # load all other PDB's
     # cleaned pdb's end with 'A'
     pdb_file_list = [item for item in os.listdir('alpha-beta-hydrolases/') if item[-5:] == 'A.pdb']
 
-    output_string = str(len(pdb_file_list))+' PDBs to posify and check jumps from:\n'
+    # OUTPUT
+    output_string = str(len(pdb_file_list))+' PDBs to posify and traverse for transforms\n\n'
     loggy.write(output_string)
     loggy.flush()
 
     best_jumps = []
-    # load the poses one by one, check each against reference jump
     n=0
     t0 = time.time()
-#TODO remove list limit
+
     for pdb_file_name in pdb_file_list:
         n=n+1
         t1 = time.time()
@@ -42,15 +34,13 @@ def get_all_transforms( ):
             pose_load_result = '.'
         except PyRosettaException:
             pose_load_result = '*'
-            print '#'*5000
             #TODO remove 'continue', pass --ignore-unrecognized-rsd flag instead
-            continue #skip this iteration
+            continue
 
         stub_list = []
         for middle_residue in range(2, pose.total_residue()):
             # first stub's central residue is #2
             # last stub's central residue is #last-1
-            # Stub 1
             s1a1 = AtomID(1, middle_residue - 1)
             s1a2 = AtomID(1, middle_residue)
             s1a3 = AtomID(1, middle_residue + 1)
@@ -83,6 +73,7 @@ def get_all_transforms( ):
                 this_ss_E    = chunk_ss.count('E') #/ float( len(chunk_ss) )
                 this_ss_H    = chunk_ss.count('H') #/ float( len(chunk_ss) )
 
+                #TODO define at top of script, exec string (so we can print tolerances into all_transforms file later)
                 # define tolerances
                 q_nrsd  = pose.total_residue() < 500 
                 q_len   = this_length < 6
@@ -110,22 +101,20 @@ def get_all_transforms( ):
             loggy.write(str(round(time.time()-t1,3))+'s, ')
         loggy.flush()
         
+    # OUTPUT
     output_string = \
         '\n\nAlles Klar\n' + \
         'total run time: '+str(time.time()-t0)+' seconds\n\n'
     loggy.write(output_string)
     loggy.flush()
 
+    # OUTPUT
     RTs_string = \
         'This list from *** directory, ### pdbs, *** tolerances, etc \n' + \
         'saved at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n' + \
         '\n'.join( [str(L) for L in best_jumps] ) 
     RTs.write(RTs_string)
 
-    #return stub_list, best_jumps
-
-    #------------------------------------------------#
-    ##################################################
 
 
 if __name__ == '__main__':
@@ -134,27 +123,13 @@ if __name__ == '__main__':
     with open( 'loggy', 'w') as loggy, open('all_transforms', 'w') as RTs:
         #TODO backup RTs file if already populated
         
-        try:
-            # just some lazy defaults
-            pdb_file = '1whtA.pdb' #[arg for arg in sys.argv if arg[-4:] == ".pdb"][0]
-            residue1 = 22 #int(sys.argv[-2])
-            residue2 = 33 #int(sys.argv[-1])
-        except:
-            print "\nUsage: \n\
-            $ ./thorp.py [file.pdb] [int residue 1] [int residue 2] \n"
-            sys.exit(0)
-        
+        # OUTPUT
         output_string = '\n\n#######################################\n'+ \
             'This file contains output from thorp.py\n'+ \
             'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'
         loggy.write(output_string)
         loggy.flush()
 
-        # parallelize
-        #job_server = pp.Server()
-        #for cup in job_server.get_ncpus():
-
-        #stubs, best_jumps = get_all_transforms( )
         get_all_transforms()
             
 

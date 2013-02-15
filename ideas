@@ -1,29 +1,10 @@
 thorp's TODO's
 ==============
-grade each loop's ss
-    pose.secstruct()
-    percent_helical = 100*ss.count('H') / len(ss)
 ligand interface (example script D120)
-analyze classes xyz_vector and xyz_matrix
 
 functions
 =========
 pyrosetta
-    manual
-        http://graylab.jhu.edu/pyrosetta/downloads/documentation/PyRosetta_Manual.pdf
-    relevant commands
-        pose = Pose()
-        pose_from_pdb(pose, 'the/file.pdb')
-        print pose.residue(33)
-        what is find_stub_transform() for?
-    possibly useful
-        rosetta.core.kinematics.AtomTree.jump
-        rosetta.core.kinematics.AtomTree.get_stub_transform
-        coord = pose.residue(740).atom('N').xyz()
-        print coord.x
-        pose2.jump(1).set_rotation(pose1.jump(1).get_rotation())
-        pose2.jump(1).get_translation()
-            "the contents of src/protocols/moves/RotateJumpAxisMover may be valuable. They show (well, not with enough comments) how to separate the two "stubs" (coordinate frames) out of the Jump, modify one of the Stubs, and then reassemble it into a Jump."
     recoding approach
         distance
             atomN = pose.residue(33).atom('N')
