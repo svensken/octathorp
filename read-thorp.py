@@ -1,18 +1,28 @@
+import sys, time
+sys.path.append( '~/Desktop/PyRosetta/rosetta' )
 from rosetta import *
-import sys
+
 init()
 
 
+f = open('loggy-read','w')
+
 ## GET MANUALLY-DEFINED REFERENCE JUMP
 try:
-    pdb_file = [arg for arg in sys.argv if arg[-4:] == '.pdb'][0]
-    residue1 = int(sys.argv[-2]
-    residue2 = int(sys.argv[-1]
+    pass
+    #pdb_file = [arg for arg in sys.argv if arg[-4:] == '.pdb'][0]
+    #residue1 = int(sys.argv[-2]
+    #residue2 = int(sys.argv[-1]
 except:
     print "input not recognized                         \n\
            Usage:                                       \n\
            $ ./read-thorp.py [pdb_file] [res1] [res2]   \n"
     sys.exit(1)
+
+# for now;
+pdb_file = '2hrrA.pdb'
+residue1 = 254
+residue2 = 269
 
 ## load reference pose
 pose = Pose()
@@ -26,11 +36,12 @@ output_string = '\n\n##################################################\n'+ \
     'This file contains output from the thorp.py script\n'+ \
     'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'+ \
     'Reference PDB: '+str(pdb_file)+'\n'+ \
-    'Reference jump residues: '+str(residue1)+' and '+str(residue2)+'\n'+ \
+    'Residues '+str(residue1)+' and '+str(residue2)+'\n'+ \
     str(pose_load_result)+' loading the reference pose (no need to worry)\n'+ \
     'total reference residues: '+str(pose.total_residue())+'\n\n'
 f.write(output_string)
 f.flush()
+
 
 ## calculate reference jump
 # Stub 1
@@ -44,12 +55,19 @@ s2a2 = AtomID(1, residue2)
 s2a3 = AtomID(1, residue2 + 1)
 stub2 = StubID(s2a1, s2a2, s2a3)
 
-#------------------------------------------------#
-##################################################
 
-
-
-# reconstruct an RT object from a stored string
+# reconstruct RT objects from giant list of jumps
+with open('all_transforms', 'r') as giant_list:
+    t=0
+    for line in giant_list:
+        if t < 100:
+            try:
+                f.write(line)
+            except:
+                f.write('\noddity.\n')
+            f.flush()
+        t += 1
+    
 m = numeric.xyzMatrixdouble(1)
 m = m.rows(11,12,13,14,15,16,17,18,19)
 v = numeric.xyzVector_double(1,2,3)
@@ -65,4 +83,7 @@ rt.set_translation(v)
 
 
 # compare
-rmsd = distance( reference_jump, this_jump )
+#rmsd = distance( reference_jump, this_jump )
+
+
+f.close()

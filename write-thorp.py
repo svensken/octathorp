@@ -115,7 +115,7 @@ def get_all_transforms( ):
 if __name__ == '__main__':
 
 
-    with open( 'loggy', 'w') as loggy, open('all_transforms', 'w') as RTs:
+    with open( 'loggy-write', 'w') as loggy, open('all_transforms', 'w') as RTs:
         #TODO backup RTs file if already populated
         
         # OUTPUT
