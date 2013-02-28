@@ -2,7 +2,7 @@
 
 from rosetta import *
 import os, sys, time, numpy, datetime, operator
-import pp, pickle
+#import pp, pickle
 
 init()
 #init(['app', '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ) ]) # pass flags here
@@ -11,7 +11,7 @@ init()
 
 def get_all_transforms( ):
 
-    raw_input("please run 'tail -f loggy' to see clean script output, then press enter")
+    raw_input("please run 'tail -f loggy-write' to see clean script output, then press enter")
     
     # cleaned pdb's end with 'A'
     pdb_file_list = [item for item in os.listdir('alpha-beta-hydrolases/') if item[-5:] == 'A.pdb']
@@ -23,7 +23,7 @@ def get_all_transforms( ):
 
     n=0
     t0 = time.time()
-    for pdb_file_name in pdb_file_list:
+    for pdb_file_name in pdb_file_list[:10]:
         n=n+1
         t1 = time.time()
         try:
@@ -91,7 +91,9 @@ def get_all_transforms( ):
                         this_ss_E,          \
                         this_ss_H  ]
                     # OUPUT
-                    RTs.write( str([str(L) for L in good_jump]) )
+                    for item in good_jump:
+                        RTs.write( str(item)+',' )
+                    RTs.write( '\n' )
                     RTs.flush()
             i = i + 1
 

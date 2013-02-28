@@ -60,13 +60,16 @@ stub2 = StubID(s2a1, s2a2, s2a3)
 with open('all_transforms', 'r') as giant_list:
     t=0
     for line in giant_list:
-        if t < 100:
+        if t < 10 and line[0] == 'RT':
             try:
-                f.write(line)
+                line_item = line.split(',')
+                f.write( str(line_item) )
+                #f.write(line)
             except:
                 f.write('\noddity.\n')
             f.flush()
         t += 1
+    #line_item = [ line.split(',') for line in giant_list ]
     
 m = numeric.xyzMatrixdouble(1)
 m = m.rows(11,12,13,14,15,16,17,18,19)
