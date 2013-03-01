@@ -176,9 +176,5 @@ def kabsch_alignment( pose1, pose2 , pose1sel = [], pose2sel =[] ):
             pose2.residue(r+1).set_xyz(a+1,dummy)
 
 
-    pymover = PyMOL_Mover()
-    pymover.apply(pose1)
-    pymover.apply(pose2)
-    print pose1
-    print pose2
-    print 'RMSD=%f' % RMSD
+    return pose1, pose2
+    RMSD_string = 'RMSD=%f' % RMSD

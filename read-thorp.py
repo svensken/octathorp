@@ -11,15 +11,27 @@ def construct_pose_from_matching_domains( host_pose,    # pose
                                           host_res1,    # int
                                           host_res2,    # int
                                           guest_name,   # '1aaaA.pdb'
-                                          guest_res1,   # str
-                                          guest_res2 ): # str
+                                          guest_res1,   # int
+                                          guest_res2 ): # int
     # build guest pose
     guest_pose = Pose()
     pose_from_pdb( guest_pose, 'alpha-beta-hydrolases/'+guest_name )
-    #pymover.apply(pose)
 
     # rotate guest pose to align with host's ref residues
-    kabsch_alignment( host_pose, guest_pose )
+    kabsch_alignment( host_pose, guest_pose, [ host_res1 - 1 ,
+                                               host_res1     ,
+                                               host_res1 + 1 ,
+                                               host_res2 - 1 ,
+                                               host_res2     ,
+                                               host_res2 + 1   ],
+                                             [ guest_res1 - 1 ,
+                                               guest_res1     ,
+                                               guest_res1 + 1 ,
+                                               guest_res2 - 1 ,
+                                               guest_res2     ,
+                                               guest_res2 + 1  ] )
+    pymover.apply(host_pose)
+    pymover.apply(guest_pose)
 
     # generate new pose from aligned domains
     new_pose = Pose()
@@ -46,9 +58,9 @@ except:
     sys.exit(1)
 
 # for now;
-pdb_file = '1a7uA.pdb'
-residue1 = 3
-residue2 = 17
+pdb_file = '3pf8A.pdb'
+residue1 = 138
+residue2 = 182
 
 ## load reference pose
 pose = Pose()
@@ -86,59 +98,47 @@ ref_rt = pose_atom_tree.get_stub_transform( stub1, stub2 )
 
 
 # reconstruct and check each RT object from giant list of jumps
-with open('all_transforms', 'r') as giant_list:
-    t=0
+with open('all_transforms.2013-02-13', 'r') as giant_list:
+
     for line in giant_list:
-        if t < 10:
-            try:
-                row_list = line.split(',')
-                rt_string = row_list[0].split()
+        try:
+            row_items = line.split(',')
+            rt_string = row_items[0].split()
 
-                m = numeric.xyzMatrixdouble(0)
-                m = m.rows( float(rt_string[1]),
-                            float(rt_string[2]),
-                            float(rt_string[3]),
-                            float(rt_string[4]),
-                            float(rt_string[5]),
-                            float(rt_string[6]),
-                            float(rt_string[7]),
-                            float(rt_string[8]),
-                            float(rt_string[9]) )
-                v = numeric.xyzVector_double( float(rt_string[10]),
-                                              float(rt_string[11]),
-                                              float(rt_string[12]) )
-                rt = RT()
-                rt.set_rotation(m)
-                rt.set_translation(v)
-                
-                rmsd = distance( ref_rt, rt )
+            m = numeric.xyzMatrixdouble(0)
+            m = m.rows( float(rt_string[1]),
+                        float(rt_string[2]),
+                        float(rt_string[3]),
+                        float(rt_string[4]),
+                        float(rt_string[5]),
+                        float(rt_string[6]),
+                        float(rt_string[7]),
+                        float(rt_string[8]),
+                        float(rt_string[9]) )
+            v = numeric.xyzVector_double( float(rt_string[10]),
+                                          float(rt_string[11]),
+                                          float(rt_string[12]) )
+            rt = RT()
+            rt.set_rotation(m)
+            rt.set_translation(v)
+            
+            rmsd = distance( ref_rt, rt )
+            
+            if row_items[1] == '3pf8A.pdb':
+                f.write( 200*'#' )
+            if rmsd < 2:
+                f.write('BOOM')
+                """construct_pose_from_matching_domains( pose,                # pose
+                                                      residue1,             # int
+                                                      residue2,             # int
+                                                      row_list[1],          # '1aaaA.pdb'
+                                                      int(row_items[2]),    # int
+                                                      int(row_items[3])  )  # int"""
 
-                if rmsd < 2:
-                    construct_pose_from_matching_domains( pose,           # pose
-                                                          residue1,       # int
-                                                          residue2,       # int
-                                                          row_list[1],   # '1aaaA.pdb'
-                                                          row_list[2],   # str
-                                                          row_list[3]  ) # str
-                #f.write(line)
-                #f.write( str(rmsd)+'\n' )
-                #f.write( str(rt) + '\n\n')
-            except Exception,e:
-                f.write(str(e)+'\n')
-            f.flush()
-        t += 1
-    #line_item = [ line.split(',') for line in giant_list ]
-
-m = numeric.xyzMatrixdouble(0)
-m = m.rows(11,12,13,14,15,16,17,18,19)
-v = numeric.xyzVector_double(1,2,3)
-
-rt = RT()
-rt.set_rotation(m)
-rt.set_translation(v)
-
-# compare
-#rmsd = distance( reference_jump, this_jump )
+        except Exception,e:
+            f.write(str(e)+'\n')
+        f.write('.')
+        f.flush()
 
 
 f.close()

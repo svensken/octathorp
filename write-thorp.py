@@ -11,8 +11,6 @@ init()
 
 def get_all_transforms( ):
 
-    raw_input("please run 'tail -f loggy-write' to see clean script output, then press enter")
-    
     # cleaned pdb's end with 'A'
     pdb_file_list = [item for item in os.listdir('alpha-beta-hydrolases/') if item[-5:] == 'A.pdb']
 
@@ -23,7 +21,7 @@ def get_all_transforms( ):
 
     n=0
     t0 = time.time()
-    for pdb_file_name in pdb_file_list[:10]:
+    for pdb_file_name in pdb_file_list:
         n=n+1
         t1 = time.time()
         try:
@@ -67,9 +65,9 @@ def get_all_transforms( ):
                 this_1st_res = pdb_info.pose2pdb( first_stub.atom(2).rsd() )
                 this_2nd_res = pdb_info.pose2pdb( second_stub.atom(2).rsd() )
                 this_length  = jump.get_translation().length
-                this_ss_L    = chunk_ss.count('L') #/ float( len(chunk_ss) )
-                this_ss_E    = chunk_ss.count('E') #/ float( len(chunk_ss) )
-                this_ss_H    = chunk_ss.count('H') #/ float( len(chunk_ss) )
+                this_ss_L    = chunk_ss.count('L') / float( len(chunk_ss) )
+                this_ss_E    = chunk_ss.count('E') / float( len(chunk_ss) )
+                this_ss_H    = chunk_ss.count('H') / float( len(chunk_ss) )
 
                 #TODO define at top of script, exec string (so we can print tolerances into all_transforms file later)
                 # define tolerances
@@ -98,9 +96,10 @@ def get_all_transforms( ):
             i = i + 1
 
         if n%50==0 or n==len(pdb_file_list):
+            loggy.write( '\n' + pdb_file_name )
             loggy.write('\n###'+str(n)+'###\n')
-        else:
-            loggy.write(str(round(time.time()-t1,3))+'s, ')
+        #else:
+        #    loggy.write(str(round(time.time()-t1,3))+'s, ')
         loggy.flush()
 
         
