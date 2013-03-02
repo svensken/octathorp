@@ -2,8 +2,73 @@
 
 #######################################
 This file contains output from thorp.py
-invoked at: 2013/03/01 17:36:33
+invoked at: 2013/03/01 17:40:40
 
 
 969 PDBs to posify and traverse for transforms
+
+
+1cugA.pdb
+###50###
+
+1f0pA.pdb
+###100###
+
+1j2eA.pdb
+###150###
+
+1mx9A.pdb
+###200###
+
+1r3dA.pdb
+###250###
+
+1uzaA.pdb
+###300###
+
+1xzbA.pdb
+###350###
+
+2b9vA.pdb
+###400###
+
+2g5pA.pdb
+###450###
+
+2jezA.pdb
+###500###
+
+2px6A.pdb
+###550###
+
+2vz8A.pdb
+###600###
+
+2xmsA.pdb
+###650###
+
+3aimA.pdb
+###700###
+
+3d7rA.pdb
+###750###
+
+3fytA.pdb
+###800###
+
+3i2iA.pdb
+###850###
+
+3muoA.pdb
+###900###
+
+3r3zA.pdb
+###950###
+
+7yasA.pdb
+###969###
+
+
+Alles Klar
+total run time: 4219.68967295 seconds
 

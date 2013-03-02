@@ -76,7 +76,7 @@ def get_all_transforms( ):
                 q_loop  = int(this_2nd_res.split()[0]) - int(this_1st_res.split()[0]) > 10
                 # minimum E and H in ss
                 
-                if True and q_len and q_loop:
+                if True: # and q_len and q_loop:
                     # structure of a good_jump:
                     # [ jump, pdb-id, res1, res2, length, ss_L, ss_E, ss_H ]
                     good_jump = [           \

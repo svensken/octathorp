@@ -32,6 +32,7 @@ def construct_pose_from_matching_domains( host_pose,    # pose
                                                guest_res2 + 1  ] )
     pymover.apply(host_pose)
     pymover.apply(guest_pose)
+    raw_input('see pymol for match')
 
     # generate new pose from aligned domains
     new_pose = Pose()
@@ -98,9 +99,10 @@ ref_rt = pose_atom_tree.get_stub_transform( stub1, stub2 )
 
 
 # reconstruct and check each RT object from giant list of jumps
-with open('all_transforms.2013-02-13', 'r') as giant_list:
-
+with open('all_transforms', 'r') as giant_list:
+    i=0
     for line in giant_list:
+        i+=1
         try:
             row_items = line.split(',')
             rt_string = row_items[0].split()
@@ -124,10 +126,10 @@ with open('all_transforms.2013-02-13', 'r') as giant_list:
             
             rmsd = distance( ref_rt, rt )
             
-            if row_items[1] == '3pf8A.pdb':
-                f.write( 200*'#' )
-            if rmsd < 2:
-                f.write('BOOM')
+            if row_items[1] == '3pf8A.pdb' and row_items[2] == '138 A':
+                f.write( row_items[3] + ' ' + str(rmsd) + '\n' )
+            if rmsd < 1:
+                f.write(20*'BOOM')
                 """construct_pose_from_matching_domains( pose,                # pose
                                                       residue1,             # int
                                                       residue2,             # int
@@ -137,7 +139,8 @@ with open('all_transforms.2013-02-13', 'r') as giant_list:
 
         except Exception,e:
             f.write(str(e)+'\n')
-        f.write('.')
+        if i % 1000 == 0:
+            f.write( str(i) + '\n')
         f.flush()
 
 
