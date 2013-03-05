@@ -42,9 +42,11 @@ def construct_pose_from_matching_domains( host_pose,    # pose
     f.flush()
 
 
-f = open('loggy-read','w')
+f = open('loggy-read-alt','w')
 
 pymover = PyMOL_Mover() 
+#pymover.link.udp_ip = "96.235.177.80"
+#pymover.link.udp_port = 65000
 
 ## GET MANUALLY-DEFINED REFERENCE JUMP
 try:
@@ -99,7 +101,9 @@ ref_rt = pose_atom_tree.get_stub_transform( stub1, stub2 )
 
 
 # reconstruct and check each RT object from giant list of jumps
-with open('all_transforms', 'r') as giant_list:
+#with open('all_transforms', 'r') as giant_list:
+with open('loggy-read', 'r') as giant_list:
+    t0 = time.time()
     i=0
     for line in giant_list:
         i+=1
@@ -127,10 +131,10 @@ with open('all_transforms', 'r') as giant_list:
             rmsd = distance( ref_rt, rt )
             
             if row_items[1] == '3pf8A.pdb' and row_items[2] == '138 A':
-                f.write( row_items[3] + ' ' + str(rmsd) + '\n' )
+                f.write( '###' + row_items[3] + ' ' + str(rmsd) + '\n' )
             if rmsd < 1:
-                f.write(20*'BOOM')
-                """construct_pose_from_matching_domains( pose,                # pose
+                f.write(line + str(rmsd)+'\n\n')
+                #construct_pose_from_matching_domains( pose,                # pose
                                                       residue1,             # int
                                                       residue2,             # int
                                                       row_list[1],          # '1aaaA.pdb'
@@ -139,9 +143,10 @@ with open('all_transforms', 'r') as giant_list:
 
         except Exception,e:
             f.write(str(e)+'\n')
-        if i % 1000 == 0:
+        if i % 1000000 == 0:
             f.write( str(i) + '\n')
         f.flush()
-
+    
+    f.write( 'read took ' + str(time.time()-t0) + ' seconds total')
 
 f.close()
