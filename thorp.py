@@ -1,43 +1,38 @@
 #!/usr/bin/env python
 
 from rosetta import *
-import os, sys, time, numpy, datetime, operator
+import os, sys, time, datetime
 
 init()
 
 
-with open( 'thorp-log', 'w') as loggy, open('all_transforms.'+str(time.strftime("%Y%m%d-%H%M%S")), 'w') as RTs:
-
+def find_matching_domains( family_dir, pdb_file, residue1, residue2, out_file=matchy, debug_file=loggy ):
+    
+    ## calculate reference jump
+    # load reference pose
+    pose = Pose()
     try:
-        family_dir = sys.argv[-4]
-        pdb_file = sys.argv[-3]
-        residue1 = int(sys.argv[-2])
-        residue2 = int(sys.argv[-1])
-    except:
-        print "input not recognized                         \n\
-               Usage:                                       \n\
-               $ ./read-thorp.py [directory/] [pdb_file] [res1] [res2]   \n"
-        sys.exit(1)
-   
-    # build pdb list to check against
+        pose_from_pdb( pose, pdb_file )
+        pose_load_result = 'no error'
+    except PyRosettaException:
+        pose_load_result = 'slight error'
+    # Stub 1
+    s1a1 = AtomID(1, residue1 - 1)
+    s1a2 = AtomID(1, residue1)
+    s1a3 = AtomID(1, residue1 + 1)
+    stub1 = StubID(s1a1, s1a2, s1a3)
+    # Stub 2
+    s2a1 = AtomID(1, residue2 - 1)
+    s2a2 = AtomID(1, residue2)
+    s2a3 = AtomID(1, residue2 + 1)
+    stub2 = StubID(s2a1, s2a2, s2a3)
+    # Transform
+    pose_atom_tree = pose.atom_tree()
+    ref_rt = pose_atom_tree.get_stub_transform( stub1, stub2 )
+
+
+    # build pdb file list
     pdb_file_list = [item for item in os.listdir( family_dir ) if item[-4:] == '.pdb']
-
-    # DEBUG OUTPUT
-    output_string = '\n\n#######################################\n'+ \
-        'This file contains debugging output for thorp.py\n'+ \
-        'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n' \
-        'Reference PDB: '+str(pdb_file)+'\n'+ \
-        'Residues '+str(residue1)+' and '+str(residue2)+'\n'+ \
-        str(len(pdb_file_list))+' PDBs to posify and traverse for transforms\n\n'
-    loggy.write(output_string)
-    loggy.flush()
-
-    # TRANSFORMS OUTPUT
-    RTs_string = \
-        'This list from *** directory, ### pdbs, *** tolerances, etc \n' + \
-        'saved at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'
-    RTs.write(RTs_string)
-    RTs.flush()
 
     n=0
     t0 = time.time()
@@ -75,52 +70,59 @@ with open( 'thorp-log', 'w') as loggy, open('all_transforms.'+str(time.strftime(
         for first_stub in stub_list:
             for second_stub in stub_list[ i: ]: # start at subsequent stub (to first_stub)
 
-                jump = pose_atom_tree.get_stub_transform(first_stub, second_stub)
+                rt = pose_atom_tree.get_stub_transform(first_stub, second_stub)
+                rmsd = distance( ref_rt, rt )
 
-                chunk_ss = full_ss[ first_stub.atom(2).rsd() : second_stub.atom(2).rsd() ]
+                if rmsd < 1:
+                    # parameters to both check against and record to file
+                    chunk_ss = full_ss[ first_stub.atom(2).rsd() : second_stub.atom(2).rsd() ]
+                    this_ss_L    = chunk_ss.count('L') / float( len(chunk_ss) )
+                    this_ss_E    = chunk_ss.count('E') / float( len(chunk_ss) )
+                    this_ss_H    = chunk_ss.count('H') / float( len(chunk_ss) )
 
-                # define things to store
-                this_jump    = str(jump)
-                this_pdb_id  = pdb_file_name
-                this_1st_res = pdb_info.pose2pdb( first_stub.atom(2).rsd() )
-                this_2nd_res = pdb_info.pose2pdb( second_stub.atom(2).rsd() )
-                this_length  = jump.get_translation().length
-                this_ss_L    = chunk_ss.count('L') / float( len(chunk_ss) )
-                this_ss_E    = chunk_ss.count('E') / float( len(chunk_ss) )
-                this_ss_H    = chunk_ss.count('H') / float( len(chunk_ss) )
+                    jump_length  = jump.get_translation().length
 
-                #TODO define at top of script, exec string (so we can print tolerances into all_transforms file later)
-                # define tolerances
-                q_nrsd  = pose.total_residue() < 500 
-                q_len   = this_length < 8
-                q_loop  = int(this_2nd_res.split()[0]) - int(this_1st_res.split()[0]) > 10
-                # minimum E and H in ss
-                
-                if True: # and q_len and q_loop:
-                    # structure of a good_jump:
-                    # [ jump, pdb-id, res1, res2, length, ss_L, ss_E, ss_H ]
-                    good_jump = [           \
-                        this_jump,          \
-                        this_pdb_id,        \
-                        this_1st_res,       \
-                        this_2nd_res,       \
-                        this_length,        \
-                        this_ss_L,          \
-                        this_ss_E,          \
-                        this_ss_H  ]
-                    # OUPUT
-                    for item in good_jump:
-                        RTs.write( str(item)+',' )
-                    RTs.write( '\n' )
-                    RTs.flush()
+                    # TODO need better way to access residue numbers
+                    this_1st_res = pdb_info.pose2pdb( first_stub.atom(2).rsd() )
+                    this_2nd_res = pdb_info.pose2pdb( second_stub.atom(2).rsd() )
+                    loop_length  = int(this_2nd_res.split()[0]) - int(this_1st_res.split()[0])
+
+                    # tolerances for good matches
+                    #TODO define at top of script, exec string (easily editable, and we can print tolerances into all_transforms file later)
+                    q_tot_res       = pose.total_residue()      < 500 
+                    q_jump_length   = jump_length               < 8
+                    q_loop_length   = loop_length               < 80
+
+                    if q_jump_length and q_loop_length:
+
+                        good_match = [          \
+                            pdb_file_name,      \
+                            this_1st_res,       \
+                            this_2nd_res,       \
+                            jump_length,        \
+                            loop_length,        \
+                            this_ss_L,          \
+                            this_ss_E,          \
+                            this_ss_H  ]
+                        # OUPUT
+                        for item in good_match:
+                            matchy.write( str(item)+',' )
+                        matchy.write( '\n' )
+                        matchy.flush()
+                        
+                        # TODO make this part optional
+                        construct_pose_from_matching_domains( pose,                # pose
+                                                              residue1,             # int
+                                                              residue2,             # int
+                                                              row_list[1],          # '1aaaA.pdb'
+                                                              int(row_items[2]),    # int
+                                                              int(row_items[3])  )  # int
+
             i = i + 1
 
-        if n%50==0 or n==len(pdb_file_list):
-            loggy.write( '\n' + pdb_file_name )
-            loggy.write('\n###'+str(n)+'###\n')
-        #else:
-        #    loggy.write(str(round(time.time()-t1,3))+'s, ')
-        loggy.flush()
+
+    loggy.write( '\nrun took ' + str(time.time()-t0) + ' seconds total\n')
+    loggy.flush()
 
         
     
@@ -136,18 +138,20 @@ def construct_pose_from_matching_domains( host_pose,    # pose
     pose_from_pdb( guest_pose, 'alpha-beta-hydrolases/'+guest_name )
 
     # rotate guest pose to align with host's ref residues
-    kabsch_alignment( host_pose, guest_pose, [ host_res1 - 1 ,
-                                               host_res1     ,
-                                               host_res1 + 1 ,
-                                               host_res2 - 1 ,
-                                               host_res2     ,
-                                               host_res2 + 1   ],
-                                             [ guest_res1 - 1 ,
-                                               guest_res1     ,
-                                               guest_res1 + 1 ,
-                                               guest_res2 - 1 ,
-                                               guest_res2     ,
-                                               guest_res2 + 1  ] )
+    kabsch_alignment( host_pose, guest_pose, [ host_res1 - 1 ,      \
+                                               host_res1     ,      \
+                                               host_res1 + 1 ,      \
+                                               host_res2 - 1 ,      \
+                                               host_res2     ,      \
+                                               host_res2 + 1   ],   \
+                                             [ guest_res1 - 1 ,     \
+                                               guest_res1     ,     \
+                                               guest_res1 + 1 ,     \
+                                               guest_res2 - 1 ,     \
+                                               guest_res2     ,     \
+                                               guest_res2 + 1  ] )  \
+
+    pymover = PyMOL_Mover() 
     pymover.apply(host_pose)
     pymover.apply(guest_pose)
     raw_input('see pymol for match')
@@ -160,104 +164,48 @@ def construct_pose_from_matching_domains( host_pose,    # pose
     f.flush()
 
 
-f = open('loggy-read-alt','w')
 
-pymover = PyMOL_Mover() 
-
-# for now;
-pdb_file = '3pf8A.pdb'
-residue1 = 138
-residue2 = 182
-
-## load reference pose
-pose = Pose()
-try:
-    pose_from_pdb( pose, 'alpha-beta-hydrolases/' + pdb_file )
-    pose_load_result = 'no error'
-except PyRosettaException:
-    pose_load_result = 'slight error'
-
-output_string = '\n\n##################################################\n'+ \
-    'This file contains output from the thorp.py script\n'+ \
-    'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'+ \
-    'Reference PDB: '+str(pdb_file)+'\n'+ \
-    'Residues '+str(residue1)+' and '+str(residue2)+'\n'+ \
-    str(pose_load_result)+' loading the reference pose (no need to worry)\n'+ \
-    'total reference residues: '+str(pose.total_residue())+'\n\n'
-f.write(output_string)
-f.flush()
-
-
-## calculate reference jump
-# Stub 1
-s1a1 = AtomID(1, residue1 - 1)
-s1a2 = AtomID(1, residue1)
-s1a3 = AtomID(1, residue1 + 1)
-stub1 = StubID(s1a1, s1a2, s1a3)
-# Stub 2
-s2a1 = AtomID(1, residue2 - 1)
-s2a2 = AtomID(1, residue2)
-s2a3 = AtomID(1, residue2 + 1)
-stub2 = StubID(s2a1, s2a2, s2a3)
-# Transform
-pose_atom_tree = pose.atom_tree()
-ref_rt = pose_atom_tree.get_stub_transform( stub1, stub2 )
-
-
-# reconstruct and check each RT object from giant list of jumps
-#with open('all_transforms', 'r') as giant_list:
-with open('loggy-read', 'r') as giant_list:
-    t0 = time.time()
-    i=0
-    for line in giant_list:
-        i+=1
-        try:
-            row_items = line.split(',')
-            rt_string = row_items[0].split()
-
-            m = numeric.xyzMatrixdouble(0)
-            m = m.rows( float(rt_string[1]),
-                        float(rt_string[2]),
-                        float(rt_string[3]),
-                        float(rt_string[4]),
-                        float(rt_string[5]),
-                        float(rt_string[6]),
-                        float(rt_string[7]),
-                        float(rt_string[8]),
-                        float(rt_string[9]) )
-            v = numeric.xyzVector_double( float(rt_string[10]),
-                                          float(rt_string[11]),
-                                          float(rt_string[12]) )
-            rt = RT()
-            rt.set_rotation(m)
-            rt.set_translation(v)
-            
-            rmsd = distance( ref_rt, rt )
-            
-            if row_items[1] == '3pf8A.pdb' and row_items[2] == '138 A':
-                f.write( '###' + row_items[3] + ' ' + str(rmsd) + '\n' )
-            if rmsd < 1:
-                f.write(line + str(rmsd)+'\n\n')
-                #construct_pose_from_matching_domains( pose,                # pose
-                                                      residue1,             # int
-                                                      residue2,             # int
-                                                      row_list[1],          # '1aaaA.pdb'
-                                                      int(row_items[2]),    # int
-                                                      int(row_items[3])  )  # int"""
-
-        except Exception,e:
-            f.write(str(e)+'\n')
-        if i % 1000000 == 0:
-            f.write( str(i) + '\n')
-        f.flush()
-    
-    # OUTPUT
-    output_string = \
-        '\n\nAlles Klar\n' + \
-        'total run time: '+str(time.time()-t0)+' seconds\n\n'
-    loggy.write(output_string)
-    loggy.flush()
-
-    f.write( 'read took ' + str(time.time()-t0) + ' seconds total')
 
 f.close()
+
+if __name__ == '__main__':
+
+    with open( 'thorp-log', 'w') as loggy, open('matching_domains.'+str(time.strftime("%Y%m%d-%H%M%S")), 'w') as matchy:
+
+        try:
+            family_dir = sys.argv[-4]
+            pdb_file = sys.argv[-3]
+            residue1 = int(sys.argv[-2])
+            residue2 = int(sys.argv[-1])
+        except:
+            print "input not recognized                                     \n\
+                   Usage:                                                   \n\
+                   $ ./thorp.py [directory/] [pdb_file] [res1] [res2]       \n\
+                                                                            \n\
+                   example: $ ./thorp.py super-family/ 3pf8A.pdb 138 182    \n"
+            sys.exit(1)
+       
+        # DEBUG OUTPUT
+        output_string = '\n\n#######################################\n'+ \
+            'This file contains debugging output for thorp.py\n'+ \
+            'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n' \
+            'Reference PDB: '+str(pdb_file)+'\n'+ \
+            'Residues '+str(residue1)+' and '+str(residue2)+'\n'+ \
+            str(len(os.listdir(family_dir))+' PDBs to posify and traverse for transforms\n\n'
+        loggy.write(output_string)
+        loggy.flush()
+
+        # TRANSFORMS OUTPUT
+        # TODO output tolerances
+        matchy_string = \
+            'This list from '+family_dir+' directory, ### pdbs, *** tolerances, etc \n' + \
+            'saved at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'
+        matchy.write(matchy_string)
+        matchy.flush()
+        
+        find_matching_domains( family_dir, pdb_file, residue1, residue2 ) # out_ and debug_files need not be passed
+
+        #view_matching_domains()
+        ## cycles through by default
+
+
