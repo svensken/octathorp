@@ -10,6 +10,7 @@ import pymol
 
 pymol.finish_launching()
 pymol.cmd.do('run ~/Desktop/PyRosetta/PyMOLPyRosettaServer.py')
+time.sleep(2)
 
 init()
 
@@ -73,6 +74,9 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
         pdb_info = cur_pose.pdb_info()
         # atom-tree-ify
         cur_pose_atom_tree = cur_pose.atom_tree()
+        
+        # TODO un-globalize me
+        global rmsd
 
         i = 1
         for first_stub in stub_list:
@@ -81,27 +85,29 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
                 cur_rt = cur_pose_atom_tree.get_stub_transform(first_stub, second_stub)
                 rmsd = distance( orig_rt, cur_rt )
 
-                if rmsd < 10:
+                if rmsd < 5:
+                    # TODO need better way to access residue numbers
+                    cur_first_res  = first_stub.atom(2).rsd()
+                    cur_second_res = second_stub.atom(2).rsd()
+                    first_res_string  = pdb_info.pose2pdb( cur_first_res )
+                    second_res_string = pdb_info.pose2pdb( cur_second_res )
+                    cur_loop_length  = cur_second_res - cur_first_res
+                    #cur_loop_length = cur_pose.residue(cur_first_res).polymeric_sequence_distance(cur_second_res)
+
                     # parameters to both check against and record to file
-                    chunk_ss = full_ss[ first_stub.atom(2).rsd() : second_stub.atom(2).rsd() ]
+                    chunk_ss = full_ss[ cur_first_res : cur_second_res ]
                     this_ss_L    = chunk_ss.count('L') / float( len(chunk_ss) )
                     this_ss_E    = chunk_ss.count('E') / float( len(chunk_ss) )
                     this_ss_H    = chunk_ss.count('H') / float( len(chunk_ss) )
 
                     jump_length  = cur_rt.get_translation().length
 
-                    # TODO need better way to access residue numbers
-                    first_res_string  = pdb_info.pose2pdb( first_stub.atom(2).rsd() )
-                    second_res_string = pdb_info.pose2pdb( second_stub.atom(2).rsd() )
-                    cur_first_res  = int(first_res_string.split()[0])
-                    cur_second_res = int(second_res_string.split()[0])
-                    cur_loop_length  = cur_second_res - cur_first_res
-
+                    
                     # tolerances for good matches
                     #TODO define at top of script, exec string (easily editable, and we can print tolerances into all_transforms file later)
-                    q_tot_res       = cur_pose.total_residue()      < 500 
-                    q_jump_length   = jump_length                   < 8
-                    q_loop_length   = cur_loop_length               < 80
+                    q_tot_res       = 0  <  cur_pose.total_residue() < 500 
+                    q_jump_length   = 0  <  jump_length              < 8
+                    q_loop_length   = 10 <  cur_loop_length          < 80
 
                     if cur_pdb_file_name != orig_pdb_id and True: #q_jump_length and q_loop_length:
 
@@ -146,8 +152,6 @@ def construct_pose_from_matching_domains( host_pose,    # pose
                                           guest_res1,   # int
                                           guest_res2 ): # int
 
-    print host_pose
-    print guest_pose
     # rotate guest pose to align with host's ref residues
     kabsch_alignment( host_pose, guest_pose, [ host_res1 - 1 ,
                                                host_res1     ,
@@ -161,19 +165,70 @@ def construct_pose_from_matching_domains( host_pose,    # pose
                                                guest_res2 - 1 ,
                                                guest_res2     ,
                                                guest_res2 + 1  ] )
+    
+    # define residues for new pose
+    our_Ns =  [host_pose.residue( r ).xyz('N') for r in range(1, host_res1+1)]
+    our_Ns += [guest_pose.residue( r ).xyz('N') for r in range(guest_res1, guest_res2+1)]
+    our_Ns += [host_pose.residue( r ).xyz('N') for r in range(host_res2, host_pose.total_residue())]
+
+    # check clashiness
+    n=1
+    furthitudes = []
+    for first_xyz in our_Ns:
+        for second_xyz in our_Ns[ n: ]:
+           furthitudes += [ first_xyz.distance( second_xyz ) ]
+        n = n + 1
+    loggy.write(str(furthitudes[:5]))
+    loggy.flush()
+    
+    n_clashes = sum( f < 1 for f in furthitudes )
+    # ^ looks like sum( [True, False, True, True] )
+    # might be faster than saving a list and then evaluating
+
+    print 'HOST: ', host_pose
+    print 'GUEST: ', guest_pose
+    print "####################"
+    print 'rmsd ', rmsd
+    print "CLASHES: ", n_clashes
+    print 'guest_res1 ', guest_res1
+    print 'guest_res2 ', guest_res2
+    print "####################"
+
+    # construct new pose
+    if n_clashes < 10:
+        pass
 
     pymover = PyMOL_Mover() 
-    print host_pose
-    print guest_pose
+
+    # i hate the trouble behind getting filename. stupid, stupid, stupid.
+    # hope that pymol chooses this as the name
+    host_pose_name = host_pose.pdb_info().name().split('/')[-1].split('.')[0]
+    guest_pose_name = guest_pose.pdb_info().name().split('/')[-1].split('.')[0] # this one won't be a path, will it?
+
     pymover.apply(host_pose)
+    time.sleep(.1)
+    # prettify the visualization
+    pymol.cmd.hide('everything')
+    pymol.cmd.show('cartoon')
+    time.sleep(.1)
+    # easiest to see is pink cartoon for host pose and yellow lines for guest loop
+    pymol.cmd.color('pink')
+
     pymover.apply(guest_pose)
+    time.sleep(.1)
+    pymol.cmd.hide('everything')
+    pymol.cmd.show('cartoon')
+    time.sleep(.1)
+    pymol.cmd.color('yellow', guest_pose_name)
+
+    # hide guest pose residues outside of the loop of interest
+    pymol.cmd.hide( '( not resi ' + '+'.join( [str(t) for t in range(guest_res1-1, guest_res2+1)] ) + ' and '+guest_pose_name+' )' )
+    # hide host pose residues outside of lame loop
+    pymol.cmd.hide( '( '+host_pose_name+' and resi ' + '+'.join( [str(t) for t in range(host_res1, host_res2)] ) + ' )' )
+
 
     # generate new pose from aligned domains
     new_pose = Pose()
-
-    loggy.write( str(host_pose)  )
-    loggy.write( str(guest_pose) )
-    loggy.flush()
 
 
     raw_input('see pymol for match')
