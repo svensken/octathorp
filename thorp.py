@@ -42,6 +42,8 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
 
     # build pdb file list
     pdb_file_list = [item for item in os.listdir( family_dir ) if item[-4:] == '.pdb']
+    # make specific guests files optional
+    #pdb_file_list = ['1a7uA.pdb']
 
     n=0
     t0 = time.time()
@@ -75,7 +77,7 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
         # atom-tree-ify
         cur_pose_atom_tree = cur_pose.atom_tree()
         
-        # TODO un-globalize me
+        # TODO unglobalize
         global rmsd
 
         i = 1
@@ -86,9 +88,16 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
                 rmsd = distance( orig_rt, cur_rt )
 
                 if rmsd < 5:
+
                     # TODO need better way to access residue numbers
                     cur_first_res  = first_stub.atom(2).rsd()
                     cur_second_res = second_stub.atom(2).rsd()
+
+                    loggy.write('1: '+str(cur_first_res)+'\n')
+                    loggy.write('2: '+str(cur_second_res)+'\n')
+                    loggy.write(str(rmsd)+'\n\n')
+                    loggy.flush()
+
                     first_res_string  = pdb_info.pose2pdb( cur_first_res )
                     second_res_string = pdb_info.pose2pdb( cur_second_res )
                     cur_loop_length  = cur_second_res - cur_first_res
@@ -167,36 +176,33 @@ def construct_pose_from_matching_domains( host_pose,    # pose
                                                guest_res2 + 1  ] )
     
     # define residues for new pose
-    our_Ns =  [host_pose.residue( r ).xyz('N') for r in range(1, host_res1+1)]
-    our_Ns += [guest_pose.residue( r ).xyz('N') for r in range(guest_res1, guest_res2+1)]
-    our_Ns += [host_pose.residue( r ).xyz('N') for r in range(host_res2, host_pose.total_residue())]
+    host_rsds =  [r for r in range(1, host_res1+1)] + [r for r in range(host_res2, host_pose.total_residue())]
+    guest_rsds = [r for r in range(guest_res1, guest_res2+1)]
 
     # check clashiness
     n=1
-    furthitudes = []
-    for first_xyz in our_Ns:
-        for second_xyz in our_Ns[ n: ]:
-           furthitudes += [ first_xyz.distance( second_xyz ) ]
-        n = n + 1
-    loggy.write(str(furthitudes[:5]))
-    loggy.flush()
+    close_ones = 0
+    for gn in guest_rsds:
+        for hn in host_rsds:
+            dist = guest_pose.residue( gn ).xyz('CA').distance( host_pose.residue( hn ).xyz('CA') )
+            if dist < 3.0:
+                close_ones += 1
     
-    n_clashes = sum( f < 1 for f in furthitudes )
-    # ^ looks like sum( [True, False, True, True] )
-    # might be faster than saving a list and then evaluating
+    if close_ones > .2*len(guest_rsds):
+        loggy.write("too many close ones")
+        loggy.flush()
+                
 
     print 'HOST: ', host_pose
     print 'GUEST: ', guest_pose
     print "####################"
     print 'rmsd ', rmsd
-    print "CLASHES: ", n_clashes
+    print "CLASHES: ", close_ones
     print 'guest_res1 ', guest_res1
     print 'guest_res2 ', guest_res2
     print "####################"
 
     # construct new pose
-    if n_clashes < 10:
-        pass
 
     pymover = PyMOL_Mover() 
 
