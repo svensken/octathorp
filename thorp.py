@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+# TODO
+#   - define selections of residues in pymol, makes subsequent manipulation much easier
+#   - define at top of script, exec string (easily editable, and we can print tolerances into all_transforms file later)
+
+
 from rosetta import *
 from structural_alignment import kabsch_alignment
 import os, sys, time, datetime
@@ -87,23 +92,21 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
                 cur_rt = cur_pose_atom_tree.get_stub_transform(first_stub, second_stub)
                 rmsd = distance( orig_rt, cur_rt )
 
-                if rmsd < 5:
+                # TOLERANCE (put at top)
+                q_rmsd = rmsd < 5
+
+                if q_rmsd:
 
                     # TODO need better way to access residue numbers
                     cur_first_res  = first_stub.atom(2).rsd()
                     cur_second_res = second_stub.atom(2).rsd()
-
-                    loggy.write('1: '+str(cur_first_res)+'\n')
-                    loggy.write('2: '+str(cur_second_res)+'\n')
-                    loggy.write(str(rmsd)+'\n\n')
-                    loggy.flush()
 
                     first_res_string  = pdb_info.pose2pdb( cur_first_res )
                     second_res_string = pdb_info.pose2pdb( cur_second_res )
                     cur_loop_length  = cur_second_res - cur_first_res
                     #cur_loop_length = cur_pose.residue(cur_first_res).polymeric_sequence_distance(cur_second_res)
 
-                    # parameters to both check against and record to file
+                    # TOLERANCE (put at top)
                     chunk_ss = full_ss[ cur_first_res : cur_second_res ]
                     this_ss_L    = chunk_ss.count('L') / float( len(chunk_ss) )
                     this_ss_E    = chunk_ss.count('E') / float( len(chunk_ss) )
@@ -111,9 +114,7 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
 
                     jump_length  = cur_rt.get_translation().length
 
-                    
                     # tolerances for good matches
-                    #TODO define at top of script, exec string (easily editable, and we can print tolerances into all_transforms file later)
                     q_tot_res       = 0  <  cur_pose.total_residue() < 500 
                     q_jump_length   = 0  <  jump_length              < 8
                     q_loop_length   = 10 <  cur_loop_length          < 80
@@ -135,8 +136,7 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
                         matchy.write( '\n' )
                         matchy.flush()
                         
-                        print cur_pdb_file_name
-                        print orig_pdb_file
+
                         # TODO make this part optional
                         construct_pose_from_matching_domains( orig_pose,            # pose
                                                               residue1,             # int
@@ -154,12 +154,21 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
 
 
 
-def construct_pose_from_matching_domains( host_pose,    # pose
+def construct_pose_from_matching_domains( old_host_pose,    # pose
                                           host_res1,    # int
                                           host_res2,    # int
-                                          guest_pose,   # pose
+                                          old_guest_pose,   # pose
                                           guest_res1,   # int
                                           guest_res2 ): # int
+
+
+    # copy poses
+    # TODO is this step actually necessary? any significant speed toll?
+    host_pose = Pose()
+    host_pose.assign( old_host_pose )
+    guest_pose = Pose()
+    guest_pose.assign( old_guest_pose )
+
 
     # rotate guest pose to align with host's ref residues
     kabsch_alignment( host_pose, guest_pose, [ host_res1 - 1 ,
@@ -179,6 +188,7 @@ def construct_pose_from_matching_domains( host_pose,    # pose
     host_rsds =  [r for r in range(1, host_res1+1)] + [r for r in range(host_res2, host_pose.total_residue())]
     guest_rsds = [r for r in range(guest_res1, guest_res2+1)]
 
+
     # check clashiness
     n=1
     close_ones = 0
@@ -189,12 +199,18 @@ def construct_pose_from_matching_domains( host_pose,    # pose
                 close_ones += 1
     
     if close_ones > .2*len(guest_rsds):
-        loggy.write("too many close ones")
+        loggy.write('too many close ones\n')
         loggy.flush()
-                
+        return 1
+ 
 
-    print 'HOST: ', host_pose
-    print 'GUEST: ', guest_pose
+    # i hate the trouble behind getting filename. stupid, stupid, stupid.
+    # hope that pymol chooses this as the name
+    host_pose_name = host_pose.pdb_info().name().split('/')[-1].split('.')[0]
+    guest_pose_name = guest_pose.pdb_info().name().split('/')[-1].split('.')[0] # this one won't be a path, will it?
+
+    print 'HOST: ', host_pose_name
+    print 'GUEST: ', guest_pose_name
     print "####################"
     print 'rmsd ', rmsd
     print "CLASHES: ", close_ones
@@ -202,29 +218,23 @@ def construct_pose_from_matching_domains( host_pose,    # pose
     print 'guest_res2 ', guest_res2
     print "####################"
 
-    # construct new pose
 
-    pymover = PyMOL_Mover() 
-
-    # i hate the trouble behind getting filename. stupid, stupid, stupid.
-    # hope that pymol chooses this as the name
-    host_pose_name = host_pose.pdb_info().name().split('/')[-1].split('.')[0]
-    guest_pose_name = guest_pose.pdb_info().name().split('/')[-1].split('.')[0] # this one won't be a path, will it?
+    pymover = PyMOL_Mover()
 
     pymover.apply(host_pose)
-    time.sleep(.1)
+    time.sleep(.01)
     # prettify the visualization
     pymol.cmd.hide('everything')
     pymol.cmd.show('cartoon')
-    time.sleep(.1)
+    time.sleep(.01)
     # easiest to see is pink cartoon for host pose and yellow lines for guest loop
     pymol.cmd.color('pink')
 
     pymover.apply(guest_pose)
-    time.sleep(.1)
+    time.sleep(.01)
     pymol.cmd.hide('everything')
     pymol.cmd.show('cartoon')
-    time.sleep(.1)
+    time.sleep(.01)
     pymol.cmd.color('yellow', guest_pose_name)
 
     # hide guest pose residues outside of the loop of interest
@@ -232,12 +242,43 @@ def construct_pose_from_matching_domains( host_pose,    # pose
     # hide host pose residues outside of lame loop
     pymol.cmd.hide( '( '+host_pose_name+' and resi ' + '+'.join( [str(t) for t in range(host_res1, host_res2)] ) + ' )' )
 
+    # adjust view? show old loop slightly transparent and gray?
 
     # generate new pose from aligned domains
-    new_pose = Pose()
+    # TODO options:
+    #       - new_pose = pose_from_sequence( host_pose.sequence()[first] + guest_pose.sequence() + hose_pose.sequence()[second] )
+    #         loop through all atoms to set coords identical to host's and guest's
+    #       - copy existing poses, then remove extraneous residues and form the two new bonds
+    #       - is copy even necessary? can we just trim existing poses and insert guest residues into host?
+    #         pose.delete_polymer_residue(seqpos)
+    #         pose.append_polymer_residue_after_seqpos( guest.res(seqpos))
 
+    raw_input('posify:...')
 
-    raw_input('see pymol for match')
+    # already working with duplicate poses, just modify in place
+    # to remove residues, delete backwards; rosetta updates sequence index to keep continuity from 1
+    for r in reversed(range(host_res1, host_res2+1)): # WILL SEGFAULT AT r = 1
+        host_pose.delete_polymer_residue( r )
+    for r in reversed(guest_rsds):
+        host_pose.append_polymer_residue_after_seqpos( guest_pose.residue( r ), host_res1, 0 )
+    # coords preserved? all bonds made nicely?
+    # necessary?
+    #for r in reversed(guest_rsds):
+    #    guest_pose.delete_polymer_residue( r )
+
+    lego_pose = Pose()
+    lego_pose.assign( host_pose )
+
+    pymol.cmd.delete('all')
+    pymover.apply( lego_pose )
+
+    pymol.cmd.hide('everything')
+    time.sleep(.01)
+    pymol.cmd.show('cartoon')
+    time.sleep(.01)
+    pymol.cmd.color('white')
+
+    raw_input('hit enter to continue')
     
     # continue on to next match
     pymol.cmd.delete('all')
