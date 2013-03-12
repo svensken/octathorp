@@ -10,12 +10,12 @@ from structural_alignment import kabsch_alignment
 import os, sys, time, datetime
 
 # hell of an annoyance, this pymol messiness
-sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/')
-import pymol
+#sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/')
+#import pymol
 
-pymol.finish_launching()
-pymol.cmd.do('run ~/Desktop/PyRosetta/PyMOLPyRosettaServer.py')
-time.sleep(2)
+#pymol.finish_launching()
+#pymol.cmd.do('run ~/Desktop/PyRosetta/PyMOLPyRosettaServer.py')
+#time.sleep(2)
 
 init()
 
@@ -219,41 +219,35 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
     print "####################"
 
 
-    pymover = PyMOL_Mover()
+    # turn visualization into an optional function
+    if False:
+        pymover = PyMOL_Mover()
 
-    pymover.apply(host_pose)
-    time.sleep(.01)
-    # prettify the visualization
-    pymol.cmd.hide('everything')
-    pymol.cmd.show('cartoon')
-    time.sleep(.01)
-    # easiest to see is pink cartoon for host pose and yellow lines for guest loop
-    pymol.cmd.color('pink')
+        pymover.apply(host_pose)
+        time.sleep(.01)
+        # prettify the visualization
+        pymol.cmd.hide('everything')
+        pymol.cmd.show('cartoon')
+        time.sleep(.01)
+        # easiest to see is pink cartoon for host pose and yellow lines for guest loop
+        pymol.cmd.color('pink')
 
-    pymover.apply(guest_pose)
-    time.sleep(.01)
-    pymol.cmd.hide('everything')
-    pymol.cmd.show('cartoon')
-    time.sleep(.01)
-    pymol.cmd.color('yellow', guest_pose_name)
+        pymover.apply(guest_pose)
+        time.sleep(.01)
+        pymol.cmd.hide('everything')
+        pymol.cmd.show('cartoon')
+        time.sleep(.01)
+        pymol.cmd.color('yellow', guest_pose_name)
 
-    # hide guest pose residues outside of the loop of interest
-    pymol.cmd.hide( '( not resi ' + '+'.join( [str(t) for t in range(guest_res1-1, guest_res2+1)] ) + ' and '+guest_pose_name+' )' )
-    # hide host pose residues outside of lame loop
-    pymol.cmd.hide( '( '+host_pose_name+' and resi ' + '+'.join( [str(t) for t in range(host_res1, host_res2)] ) + ' )' )
+        # hide guest pose residues outside of the loop of interest
+        pymol.cmd.hide( '( not resi ' + '+'.join( [str(t) for t in range(guest_res1-1, guest_res2+1)] ) + ' and '+guest_pose_name+' )' )
+        # hide host pose residues outside of lame loop
+        pymol.cmd.hide( '( '+host_pose_name+' and resi ' + '+'.join( [str(t) for t in range(host_res1, host_res2)] ) + ' )' )
 
-    # adjust view? show old loop slightly transparent and gray?
+        # show old loop slightly transparent and gray?
 
-    # generate new pose from aligned domains
-    # TODO options:
-    #       - new_pose = pose_from_sequence( host_pose.sequence()[first] + guest_pose.sequence() + hose_pose.sequence()[second] )
-    #         loop through all atoms to set coords identical to host's and guest's
-    #       - copy existing poses, then remove extraneous residues and form the two new bonds
-    #       - is copy even necessary? can we just trim existing poses and insert guest residues into host?
-    #         pose.delete_polymer_residue(seqpos)
-    #         pose.append_polymer_residue_after_seqpos( guest.res(seqpos))
 
-    raw_input('posify:...')
+    #raw_input('posify:...')
 
     # already working with duplicate poses, just modify in place
     # to remove residues, delete backwards; rosetta updates sequence index to keep continuity from 1
@@ -261,27 +255,26 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
         host_pose.delete_polymer_residue( r )
     for r in reversed(guest_rsds):
         host_pose.append_polymer_residue_after_seqpos( guest_pose.residue( r ), host_res1, 0 )
-    # coords preserved? all bonds made nicely?
-    # necessary?
-    #for r in reversed(guest_rsds):
-    #    guest_pose.delete_polymer_residue( r )
 
     lego_pose = Pose()
     lego_pose.assign( host_pose )
 
-    pymol.cmd.delete('all')
-    pymover.apply( lego_pose )
+    # TODO shorten pose name after debugged and stuff
+    ref_pose = host_pose_name+'-'+str(host_res1)+'-'+str(host_res2)
+    match_pose = guest_pose_name+'-'+str(guest_res1)+'-'+str(guest_res2)
+    match_params = '%.4f-%i' % (rmsd, close_ones)
 
-    pymol.cmd.hide('everything')
-    time.sleep(.01)
-    pymol.cmd.show('cartoon')
-    time.sleep(.01)
-    pymol.cmd.color('white')
+    try:
+        os.mkdir( 'pose-dumps/'+ref_pose )
+    except OSError:
+        pass # dir exists
+    dump_name = 'pose-dumps/'+ref_pose+'/'+match_params+'_'+match_pose+'.pdb'
+    lego_pose.dump_pdb( dump_name )
 
-    raw_input('hit enter to continue')
-    
-    # continue on to next match
-    pymol.cmd.delete('all')
+    print '.'
+
+
+
 
 
 
