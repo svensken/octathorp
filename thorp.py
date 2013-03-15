@@ -2,12 +2,13 @@
 
 # TODO
 #   - define selections of residues in pymol, makes subsequent manipulation much easier
-#   - define at top of script, exec string (easily editable, and we can print tolerances into all_transforms file later)
+#   - define tolerances at top of script, exec string (easily editable, and we can print tolerances into all_transforms file later)
 
-
+print 'importing rosetta...'
 from rosetta import *
 from structural_alignment import kabsch_alignment
 import os, sys, time, datetime
+import argparse
 
 # hell of an annoyance, this pymol messiness
 #sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/')
@@ -17,7 +18,12 @@ import os, sys, time, datetime
 #pymol.cmd.do('run ~/Desktop/PyRosetta/PyMOLPyRosettaServer.py')
 #time.sleep(2)
 
-init()
+# silence rosetta's output
+opts = [ 'app', '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ), '-mute', 'all' ]
+args = utility.vector1_string()
+args.extend( opts ) 
+core.init( args )
+
 
 
 def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy, loggy ):
@@ -46,9 +52,13 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
 
 
     # build pdb file list
-    pdb_file_list = [item for item in os.listdir( family_dir ) if item[-4:] == '.pdb']
-    # make specific guests files optional
-    #pdb_file_list = ['1a7uA.pdb']
+    if args.directory:
+        pdb_file_list = [item for item in os.listdir( family_dir ) if item[-4:] == '.pdb']
+    elif args.guest_pdb:
+        pdb_file_list = [args.guest_pdb]
+    else:
+        pdb_file_list = []
+
 
     n=0
     t0 = time.time()
@@ -58,21 +68,27 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
         try:
             cur_pose = Pose()
             pose_from_pdb( cur_pose, family_dir + cur_pdb_file_name )
-            pose_load_result = '.'
         except PyRosettaException:
-            pose_load_result = '*'
             #TODO remove 'continue', pass --ignore-unrecognized-rsd flag instead
             continue
+        
 
-        stub_list = []
-        for middle_residue in range(2, cur_pose.total_residue()):
+        # define residues to check
+        if args.guest_pdb and args.res1 and args.res2:
+            residue_check_list = [ args.res1, args.res2 ]
+        else:
+            residue_check_list = range(2, cur_pose.total_reisdue())
             # first stub's central residue is #2
             # last stub's central residue is #last-1
+
+        stub_list = []
+        for middle_residue in residue_check_list:
             s1a1 = AtomID(1, middle_residue - 1)
             s1a2 = AtomID(1, middle_residue)
             s1a3 = AtomID(1, middle_residue + 1)
             stub = StubID(s1a1, s1a2, s1a3)
             stub_list.append(stub)
+
 
         # populate pose's secstruct
         DsspMover().apply(cur_pose) # populate secstruct
@@ -280,21 +296,36 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
 
 if __name__ == '__main__':
 
+    
+    parser = argparse.ArgumentParser()
+
+    # not optional
+    parser.add_argument( "ref_pdb", help="path to host pdb file" )
+    parser.add_argument( "ref_res_1", type=int, help="residue 1 for reference pdb" )
+    parser.add_argument( "ref_res_2", type=int, help="residue 2 for reference pdb" )
+
+    m_group = parser.add_mutually_exclusive_group()
+    # directory of guests
+    m_group.add_argument( "-d", "--directory", help="directory of pdbs to check against" )
+    # specific guest
+    m_group.add_argument( "-g", "--guest_pdb", help="path to a single pdb to check against" )
+    # specific reses in guest
+    m_group.add_argument( "--res1", type=int, help="use only these residues in guest_pdb" )
+    m_group.add_argument( "--res2", type=int, help="use only these residues in guest_pdb" )
+
+    # optionals
+    parser.add_argument( "-o", "--outfile", help="path to file to dump resulting pdb (only available for single guest [-g] )" )
+    
+    args = parser.parse_args()
+    
+
     with open( 'thorp-log', 'w') as loggy, open('matching_domains.'+str(time.strftime("%Y%m%d-%H%M%S")), 'w') as matchy:
 
-        try:
-            family_dir = sys.argv[-4]
-            orig_pdb_file = sys.argv[-3]                # ./path/to/aaaa.pdb
-            orig_pdb_id = orig_pdb_file.split('/')[-1]  # aaaa.pdb
-            residue1 = int(sys.argv[-2])
-            residue2 = int(sys.argv[-1])
-        except:
-            print "input not recognized                                     \n\
-                   Usage:                                                   \n\
-                   $ ./thorp.py [directory/] [pdb_file] [res1] [res2]       \n\
-                                                                            \n\
-                   example: $ ./thorp.py super-family/ 3pf8A.pdb 138 182    \n"
-            sys.exit(1)
+        orig_pdb_file = args.ref_pdb                # ./path/to/aaaa.pdb
+        orig_pdb_id = orig_pdb_file.split('/')[-1]  # aaaa.pdb
+        residue1 = args.ref_res_1
+        residue2 = args.ref_res_2
+        
        
         # DEBUG OUTPUT
         output_string = '\n\n#######################################\n'+ \
