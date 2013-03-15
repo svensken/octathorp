@@ -19,14 +19,14 @@ import argparse
 #time.sleep(2)
 
 # silence rosetta's output
-opts = [ 'app', '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ), '-mute', 'all' ]
+opts = [ 'app', '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ), '-mute', 'all', '-ignore_unrecognized_res' ]
 args = utility.vector1_string()
 args.extend( opts ) 
 core.init( args )
 
 
 
-def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy, loggy ):
+def find_matching_domains( args, orig_pdb_file, residue1, residue2, loggy ):
     
     ## calculate reference jump
     # load reference pose
@@ -53,7 +53,7 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
 
     # build pdb file list
     if args.directory:
-        pdb_file_list = [item for item in os.listdir( family_dir ) if item[-4:] == '.pdb']
+        pdb_file_list = [item for item in os.listdir( args.directory ) if item[-4:] == '.pdb']
     elif args.guest_pdb:
         pdb_file_list = [args.guest_pdb]
     else:
@@ -67,7 +67,7 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
         t1 = time.time()
         try:
             cur_pose = Pose()
-            pose_from_pdb( cur_pose, family_dir + cur_pdb_file_name )
+            pose_from_pdb( cur_pose, args.directory + cur_pdb_file_name )
         except PyRosettaException:
             #TODO remove 'continue', pass --ignore-unrecognized-rsd flag instead
             continue
@@ -77,7 +77,7 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
         if args.guest_pdb and args.res1 and args.res2:
             residue_check_list = [ args.res1, args.res2 ]
         else:
-            residue_check_list = range(2, cur_pose.total_reisdue())
+            residue_check_list = range(2, cur_pose.total_residue())
             # first stub's central residue is #2
             # last stub's central residue is #last-1
 
@@ -147,10 +147,10 @@ def find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy
                             this_ss_E,    
                             this_ss_H  ]
                         # OUPUT
-                        for item in good_match:
-                            matchy.write( str(item)+',' )
-                        matchy.write( '\n' )
-                        matchy.flush()
+                        #for item in good_match:
+                        #    matchy.write( str(item)+',' )
+                        #matchy.write( '\n' )
+                        #matchy.flush()
                         
 
                         # TODO make this part optional
@@ -263,31 +263,29 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
         # show old loop slightly transparent and gray?
 
 
-    #raw_input('posify:...')
+    if False: #args.outfile:
+        # already working with duplicate poses, just modify in place
+        # to remove residues, delete backwards; rosetta updates sequence index to keep continuity from 1
+        for r in reversed(range(host_res1, host_res2+1)): # WILL SEGFAULT AT r = 1
+            host_pose.delete_polymer_residue( r )
+        for r in reversed(guest_rsds):
+            host_pose.append_polymer_residue_after_seqpos( guest_pose.residue( r ), host_res1, 0 )
 
-    # already working with duplicate poses, just modify in place
-    # to remove residues, delete backwards; rosetta updates sequence index to keep continuity from 1
-    for r in reversed(range(host_res1, host_res2+1)): # WILL SEGFAULT AT r = 1
-        host_pose.delete_polymer_residue( r )
-    for r in reversed(guest_rsds):
-        host_pose.append_polymer_residue_after_seqpos( guest_pose.residue( r ), host_res1, 0 )
+        lego_pose = Pose()
+        lego_pose.assign( host_pose )
 
-    lego_pose = Pose()
-    lego_pose.assign( host_pose )
+        # TODO shorten pose name after debugged and stuff
+        ref_pose = host_pose_name+'-'+str(host_res1)+'-'+str(host_res2)
+        match_pose = guest_pose_name+'-'+str(guest_res1)+'-'+str(guest_res2)
+        match_params = '%.4f-%i' % (rmsd, close_ones)
 
-    # TODO shorten pose name after debugged and stuff
-    ref_pose = host_pose_name+'-'+str(host_res1)+'-'+str(host_res2)
-    match_pose = guest_pose_name+'-'+str(guest_res1)+'-'+str(guest_res2)
-    match_params = '%.4f-%i' % (rmsd, close_ones)
+        try:
+            os.mkdir( 'pose-dumps/'+ref_pose )
+        except OSError:
+            pass # dir exists
+        dump_name = 'pose-dumps/'+ref_pose+'/'+match_params+'_'+match_pose+'.pdb'
+        lego_pose.dump_pdb( dump_name )
 
-    try:
-        os.mkdir( 'pose-dumps/'+ref_pose )
-    except OSError:
-        pass # dir exists
-    dump_name = 'pose-dumps/'+ref_pose+'/'+match_params+'_'+match_pose+'.pdb'
-    lego_pose.dump_pdb( dump_name )
-
-    print '.'
 
 
 
@@ -310,8 +308,8 @@ if __name__ == '__main__':
     # specific guest
     m_group.add_argument( "-g", "--guest_pdb", help="path to a single pdb to check against" )
     # specific reses in guest
-    m_group.add_argument( "--res1", type=int, help="use only these residues in guest_pdb" )
-    m_group.add_argument( "--res2", type=int, help="use only these residues in guest_pdb" )
+    parser.add_argument( "--res1", type=int, help="use only these residues in guest_pdb" )
+    parser.add_argument( "--res2", type=int, help="use only these residues in guest_pdb" )
 
     # optionals
     parser.add_argument( "-o", "--outfile", help="path to file to dump resulting pdb (only available for single guest [-g] )" )
@@ -319,34 +317,34 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
 
-    with open( 'thorp-log', 'w') as loggy, open('matching_domains.'+str(time.strftime("%Y%m%d-%H%M%S")), 'w') as matchy:
+    with open( 'thorp-log', 'w') as loggy:#, open('matching_domains.'+str(time.strftime("%Y%m%d-%H%M%S")), 'w') as matchy:
 
         orig_pdb_file = args.ref_pdb                # ./path/to/aaaa.pdb
         orig_pdb_id = orig_pdb_file.split('/')[-1]  # aaaa.pdb
         residue1 = args.ref_res_1
         residue2 = args.ref_res_2
         
-       
+        
         # DEBUG OUTPUT
         output_string = '\n\n#######################################\n'+ \
             'This file contains debugging output for thorp.py\n'+ \
             'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'+ \
             'Reference PDB: '+str(orig_pdb_file)+'\n'+ \
-            'Residues '+str(residue1)+' and '+str(residue2)+'\n'+ \
-            str(len(os.listdir(family_dir)))+' dir items (PDBs to posify and traverse for transforms)\n\n'
+            'Residues '+str(residue1)+' and '+str(residue2)+'\n' #+ \
+            #str(len(os.listdir(family_dir)))+' dir items (PDBs to posify and traverse for transforms)\n\n'
         loggy.write(output_string)
         loggy.flush()
 
         # TRANSFORMS OUTPUT
         # TODO output tolerances
-        matchy_string = \
-            'This list from '+family_dir+' directory, ### pdbs, *** tolerances, etc \n' + \
-            'saved at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n'+ \
-            str(sys.argv)+'\n\n\n'
-        matchy.write(matchy_string)
-        matchy.flush()
+        #matchy_string = \
+        #    'This list from *** directory, ### pdbs, *** tolerances, etc \n' + \
+        #    'saved at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n'+ \
+        #    str(sys.argv)+'\n\n\n'
+        #matchy.write(matchy_string)
+        #matchy.flush()
         
-        find_matching_domains( family_dir, orig_pdb_file, residue1, residue2, matchy, loggy )
+        find_matching_domains( args, orig_pdb_file, residue1, residue2, loggy )
 
         #view_matching_domains()
         ## cycles through by default
