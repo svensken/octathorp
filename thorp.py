@@ -10,13 +10,7 @@ from structural_alignment import kabsch_alignment
 import os, sys, time, datetime
 import argparse
 
-# hell of an annoyance, this pymol messiness
-#sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/')
-#import pymol
 
-#pymol.finish_launching()
-#pymol.cmd.do('run ~/Desktop/PyRosetta/PyMOLPyRosettaServer.py')
-#time.sleep(2)
 
 # silence rosetta's output
 opts = [ 'app', '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ), '-mute', 'all', '-ignore_unrecognized_res' ]
@@ -26,16 +20,15 @@ core.init( args )
 
 
 
-def find_matching_domains( args, orig_pdb_file, residue1, residue2, loggy ):
+def find_matching_domains( args ):
     
     ## calculate reference jump
     # load reference pose
     orig_pose = Pose()
     try:
         pose_from_pdb( orig_pose, orig_pdb_file )
-        pose_load_result = 'no error'
     except PyRosettaException:
-        pose_load_result = 'slight error'
+        pass
     # Stub 1
     s1a1 = AtomID(1, residue1 - 1)
     s1a2 = AtomID(1, residue1)
@@ -67,7 +60,11 @@ def find_matching_domains( args, orig_pdb_file, residue1, residue2, loggy ):
         t1 = time.time()
         try:
             cur_pose = Pose()
-            pose_from_pdb( cur_pose, args.directory + cur_pdb_file_name )
+            if args.directory:
+                pose_from_pdb( cur_pose, args.directory + cur_pdb_file_name )
+            elif args.guest_pdb:
+                cur_pose = Pose()
+                pose_from_pdb( cur_pose, cur_pdb_file_name )
         except PyRosettaException:
             #TODO remove 'continue', pass --ignore-unrecognized-rsd flag instead
             continue
@@ -111,61 +108,58 @@ def find_matching_domains( args, orig_pdb_file, residue1, residue2, loggy ):
                 # TOLERANCE (put at top)
                 q_rmsd = rmsd < 5
 
-                if q_rmsd:
+                if rmsd < args.rmsd:
 
                     # TODO need better way to access residue numbers
                     cur_first_res  = first_stub.atom(2).rsd()
                     cur_second_res = second_stub.atom(2).rsd()
 
-                    first_res_string  = pdb_info.pose2pdb( cur_first_res )
-                    second_res_string = pdb_info.pose2pdb( cur_second_res )
                     cur_loop_length  = cur_second_res - cur_first_res
                     #cur_loop_length = cur_pose.residue(cur_first_res).polymeric_sequence_distance(cur_second_res)
+                    first_res_string  = pdb_info.pose2pdb( cur_first_res )
+                    second_res_string = pdb_info.pose2pdb( cur_second_res )
 
                     # TOLERANCE (put at top)
                     chunk_ss = full_ss[ cur_first_res : cur_second_res ]
                     this_ss_L    = chunk_ss.count('L') / float( len(chunk_ss) )
-                    this_ss_E    = chunk_ss.count('E') / float( len(chunk_ss) )
-                    this_ss_H    = chunk_ss.count('H') / float( len(chunk_ss) )
+                    #this_ss_E    = chunk_ss.count('E') / float( len(chunk_ss) )
+                    #this_ss_H    = chunk_ss.count('H') / float( len(chunk_ss) )
 
-                    jump_length  = cur_rt.get_translation().length
+                    #jump_length  = cur_rt.get_translation().length
 
                     # tolerances for good matches
-                    q_tot_res       = 0  <  cur_pose.total_residue() < 500 
-                    q_jump_length   = 0  <  jump_length              < 8
-                    q_loop_length   = 10 <  cur_loop_length          < 80
+                    q_loop_length = cur_loop_length < args.length
+                    q_ss_L = this_ss_L * 10 < args.loop_percentage
+                    #q_jump_length   = 0  <  jump_length              < 8
 
-                    if cur_pdb_file_name != orig_pdb_id and True: #q_jump_length and q_loop_length:
+                    if cur_pdb_file_name != orig_pdb_id and q_loop_length and q_ss_L:
 
-                        good_match = [    
-                            cur_pdb_file_name,
-                            cur_first_res, 
-                            cur_second_res, 
-                            cur_loop_length,  
-                            jump_length,  
-                            this_ss_L,    
-                            this_ss_E,    
-                            this_ss_H  ]
-                        # OUPUT
-                        #for item in good_match:
-                        #    matchy.write( str(item)+',' )
-                        #matchy.write( '\n' )
-                        #matchy.flush()
-                        
-
-                        # TODO make this part optional
                         construct_pose_from_matching_domains( orig_pose,            # pose
                                                               residue1,             # int
                                                               residue2,             # int
                                                               cur_pose,             # pose
                                                               cur_first_res,        # int
                                                               cur_second_res   )    # int
+                        #good_match = [    
+                        #   cur_pdb_file_name,
+                        #   cur_first_res, 
+                        #   cur_second_res, 
+                        #   cur_loop_length,  
+                        #   jump_length,  
+                        #   this_ss_L,    
+                        #   this_ss_E,    
+                        #   this_ss_H  ]
+                        # OUPUT
+                        #for item in good_match:
+                        #    matchy.write( str(item)+',' )
+                        #matchy.write( '\n' )
+                        #matchy.flush()
 
             i = i + 1
 
 
-    loggy.write( '\nrun took ' + str(time.time()-t0) + ' seconds total\n')
-    loggy.flush()
+    #loggy.write( '\nrun took ' + str(time.time()-t0) + ' seconds total\n')
+    #loggy.flush()
 
 
 
@@ -214,16 +208,14 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
             if dist < 3.0:
                 close_ones += 1
     
-    if close_ones > .2*len(guest_rsds):
-        loggy.write('too many close ones\n')
-        loggy.flush()
+    if close_ones > .01*args.clash_percentage*len(guest_rsds):
         return 1
  
 
-    # i hate the trouble behind getting filename. stupid, stupid, stupid.
+    # too much trouble just to get pdb_id.pdb, annoying.
     # hope that pymol chooses this as the name
     host_pose_name = host_pose.pdb_info().name().split('/')[-1].split('.')[0]
-    guest_pose_name = guest_pose.pdb_info().name().split('/')[-1].split('.')[0] # this one won't be a path, will it?
+    guest_pose_name = guest_pose.pdb_info().name().split('/')[-1].split('.')[0]
 
     print 'HOST: ', host_pose_name
     print 'GUEST: ', guest_pose_name
@@ -235,35 +227,38 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
     print "####################"
 
 
-    # turn visualization into an optional function
-    if False:
+    if args.visualize:
+
         pymover = PyMOL_Mover()
 
         pymover.apply(host_pose)
-        time.sleep(.01)
+        time.sleep(.1)
         # prettify the visualization
         pymol.cmd.hide('everything')
         pymol.cmd.show('cartoon')
-        time.sleep(.01)
+        time.sleep(.1)
         # easiest to see is pink cartoon for host pose and yellow lines for guest loop
         pymol.cmd.color('pink')
 
         pymover.apply(guest_pose)
-        time.sleep(.01)
+        time.sleep(.1)
         pymol.cmd.hide('everything')
         pymol.cmd.show('cartoon')
-        time.sleep(.01)
+        time.sleep(.1)
         pymol.cmd.color('yellow', guest_pose_name)
 
         # hide guest pose residues outside of the loop of interest
-        pymol.cmd.hide( '( not resi ' + '+'.join( [str(t) for t in range(guest_res1-1, guest_res2+1)] ) + ' and '+guest_pose_name+' )' )
+        pymol.cmd.hide( '( not resi ' + str(guest_res1)+'-'+str(guest_res2) + ' and '+guest_pose_name+' )' )
         # hide host pose residues outside of lame loop
-        pymol.cmd.hide( '( '+host_pose_name+' and resi ' + '+'.join( [str(t) for t in range(host_res1, host_res2)] ) + ' )' )
+        pymol.cmd.hide( '( '+host_pose_name+' and resi ' + str(host_res1)+'-'+str(host_res2) + ' )' )
 
         # show old loop slightly transparent and gray?
 
+        raw_input('hit enter to continue to next match')
 
-    if False: #args.outfile:
+
+
+    if args.outfiles:
         # already working with duplicate poses, just modify in place
         # to remove residues, delete backwards; rosetta updates sequence index to keep continuity from 1
         for r in reversed(range(host_res1, host_res2+1)): # WILL SEGFAULT AT r = 1
@@ -276,15 +271,18 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
 
         # TODO shorten pose name after debugged and stuff
         ref_pose = host_pose_name+'-'+str(host_res1)+'-'+str(host_res2)
+        origin_pose = host_pose_name+'-'+str(host_res1)+'-'+str(host_res2)
         match_pose = guest_pose_name+'-'+str(guest_res1)+'-'+str(guest_res2)
-        match_params = '%.4f-%i' % (rmsd, close_ones)
+        #match_params = '%.4f-%i' % (rmsd, close_ones)
 
         try:
-            os.mkdir( 'pose-dumps/'+ref_pose )
+            os.mkdir( 'pose-dumps/' )
         except OSError:
             pass # dir exists
-        dump_name = 'pose-dumps/'+ref_pose+'/'+match_params+'_'+match_pose+'.pdb'
+        dump_name = 'pose-dumps/'+origin_pose+'_'+match_pose+'.pdb'
         lego_pose.dump_pdb( dump_name )
+
+        print 'successfully dumped to file ' + dump_name
 
 
 
@@ -311,13 +309,41 @@ if __name__ == '__main__':
     parser.add_argument( "--res1", type=int, help="use only these residues in guest_pdb" )
     parser.add_argument( "--res2", type=int, help="use only these residues in guest_pdb" )
 
-    # optionals
-    parser.add_argument( "-o", "--outfile", help="path to file to dump resulting pdb (only available for single guest [-g] )" )
+    # output file
+    parser.add_argument( "-o", "--outfiles", help="whether or not pdbs are created (in pose-dumps/ dir) from the matches", action="store_true" )
+    # visualize
+    parser.add_argument( "-V", "--visualize", help="use import-capable pymol (not MacPyMOL) to visualize matches as they are found", action="store_true" )
+    # tolerances
+    parser.add_argument( "--rmsd",              default=3,  help="maximum root-mean-squared deviation between transforms (default is 3)" )
+    parser.add_argument( "--length",            default=100,help="maximum number of residues in matching loop (default is 100)" )
+    parser.add_argument( "--clash_percentage",  default=10, help="maximum number of residues that clash between new loop and host, as a percentage of the length of the new loop (default is 10)" )
+    parser.add_argument( "--loop_percentage",   default=50, help="maximum percentage of new loop as 'loop' secondary structure (default is 50)" )
+    parser.add_argument( "--open_tolerances", help="set all tolerances to maximum", action="store_true" )
+    # "--half-tolerances"; if passed, set all tolerances to half
     
     args = parser.parse_args()
+
+
+    # maximize tolerances
+    if args.open_tolerances:
+        args.rmsd = 100
+        args.length = 10000
+        args.clash_percentage = 100
+        args.loop_percentage = 100
+        print 'tolerances have been set to maximum'
+
+    # start pymol if appropriate
+    if args.visualize:
+        print 'importing pymol...'
+        sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/')
+        import pymol
+
+        silence = pymol.finish_launching()
+        silence = pymol.cmd.do('run ~/Desktop/PyRosetta/PyMOLPyRosettaServer.py')
+        time.sleep(2)
     
 
-    with open( 'thorp-log', 'w') as loggy:#, open('matching_domains.'+str(time.strftime("%Y%m%d-%H%M%S")), 'w') as matchy:
+    if True: #with open( 'thorp-log', 'w') as loggy, open('matching_domains.'+str(time.strftime("%Y%m%d-%H%M%S")), 'w') as matchy:
 
         orig_pdb_file = args.ref_pdb                # ./path/to/aaaa.pdb
         orig_pdb_id = orig_pdb_file.split('/')[-1]  # aaaa.pdb
@@ -326,14 +352,14 @@ if __name__ == '__main__':
         
         
         # DEBUG OUTPUT
-        output_string = '\n\n#######################################\n'+ \
-            'This file contains debugging output for thorp.py\n'+ \
-            'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'+ \
-            'Reference PDB: '+str(orig_pdb_file)+'\n'+ \
-            'Residues '+str(residue1)+' and '+str(residue2)+'\n' #+ \
-            #str(len(os.listdir(family_dir)))+' dir items (PDBs to posify and traverse for transforms)\n\n'
-        loggy.write(output_string)
-        loggy.flush()
+        #output_string = '\n\n#######################################\n'+ \
+        #    'This file contains debugging output for thorp.py\n'+ \
+        #    'invoked at: '+str(time.strftime("%Y/%m/%d %H:%M:%S"))+'\n\n\n'+ \
+        #    'Reference PDB: '+str(orig_pdb_file)+'\n'+ \
+        #    'Residues '+str(residue1)+' and '+str(residue2)+'\n' #+ \
+        #    #str(len(os.listdir(family_dir)))+' dir items (PDBs to posify and traverse for transforms)\n\n'
+        #loggy.write(output_string)
+        #loggy.flush()
 
         # TRANSFORMS OUTPUT
         # TODO output tolerances
@@ -344,7 +370,7 @@ if __name__ == '__main__':
         #matchy.write(matchy_string)
         #matchy.flush()
         
-        find_matching_domains( args, orig_pdb_file, residue1, residue2, loggy )
+        find_matching_domains( args )
 
         #view_matching_domains()
         ## cycles through by default
