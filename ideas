@@ -4,28 +4,6 @@ ligand interface (example script D120)
 
 functions
 =========
-pyrosetta
-    recoding approach
-        distance
-            atomN = pose.residue(33).atom('N')
-            NCbond = atomN.xyz() - atomC.xyz()
-            print NCbond.norm()
-        http://nipy.sourceforge.net/nibabel/generated/nibabel.eulerangles.html
-        http://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
-        http://www.lfd.uci.edu/~gohlke/code/transformations.py.html
-        http://en.wikipedia.org/wiki/Euler_angles
-    dig through source for good calls to use
-        [pyrosetta]/demos/D010_Pose_structure.py
-        * code block around line 100 shows how to judge loop composition (n% helical, etc)
-    foldtree for docking
-        DockingProtocol.setup_foldtree(pose)
-        http://www.pyrosetta.org/screenshots
-    export to pymol
-        http://www.pyrosetta.org/pymol_mover-tutorial
-prody
-    fetchPDB('1GPL')
-    atoms = parsePDB('1GPL.pdb.gz')
-
 pymol
     get coordinates
         xyz = cmd.get_model('sele', 1).get_coord_list()
@@ -44,7 +22,6 @@ http://jolecule.appspot.com/
 - ac's?
 - biopython?
 
-
 algorithms
 ==========
 Levenshtein automata: for string comparisonn, "nearness", to grade matches quickly
@@ -56,31 +33,7 @@ finding nearby residues
     models of hydrogen-bonding, Dunbrack side-chain, Ramachandran backbone energies
         must have an intelligent way of quickly finding nearest atoms/residues in cartesian
 
-code
-====
-rough draft in python, use libraries liberally
-mockup in go or c++, start coding own functions
-final draft in go? go for blazing fast
-
 optimizing
 ==========
 http://docs.python.org/2/library/profile.html
 centroid mode
-
-parallelizing
-=============
-router as switch
-PXE network booting
-
-relevant books
-==========================
-Python for Data Analysis
-Algorithms in a Nutshell
-Version Control with Git
-search books.google.com for "internal, atomtree" within "Computer Methods, Part 3". Seems like an in-depth explanation of Rosetta's 
-
-data structures and file formats
-================================
-111 - Intro to CS
-112 - Data Structures
-214 - Systems Programming
