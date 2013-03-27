@@ -1,0 +1,44 @@
+------------------------------------------------------------------------
+Since v0.06
+DATE: 2007-04-08
+	* _ALL_ memory errors should be gone.
+	* fixed an error that was only prevalent on 32-bit machines.
+	* cleaned up the code a little
+		
+------------------------------------------------------------------------
+Since v0.05
+DATE: 2007-03-26
+	* Some memory bugs were found and squashed.
+	* Introduced a new method for scoring the full path; this more
+		accurately reflects the CE method.  Alignments should
+		improve because of this.
+------------------------------------------------------------------------
+Since v0.03
+DATE: 2007-02-01
+Found a small bug with calculating scores.  Alignments should, in
+general be of lower RMSD and longer.
+
+------------------------------------------------------------------------
+Since v0.02
+DATE: 2007-01-31
+Found a small bug in sequencing.  Fixed it.
+
+------------------------------------------------------------------------
+Since v0.01
+DATE: 2007-01-25
+
+CEAlign has the semantic, and syntactic formalism of
+
+ cealign MASTER, TARGET
+
+where a post-condition of the algorithm is that the coordinates of the
+'''MASTER''' protein are unchanged.  This allows for easier
+multi-protein alignments.  For example,
+
+ cealign 1AUE, 1BZ4
+ cealign 1AUE, 1B68
+ cealign 1AUE, 1A7V
+ cealign 1AUE, 1CPR
+
+will superimpose all the TARGETS onto the MASTER.
+

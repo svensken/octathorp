@@ -20,15 +20,7 @@ core.init( args )
 
 
 
-def find_matching_domains( args ):
-    
-    ## calculate reference jump
-    # load reference pose
-    orig_pose = Pose()
-    try:
-        pose_from_pdb( orig_pose, orig_pdb_file )
-    except PyRosettaException:
-        pass
+def gimme_stubs( r1, r2, interval_len=1 ):
     # Stub 1
     s1a1 = AtomID(1, residue1 - 1)
     s1a2 = AtomID(1, residue1)
@@ -39,6 +31,29 @@ def find_matching_domains( args ):
     s2a2 = AtomID(1, residue2)
     s2a3 = AtomID(1, residue2 + 1)
     stub2 = StubID(s2a1, s2a2, s2a3)
+    
+    given_stub_list = [ stub1, stub2 ]
+    return given_stub_list
+
+#def find_diverge( 
+
+
+def find_matching_domains( args ):
+    
+    ## calculate reference jump
+    # load reference pose
+    orig_pose = Pose()
+    try:
+        pose_from_pdb( orig_pose, orig_pdb_file )
+    except PyRosettaException:
+        pass
+
+    # get a flag call in here
+    # for blindly checking all jumps in area
+    given_stub_list = gimme_stubs( residue1, residue2 )
+    stub1 = given_stub_list[0]
+    stub2 = given_stub_list[1]
+    
     # Transform
     orig_pose_atom_tree = orig_pose.atom_tree()
     orig_rt = orig_pose_atom_tree.get_stub_transform( stub1, stub2 )
@@ -52,7 +67,8 @@ def find_matching_domains( args ):
     else:
         pdb_file_list = []
 
-
+    
+    #######################################
     n=0
     t0 = time.time()
     for cur_pdb_file_name in pdb_file_list:
@@ -66,7 +82,7 @@ def find_matching_domains( args ):
                 cur_pose = Pose()
                 pose_from_pdb( cur_pose, cur_pdb_file_name )
         except PyRosettaException:
-            #TODO remove 'continue', pass --ignore-unrecognized-rsd flag instead
+            # what pyrosettaexceptions exist other than unrecognized residues?
             continue
         
 
@@ -253,6 +269,21 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
         pymol.cmd.hide( '( '+host_pose_name+' and resi ' + str(host_res1)+'-'+str(host_res2) + ' )' )
 
         # show old loop slightly transparent and gray?
+
+        raw_input('hit enter for CE')
+        # CEALIGN
+        pymol.cmd.cealign(host_pose_name, guest_pose_name)
+        # analyze
+        pymol.cmd.save('ce_host.pdb', host_pose_name)
+        #time.sleep?
+        pymol.cmd.save('ce_guest.pdb', guest_pose_name)
+        ce_host_pose = Pose()
+        ce_guest_pose = Pose()
+        pose_from_pdb(ce_host_pose, 'ce_host.pdb')
+        pose_from_pdb(ce_guest_pose, 'ce_guest.pdb')
+
+        print ce_host_pose
+        print ce_guest_pose
 
         raw_input('hit enter to continue to next match')
 

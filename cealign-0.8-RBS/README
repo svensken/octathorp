@@ -1,0 +1,14 @@
+CEALIGN
+
+cealign is a C/Python implementation of the CE Alignment algorithm for
+protein structure alignment.  Please see the documentation in the "doc"
+directory, or the module's home page on the PyMol Wiki
+(http://www.pymolwiki.org/index.php/Cealign).
+
+
+DOCUMENTATION
+
+Please see the documentation in the doc directory.  Installation and
+useage can be found there, too.
+
+There is a PDF and HTML version of the documentation available.

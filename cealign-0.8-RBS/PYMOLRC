@@ -1,0 +1,6 @@
+# add the following two lines to your ~/.pymolrc file for 
+# PyMol autoloading.  You must change the paths to wherever
+# you have saved the cealign.py and qkabsch.py files.
+
+run /home/YOUR_NAME/cealign-0.1/cealign.py
+run /home/YOUR_NAME/cealign-0.1/qkabsch.py

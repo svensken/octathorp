@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.70)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Using</TITLE>
+<META NAME="description" CONTENT="Using">
+<META NAME="keywords" CONTENT="cealign">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="cealign.css">
+
+<LINK REL="next" HREF="node8.html">
+<LINK REL="previous" HREF="node4.html">
+<LINK REL="up" HREF="cealign.html">
+<LINK REL="next" HREF="node8.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html110"
+  HREF="node8.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html106"
+  HREF="cealign.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html100"
+  HREF="node6.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html108"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="file:/usr/share/latex2html/icons/contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html111"
+  HREF="node8.html">Examples.</A>
+<B> Up:</B> <A NAME="tex2html107"
+  HREF="cealign.html">cealign: A Structure Alignment</A>
+<B> Previous:</B> <A NAME="tex2html101"
+  HREF="node6.html">Quick Install.</A>
+ &nbsp; <B>  <A NAME="tex2html109"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00040000000000000000">
+Using</A>
+</H1>
+Once installed, one can perform an alignment using the following syntax:
+<PRE>
+ cealign SEL1, SEL2
+</PRE>
+where SEL1 is the first selection to align, and SEL2 is the second selection.  Any PyMol selection should be valid.  For example all of the following are syntactically valid:
+<PRE>
+ # align two proteins
+ cealign 1ggz, 1cll
+
+ # align residue ranges on two proteins
+ cealign 1cbs and i. 6-55, 1hmt and i. 6-90
+
+ # align certain chains on two proteins
+ cealign 1OKE and c. A, 1S6N
+</PRE>
+
+<P>
+<BR><HR>
+<ADDRESS>
+Jason Vertrees
+2007-01-11
+</ADDRESS>
+</BODY>
+</HTML>
