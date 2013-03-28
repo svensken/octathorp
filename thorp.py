@@ -7,7 +7,7 @@
 print 'importing rosetta...'
 from rosetta import *
 from structural_alignment import kabsch_alignment
-import os, sys, time, datetime
+import os, sys, time, datetime, csv
 import argparse
 
 
@@ -285,6 +285,25 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
         print ce_host_pose
         print ce_guest_pose
 
+        if args.output_ce_dists:
+            print "* see file ce_dists.csv for output"
+            
+            all_ce_dist_mins = []
+            for r1 in range(1,ce_host_pose.total_residue()+1):
+                ce_dists = []
+                for r2 in range(1, ce_guest_pose.total_residue()+1):
+                    try:
+                        dist = ce_host_pose.residue( r1 ).xyz('CA').distance( ce_guest_pose.residue( r2 ).xyz('CA') )
+                        ce_dists.append(dist)
+                    except:
+                        print "exception"
+                min_ce_dist = min(ce_dists) 
+                all_ce_dist_mins.append(min_ce_dist)
+            with open('ce_dists.csv', 'w') as dists_file:
+                for item in all_ce_dist_mins:
+                    dists_file.write( str(item)+'\n' ) # any need for csv module?
+            print "ce_dists file written"
+
         raw_input('hit enter to continue to next match')
 
 
@@ -351,6 +370,8 @@ if __name__ == '__main__':
     parser.add_argument( "--loop_percentage",   default=50, help="maximum percentage of new loop as 'loop' secondary structure (default is 50)" )
     parser.add_argument( "--open_tolerances", help="set all tolerances to maximum", action="store_true" )
     # "--half-tolerances"; if passed, set all tolerances to half
+    # cealign distances
+    parser.add_argument( "--output_ce_dists", help="send min dists to csv file", action="store_true" )
     
     args = parser.parse_args()
 
