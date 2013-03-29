@@ -7,7 +7,7 @@
 print 'importing rosetta...'
 from rosetta import *
 from structural_alignment import kabsch_alignment
-import os, sys, time, datetime, csv
+import os, sys, time, datetime
 import argparse
 
 
@@ -19,6 +19,9 @@ args.extend( opts )
 core.init( args )
 
 
+
+def PDBN( pose, residue ):
+    return int( pose.pdb_info().pose2pdb( residue ).split()[0] )
 
 def gimme_stubs( r1, r2, interval_len=1 ):
     # Stub 1
@@ -285,24 +288,75 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
         print ce_host_pose
         print ce_guest_pose
 
-        if args.output_ce_dists:
-            print "* see file ce_dists.csv for output"
+        if args.find_residues:
+            ##### MIN DISTS #####
+            #print "* see file ce_dists.csv for output"
+            #all_ce_dist_mins = []
+            #for r1 in range(1,ce_host_pose.total_residue()+1):
+            #    ce_dists = []
+            #    for r2 in range(1, ce_guest_pose.total_residue()+1):
+            #        try:
+            #            dist = ce_host_pose.residue( r1 ).xyz('CA').distance( ce_guest_pose.residue( r2 ).xyz('CA') )
+            #            ce_dists.append(dist)
+            #        except:
+            #            print "exception"
+            #    min_ce_dist = min(ce_dists) 
+            #    all_ce_dist_mins.append(min_ce_dist)
+            #with open('ce_dists.csv', 'w') as dists_file:
+            #    for item in all_ce_dist_mins:
+            #        dists_file.write( str(item)+'\n' ) # any need for csv module?
+            #print "ce_dists file written"
             
-            all_ce_dist_mins = []
-            for r1 in range(1,ce_host_pose.total_residue()+1):
-                ce_dists = []
-                for r2 in range(1, ce_guest_pose.total_residue()+1):
-                    try:
-                        dist = ce_host_pose.residue( r1 ).xyz('CA').distance( ce_guest_pose.residue( r2 ).xyz('CA') )
-                        ce_dists.append(dist)
-                    except:
-                        print "exception"
-                min_ce_dist = min(ce_dists) 
-                all_ce_dist_mins.append(min_ce_dist)
-            with open('ce_dists.csv', 'w') as dists_file:
-                for item in all_ce_dist_mins:
-                    dists_file.write( str(item)+'\n' ) # any need for csv module?
-            print "ce_dists file written"
+            ##### SEC STRUCT #####
+            print "checking secondary structures to preserve"
+
+            # USING PDB NUMBERING
+            print "\n\nUSING PDB NUMBERING\n\n"
+
+            # populate pose secstructs
+            DsspMover().apply(ce_host_pose)
+            DsspMover().apply(ce_guest_pose)
+            ce_host_ss = ce_host_pose.secstruct()
+            ce_guest_ss = ce_guest_pose.secstruct()
+
+            print ce_host_ss
+            print ce_guest_ss
+
+            print "# host res1"
+            print 'pose_num:', host_res1
+            print 'pdb_num: ', PDBN(ce_host_pose,host_res1)
+
+            # find min_dist-guest-res from manually chosen host res
+            ce_res_dists = {}
+            for r1 in range(1, ce_guest_pose.total_residue()+1):
+                try:
+                    dist = ce_host_pose.residue( host_res1 ).xyz('CA').distance( ce_guest_pose.residue( r1 ).xyz('CA') )
+                    ce_res_dists[PDBN(ce_guest_pose,r1)] = dist
+                except:
+                    print "exception"
+
+            closest_res = min(ce_res_dists, key=ce_res_dists.get)
+            print "# dists"
+            print [str(res)+': '+str(dist) for res, dist in ce_res_dists.iteritems() if closest_res-10 < res < closest_res+10 ]
+            print "# closest guest res"
+            print closest_res
+
+            # move to end of ss if present
+            #TODO confirm accuracy in indexing
+            for r1 in range(closest_res-1, ce_guest_pose.total_residue()): # index offset
+                if ce_guest_ss[r1] == 'L':
+                    guest_res1_ss_end = PDBN(ce_guest_pose,r1)
+                    break
+            print "# last res of guest ss"
+            print guest_res1_ss_end
+                
+            print "# guest's regional ss"
+            for a in range(closest_res-10,closest_res+10):
+                print PDBN(ce_guest_pose,a+1), ce_guest_ss[a]
+
+            # closest guest ss-end upstream
+            # closest guest ss-end downstream 
+            
 
         raw_input('hit enter to continue to next match')
 
@@ -371,7 +425,7 @@ if __name__ == '__main__':
     parser.add_argument( "--open_tolerances", help="set all tolerances to maximum", action="store_true" )
     # "--half-tolerances"; if passed, set all tolerances to half
     # cealign distances
-    parser.add_argument( "--output_ce_dists", help="send min dists to csv file", action="store_true" )
+    parser.add_argument( "--find_residues", help="guess which residues to clip at", action="store_true" )
     
     args = parser.parse_args()
 
