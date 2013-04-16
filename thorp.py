@@ -202,16 +202,16 @@ def construct_pose_from_matching_domains( old_host_pose,    # pose
     # rotate guest pose to align with host's ref residues
     kabsch_alignment( host_pose, guest_pose, [ host_res1 - 1 ,
                                                host_res1     ,
-                                               host_res1 + 1 ,
-                                               host_res2 - 1 ,
-                                               host_res2     ,
-                                               host_res2 + 1   ],
+                                               host_res1 + 1 ],
+                                            #   host_res2 - 1 ,
+                                            #   host_res2     ,
+                                            #   host_res2 + 1   ],
                                              [ guest_res1 - 1 ,
                                                guest_res1     ,
-                                               guest_res1 + 1 ,
-                                               guest_res2 - 1 ,
-                                               guest_res2     ,
-                                               guest_res2 + 1  ] )
+                                               guest_res1 + 1 ])#,
+                                            #   guest_res2 - 1 ,
+                                            #   guest_res2     ,
+                                            #   guest_res2 + 1  ] )
     
     # define residues for new pose
     host_rsds =  [r for r in range(1, host_res1+1)] + [r for r in range(host_res2, host_pose.total_residue())]
