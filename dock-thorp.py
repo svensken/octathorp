@@ -65,7 +65,7 @@ slide_into_contact = DockingSlideIntoContact(1
 )
 
 scorefxn_low = create_score_function('interchain_cen')
-scorefxn_low.set_weight( "fa_pair", 1 )
+scorefxn_low.set_weight( core.scoring.atom_pair_constraint, 1 )
 
 movemap = MoveMap()
 movemap.set_jump(1, True)
@@ -93,28 +93,35 @@ hterm2 = AtomID(1, hres1 + 1)
 gterm1 = AtomID(1, int(str(pose.fold_tree().jump_edge(1)).split()[2]) ) # please find a better way
 # gres2 is last B
 gterm2 = AtomID(1, pose.total_residue() )
+####################
+
+SOG = constraints.SOGFunc( 8, 1.0 )
+swf = constraints.ScalarWeightedFunc( 1.0, SOG )
 
 # gres1 and hres1
-pose.add_constraint( constraints.AtomPairConstraint( hterm1, gterm1, constraints.ScalarWeightedFunc( 1.0, constraints.SOGFunc( 8, 1.0 ) ) ) )
+apc = constraints.AtomPairConstraint( hterm1, gterm1, swf )
+pose.add_constraint( apc )
 
 # gres2 and hres2
-pose.add_constraint( constraints.AtomPairConstraint( hterm2, gterm2, constraints.ScalarWeightedFunc( 1.0, constraints.SOGFunc( 8, 1.0 ) ) ) )
+apc = constraints.AtomPairConstraint( hterm2, gterm2, swf )
+pose.add_constraint( apc )
 
 
 docking_low = DockingLowRes(scorefxn_low, 1)
 
-test_pose = Pose()
-test_pose.assign(pose)
-AddPyMolObserver(test_pose, True)
+#test_pose = Pose()
+#test_pose.assign(pose)
+AddPyMolObserver(pose, True)
 
 # a. set necessary variables for this trajectory
 # -reset the test pose to original (centroid) structure
 # -change the pose name, for pretty output to PyMOL
-test_pose.pdb_info().name('O_O')
+pose.pdb_info().name('O_O')
 
 # b. perturb the structure for this trajectory
 print "now moving"
-#perturb.apply(test_pose)
+perturb.apply(pose)
 
+print "now docking"
 # c. perform docking
-#docking_low.apply(test_pose)
+docking_low.apply(pose)
