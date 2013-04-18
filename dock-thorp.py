@@ -18,7 +18,7 @@ hpose = Pose()
 pose_from_pdb(hpose, '4fwb.pdb')
 gpose = Pose()
 pose_from_pdb(gpose, '2yas.pdb')
-hres1 = 22
+hres1 = 29
 hres2 = 33
 gres1 = 44
 gres2 = 77
@@ -65,6 +65,8 @@ slide_into_contact = DockingSlideIntoContact(1
 )
 
 scorefxn_low = create_score_function('interchain_cen')
+scorefxn_low.set_weight( "fa_pair", 1 )
+
 movemap = MoveMap()
 movemap.set_jump(1, True)
 minmover = MinMover()
