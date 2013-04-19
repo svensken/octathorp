@@ -18,18 +18,16 @@ hpose = Pose()
 pose_from_pdb(hpose, '4fwb.pdb')
 gpose = Pose()
 pose_from_pdb(gpose, '2yas.pdb')
-hres1 = 29
-hres2 = 33
-gres1 = 44
-gres2 = 77
+hres1 = 136
+hres2 = 212
+gres1 = 113
+gres2 = 185
 
 pi=hpose.pdb_info()
 
-pymover = PyMOL_Mover()
-
 
 # CHAINS
-#TODO figure out chain manipulations to do this efficiently
+#TODO find a better way to manipulate the chains
 
 #delete hres1-hres2
 for r in reversed(range(hres1, hres2+1)): # WILL SEGFAULT AT r = 1
@@ -48,24 +46,25 @@ for r in reversed(range(gres1+1, gres2+1)):
 hpose.dump_pdb('temp.pdb')
 pose=Pose()
 pose_from_pdb(pose, 'temp.pdb')
+to_centroid = SwitchResidueTypeSetMover('centroid')
+to_centroid.apply(pose)
 
 print pose.pdb_info()
 print pose.fold_tree()
-pymover.apply(pose)
 
 
 # MOVER
 randomize1 = RigidBodyRandomizeMover(pose)
-#randomize2 = RigidBodyRandomizeMover(pose)
+randomize2 = RigidBodyRandomizeMover(pose)
 
-pert_mover = RigidBodyPerturbMover( 1, 8, 3 ) #(jump_num, rotation, translation)
+pert_mover = RigidBodyPerturbMover( 1, 30, 20 ) #(jump_num, rotation, translation)
 
 spin = RigidBodySpinMover(1)
-slide_into_contact = DockingSlideIntoContact(1
-)
+slide_into_contact = DockingSlideIntoContact(1)
 
 scorefxn_low = create_score_function('interchain_cen')
-scorefxn_low.set_weight( core.scoring.atom_pair_constraint, 1 )
+scorefxn_low.set_weight( core.scoring.atom_pair_constraint, 500 )
+
 
 movemap = MoveMap()
 movemap.set_jump(1, True)
@@ -76,7 +75,7 @@ minmover.score_function(scorefxn_low)
 
 perturb = SequenceMover()
 perturb.add_mover(randomize1)
-#perturb.add_mover(randomize2)
+perturb.add_mover(randomize2)
 perturb.add_mover(pert_mover)
 perturb.add_mover(spin)
 perturb.add_mover(slide_into_contact)
@@ -95,7 +94,7 @@ gterm1 = AtomID(1, int(str(pose.fold_tree().jump_edge(1)).split()[2]) ) # please
 gterm2 = AtomID(1, pose.total_residue() )
 ####################
 
-SOG = constraints.SOGFunc( 8, 1.0 )
+SOG = constraints.SOGFunc( 4, 1.0 )
 swf = constraints.ScalarWeightedFunc( 1.0, SOG )
 
 # gres1 and hres1
@@ -108,20 +107,23 @@ pose.add_constraint( apc )
 
 
 docking_low = DockingLowRes(scorefxn_low, 1)
+docking_low.set_scorefxn( scorefxn_low )
 
-#test_pose = Pose()
-#test_pose.assign(pose)
 AddPyMolObserver(pose, True)
 
-# a. set necessary variables for this trajectory
-# -reset the test pose to original (centroid) structure
-# -change the pose name, for pretty output to PyMOL
-pose.pdb_info().name('O_O')
 
-# b. perturb the structure for this trajectory
-print "now moving"
-perturb.apply(pose)
+jd = PyJobDistributor('dock_output', 1, scorefxn_low)
+jd.native_pose = pose 
 
-print "now docking"
-# c. perform docking
-docking_low.apply(pose)
+while True:#not jd.job_complete:
+    # change pose name for PyMOL
+    pose.pdb_info().name('O_O')
+
+    # perturb the structure
+    print "now moving"
+    perturb.apply(pose)
+
+    # perform docking
+    print "now docking"
+    docking_low.apply(pose)
+    print "past last"
