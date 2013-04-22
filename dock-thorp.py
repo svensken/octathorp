@@ -29,15 +29,16 @@ pi=hpose.pdb_info()
 # CHAINS
 #TODO find a better way to manipulate the chains
 
-#delete hres1-hres2
-for r in reversed(range(hres1, hres2+1)): # WILL SEGFAULT AT r = 1
+# delete between hres1 hres2
+# list should be [ hres2-1, hres2-2, ... , hres1+1 ]
+for r in reversed(range(hres1+1, hres2)): # WILL SEGFAULT AT r = 1
     hpose.delete_polymer_residue( r )
 
 #append_residue_by_jump(hpose, gpose.res, hres1, start_new_chain=True)
 hpose.append_residue_by_jump(gpose.residue(gres1), hres1, start_new_chain=True)
 
 #append res of hpose reses
-for r in reversed(range(gres1+1, gres2+1)):
+for r in reversed(range(gres1, gres2+1)):
     hpose.append_polymer_residue_after_seqpos(gpose.residue(r), hpose.total_residue(), 0)
     pi.chain( hpose.total_residue(), "B" )
     #pymover.apply(hpose)
@@ -62,15 +63,15 @@ pert_mover = RigidBodyPerturbMover( 1, 30, 20 ) #(jump_num, rotation, translatio
 spin = RigidBodySpinMover(1)
 slide_into_contact = DockingSlideIntoContact(1)
 
-scorefxn_low = create_score_function('interchain_cen')
-scorefxn_low.set_weight( core.scoring.atom_pair_constraint, 500 )
+sf = create_score_function('interchain_cen')
+sf.set_weight( atom_pair_constraint, 10 )
 
 
 movemap = MoveMap()
 movemap.set_jump(1, True)
 minmover = MinMover()
 minmover.movemap(movemap)
-minmover.score_function(scorefxn_low)
+minmover.score_function(sf)
 
 
 perturb = SequenceMover()
@@ -91,33 +92,57 @@ hterm2 = AtomID(1, hres1 + 1)
 # gres1 is first B
 gterm1 = AtomID(1, int(str(pose.fold_tree().jump_edge(1)).split()[2]) ) # please find a better way
 # gres2 is last B
-gterm2 = AtomID(1, pose.total_residue() )
+gterm2 = AtomID(1, pose.total_residue())
 ####################
 
-SOG = constraints.SOGFunc( 4, 1.0 )
-swf = constraints.ScalarWeightedFunc( 1.0, SOG )
+# cst file
+with open('temp.cst', 'w') as cst_file:
+    cst_file.write( 'AtomPair CA '+str(hres1+1)+' CA '+str(pose.total_residue())+' GAUSSIANFUNC 8.0 2.0')
+    #AtomPair: Atom1_Name Atom1_ResNum Atom2_Name Atom2_ResNum Func_Type Func_Def
+    #Distance between Atom1 and Atom2
+    #GAUSSIANFUNC: mean sd
 
-# gres1 and hres1
-apc = constraints.AtomPairConstraint( hterm1, gterm1, swf )
+#sc = ConstraintSetMover()
+#sc.constraint_file('temp.cst')
+#sc.apply(pose)
+
+
+GF = constraints.GaussianFunc( 4.0, 2.0 )
+#swf = constraints.ScalarWeightedFunc( 10, SOG )
+
+## gres1 and hres1
+apc = constraints.AtomPairConstraint( hterm2, gterm2, GF )
 pose.add_constraint( apc )
 
-# gres2 and hres2
-apc = constraints.AtomPairConstraint( hterm2, gterm2, swf )
-pose.add_constraint( apc )
+## gres2 and hres2
+#apc = constraints.AtomPairConstraint( hterm2, gterm2, swf )
+#pose.add_constraint( apc )
 
 
-docking_low = DockingLowRes(scorefxn_low, 1)
-docking_low.set_scorefxn( scorefxn_low )
+# show scores!
+print sf.show(pose)
+
+
+docking_low = DockingLowRes(sf, 1)
+docking_low.set_scorefxn( sf )
 
 AddPyMolObserver(pose, True)
 
 
-jd = PyJobDistributor('dock_output', 1, scorefxn_low)
+starting_pose = Pose()
+starting_pose.assign(pose)
+
+jd = PyJobDistributor('output', 1, sf)
 jd.native_pose = pose 
 
-while True:#not jd.job_complete:
+jd.job_complete = False
+
+#while not jd.job_complete:
+for a in range(20):
     # change pose name for PyMOL
     pose.pdb_info().name('O_O')
+
+    pose.assign(starting_pose)
 
     # perturb the structure
     print "now moving"
@@ -126,4 +151,8 @@ while True:#not jd.job_complete:
     # perform docking
     print "now docking"
     docking_low.apply(pose)
+
+    jd.output_decoy(pose)
+    pose.dump_scored_pdb('scored_'+str(a)+'.pdb', sf)
+
     print "past last"

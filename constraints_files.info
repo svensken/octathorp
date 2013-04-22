@@ -1,0 +1,5 @@
+AtomPair CA 136 CA 288 GAUSSIANFUNC 8.0 2.0
+
+#AtomPair: Atom1_Name Atom1_ResNum Atom2_Name Atom2_ResNum Func_Type Func_Def
+#Distance between Atom1 and Atom2
+#GAUSSIANFUNC: mean sd
