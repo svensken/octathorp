@@ -3,7 +3,7 @@
 print 'importing rosetta...'
 from rosetta import *
 from rosetta.protocols.rigid import *
-import time
+import time, os
 
 
 # silence rosetta output
@@ -12,16 +12,17 @@ args = utility.vector1_string()
 args.extend( opts )
 core.init( args )
 
+hier = os.path.dirname(os.path.realpath(__file__))
 
 # parameters
 hpose = Pose()
-pose_from_pdb(hpose, '4fwb.pdb')
+pose_from_pdb(hpose, hier+'/4fwb.pdb')
 gpose = Pose()
-pose_from_pdb(gpose, '2yas.pdb')
-hres1 = 136
-hres2 = 212
-gres1 = 113
-gres2 = 185
+pose_from_pdb(gpose, hier+'/2yas.pdb')
+hres1 = 136 #remains 136
+hres2 = 212 #becomes 137
+gres1 = 113 #becomes 219
+gres2 = 185 #becomes 291
 
 pi=hpose.pdb_info()
 
@@ -44,9 +45,9 @@ for r in reversed(range(gres1, gres2+1)):
     #pymover.apply(hpose)
     #time.sleep(.1)
 
-hpose.dump_pdb('temp.pdb')
+hpose.dump_pdb(hier+'/temp.pdb')
 pose=Pose()
-pose_from_pdb(pose, 'temp.pdb')
+pose_from_pdb(pose, hier+'/temp.pdb')
 to_centroid = SwitchResidueTypeSetMover('centroid')
 to_centroid.apply(pose)
 
@@ -96,27 +97,25 @@ gterm2 = AtomID(1, pose.total_residue())
 ####################
 
 # cst file
-with open('temp.cst', 'w') as cst_file:
-    cst_file.write( 'AtomPair CA '+str(hres1+1)+' CA '+str(pose.total_residue())+' GAUSSIANFUNC 8.0 2.0')
+#with open('temp.cst', 'w') as cst_file:
+#    cst_file.write( 'AtomPair CA '+str(hres1+1)+' CA '+str(pose.total_residue())+' GAUSSIANFUNC 8.0 2.0')
     #AtomPair: Atom1_Name Atom1_ResNum Atom2_Name Atom2_ResNum Func_Type Func_Def
     #Distance between Atom1 and Atom2
     #GAUSSIANFUNC: mean sd
 
+# pyrosetta tutorial method
 #sc = ConstraintSetMover()
 #sc.constraint_file('temp.cst')
 #sc.apply(pose)
 
-
-GF = constraints.GaussianFunc( 4.0, 2.0 )
+# whats this?
 #swf = constraints.ScalarWeightedFunc( 10, SOG )
 
-## gres1 and hres1
-apc = constraints.AtomPairConstraint( hterm2, gterm2, GF )
-pose.add_constraint( apc )
-
-## gres2 and hres2
-#apc = constraints.AtomPairConstraint( hterm2, gterm2, swf )
-#pose.add_constraint( apc )
+GF = constraints.GaussianFunc( 6.0, 2.0 )
+apc1 = constraints.AtomPairConstraint( hterm1, gterm1, GF )
+apc2 = constraints.AtomPairConstraint( hterm2, gterm2, GF )
+pose.add_constraint( apc1 )
+pose.add_constraint( apc2 )
 
 
 # show scores!
@@ -135,10 +134,11 @@ starting_pose.assign(pose)
 jd = PyJobDistributor('output', 1, sf)
 jd.native_pose = pose 
 
-jd.job_complete = False
+#jd.job_complete = False
+print jd.job_complete
 
-#while not jd.job_complete:
-for a in range(20):
+while not jd.job_complete:
+#for a in range(20):
     # change pose name for PyMOL
     pose.pdb_info().name('O_O')
 
@@ -153,6 +153,10 @@ for a in range(20):
     docking_low.apply(pose)
 
     jd.output_decoy(pose)
-    pose.dump_scored_pdb('scored_'+str(a)+'.pdb', sf)
+
+    # dump scored pdb (manually)
+#TODO make job distributor dump pdbs and scorefiles
+    filename = os.getcwd() + '/scored_' + str(a) + '.pdb'
+    pose.dump_scored_pdb( filename, sf )
 
     print "past last"
