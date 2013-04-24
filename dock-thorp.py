@@ -48,6 +48,11 @@ for r in reversed(range(gres1, gres2+1)):
 hpose.dump_pdb(hier+'/temp.pdb')
 pose=Pose()
 pose_from_pdb(pose, hier+'/temp.pdb')
+
+# (before centroid)
+starting_pose = Pose()
+starting_pose.assign(pose)
+
 to_centroid = SwitchResidueTypeSetMover('centroid')
 to_centroid.apply(pose)
 
@@ -128,13 +133,12 @@ docking_low.set_scorefxn( sf )
 AddPyMolObserver(pose, True)
 
 
-starting_pose = Pose()
-starting_pose.assign(pose)
 
 jd = PyJobDistributor('output', 1, sf)
 jd.native_pose = pose 
 
-#jd.job_complete = False
+print jd.job_complete
+jd.job_complete = False
 print jd.job_complete
 
 while not jd.job_complete:
@@ -150,9 +154,12 @@ while not jd.job_complete:
 
     # perform docking
     print "now docking"
-    docking_low.apply(pose)
+    #docking_low.apply(pose)
 
     jd.output_decoy(pose)
+
+    recover_sidechains = ReturnSidechainMover(starting_pose)
+    recover_sidechains.apply(pose)
 
     # dump scored pdb (manually)
 #TODO make job distributor dump pdbs and scorefiles
