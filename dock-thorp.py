@@ -71,7 +71,7 @@ spin = RigidBodySpinMover(1)
 slide_into_contact = DockingSlideIntoContact(1)
 
 sf = create_score_function('interchain_cen')
-sf.set_weight( atom_pair_constraint, 500 )
+sf.set_weight( atom_pair_constraint, 10 )
 
 
 movemap = MoveMap()
@@ -141,7 +141,7 @@ AddPyMolObserver(pose, True)
 
 
 
-jd = PyJobDistributor('output', 1, sf)
+jd = PyJobDistributor('output', 20, sf)
 jd.native_pose = pose 
 
 print jd.job_complete
@@ -149,7 +149,7 @@ jd.job_complete = False
 print jd.job_complete
 
 #while not jd.job_complete:
-for a in range(5):
+for a in range(20):
     # change pose name for PyMOL
     pose.pdb_info().name('O_O')
 
