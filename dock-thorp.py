@@ -50,11 +50,12 @@ pose=Pose()
 pose_from_pdb(pose, hier+'/temp.pdb')
 
 # (before centroid)
-starting_pose = Pose()
-starting_pose.assign(pose)
+sidechain_pose = Pose()
+sidechain_pose.assign(pose)
 
 to_centroid = SwitchResidueTypeSetMover('centroid')
 to_centroid.apply(pose)
+
 
 print pose.pdb_info()
 print pose.fold_tree()
@@ -70,7 +71,7 @@ spin = RigidBodySpinMover(1)
 slide_into_contact = DockingSlideIntoContact(1)
 
 sf = create_score_function('interchain_cen')
-sf.set_weight( atom_pair_constraint, 10 )
+sf.set_weight( atom_pair_constraint, 500 )
 
 
 movemap = MoveMap()
@@ -122,6 +123,12 @@ apc2 = constraints.AtomPairConstraint( hterm2, gterm2, GF )
 pose.add_constraint( apc1 )
 pose.add_constraint( apc2 )
 
+cs = pose.constraint_set()
+
+print 'first ', sf.show(pose)
+starting_pose = Pose()
+starting_pose.assign(pose)
+print 'double first ', sf.show(starting_pose)
 
 # show scores!
 print sf.show(pose)
@@ -142,7 +149,7 @@ jd.job_complete = False
 print jd.job_complete
 
 #while not jd.job_complete:
-for a in range(3):
+for a in range(5):
     # change pose name for PyMOL
     pose.pdb_info().name('O_O')
 
@@ -154,11 +161,17 @@ for a in range(3):
 
     # perform docking
     print "now docking"
-    #docking_low.apply(pose)
+    print 'before ', cs
+    sf.show(pose)
+    print 'before is done, '*5
+    docking_low.apply(pose)
+    print 'after ', cs
+    sf.show(pose)
+    print 'after is done, '*5
 
     jd.output_decoy(pose)
     print 1
-    recover_sidechains = ReturnSidechainMover(starting_pose)
+    recover_sidechains = ReturnSidechainMover(sidechain_pose)
     recover_sidechains.apply(pose)
     print 2
     # dump scored pdb (manually)
