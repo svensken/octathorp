@@ -1,0 +1,21 @@
+pdb name: output     nstruct: 20
+filename: output_1.pdb total_score: 13.23 rmsd: 0.0  interchain_pair:    -0.207 interchain_vdw:     8.602 atom_pair_constraint:    46.505 interchain_env:   -21.669 interchain_contact:   -20.000
+filename: output_2.pdb total_score: 34.88 rmsd: 0.0  interchain_pair:    -1.367 interchain_vdw:     2.712 atom_pair_constraint:    44.159 interchain_env:   -16.625 interchain_contact:     6.000
+filename: output_3.pdb total_score: 503.96 rmsd: 0.0  interchain_pair:    15.171 interchain_vdw:   479.090 atom_pair_constraint:   126.479 interchain_env:   -24.785 interchain_contact:   -92.000
+filename: output_4.pdb total_score: 63.95 rmsd: 0.0  interchain_pair:     2.367 interchain_vdw:     5.396 atom_pair_constraint:    92.066 interchain_env:   -22.883 interchain_contact:   -13.000
+filename: output_5.pdb total_score: 60.76 rmsd: 0.0  interchain_pair:     7.289 interchain_vdw:     5.676 atom_pair_constraint:   102.086 interchain_env:   -24.288 interchain_contact:   -30.000
+filename: output_6.pdb total_score: 332.45 rmsd: 0.0  interchain_pair:     0.935 interchain_vdw:    28.305 atom_pair_constraint:   319.701 interchain_env:   -15.491 interchain_contact:    -1.000
+filename: output_7.pdb total_score: 133.69 rmsd: 0.0  interchain_pair:     1.538 interchain_vdw:    34.168 atom_pair_constraint:   147.831 interchain_env:   -18.845 interchain_contact:   -31.000
+filename: output_8.pdb total_score: 297.37 rmsd: 0.0  interchain_pair:     0.512 interchain_vdw:     0.995 atom_pair_constraint:   310.306 interchain_env:   -19.444 interchain_contact:     5.000
+filename: output_9.pdb total_score: 636.2 rmsd: 0.0  interchain_pair:    12.164 interchain_vdw:   457.422 atom_pair_constraint:   281.317 interchain_env:   -23.700 interchain_contact:   -91.000
+filename: output_10.pdb total_score: 303.98 rmsd: 0.0  interchain_pair:     0.387 interchain_vdw:     3.080 atom_pair_constraint:   311.525 interchain_env:   -15.010 interchain_contact:     4.000
+filename: output_11.pdb total_score: 464.01 rmsd: 0.0  interchain_pair:    -0.098 interchain_vdw:     0.000 atom_pair_constraint:   469.042 interchain_env:   -17.936 interchain_contact:    13.000
+filename: output_12.pdb total_score: 182.58 rmsd: 0.0  interchain_pair:     1.688 interchain_vdw:    27.431 atom_pair_constraint:   183.582 interchain_env:   -16.118 interchain_contact:   -14.000
+filename: output_13.pdb total_score: 321.65 rmsd: 0.0  interchain_pair:    10.138 interchain_vdw:   242.174 atom_pair_constraint:   132.750 interchain_env:   -22.413 interchain_contact:   -41.000
+filename: output_14.pdb total_score: 159.44 rmsd: 0.0  interchain_pair:     1.242 interchain_vdw:    40.723 atom_pair_constraint:   154.558 interchain_env:   -17.084 interchain_contact:   -20.000
+filename: output_15.pdb total_score: 49.54 rmsd: 0.0  interchain_pair:     1.005 interchain_vdw:     0.622 atom_pair_constraint:    67.632 interchain_env:   -21.721 interchain_contact:     2.000
+filename: output_16.pdb total_score: 911.77 rmsd: 0.0  interchain_pair:     1.819 interchain_vdw:    10.174 atom_pair_constraint:   924.362 interchain_env:   -17.584 interchain_contact:    -7.000
+filename: output_17.pdb total_score: 161.17 rmsd: 0.0  interchain_pair:     2.745 interchain_vdw:    31.322 atom_pair_constraint:   144.855 interchain_env:   -21.752 interchain_contact:     4.000
+filename: output_18.pdb total_score: 1088.89 rmsd: 0.0  interchain_pair:    17.966 interchain_vdw:  1110.631 atom_pair_constraint:   106.632 interchain_env:   -17.335 interchain_contact:  -129.000
+filename: output_19.pdb total_score: 49.38 rmsd: 0.0  interchain_pair:    -1.326 interchain_vdw:     3.471 atom_pair_constraint:    70.947 interchain_env:   -19.709 interchain_contact:    -4.000
+filename: output_20.pdb total_score: 118.14 rmsd: 0.0  interchain_pair:     4.800 interchain_vdw:    41.919 atom_pair_constraint:    91.467 interchain_env:   -15.047 interchain_contact:    -5.000

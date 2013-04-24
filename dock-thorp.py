@@ -5,6 +5,16 @@ from rosetta import *
 from rosetta.protocols.rigid import *
 import time, os
 
+try:
+    import __main__
+    __main__.pymol_argv = ['pymol','-qc'] # Pymol: quiet and no GUI
+    import pymol
+    pymol.finish_launching()
+
+    # start framing
+except:
+    print 'hmm, no pymol.'
+
 
 # silence rosetta output
 opts = [ 'app', '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ), '-mute', 'all', '-ignore_unrecognized_res' ]
@@ -12,7 +22,7 @@ args = utility.vector1_string()
 args.extend( opts )
 core.init( args )
 
-hier = str(os.path.dirname(os.path.realpath(__file__)))
+hier = str(os.path.dirname(os.path.realpath(__file__))) # unicode weirdness?
 
 # parameters
 hpose = Pose()
@@ -24,11 +34,12 @@ hres2 = 212 #becomes 137
 gres1 = 113 #becomes 219
 gres2 = 185 #becomes 291
 
+
+
+
+### POSES
+
 pi=hpose.pdb_info()
-
-
-# CHAINS
-#TODO find a better way to manipulate the chains
 
 # delete between hres1 hres2
 # list should be [ hres2-1, hres2-2, ... , hres1+1 ]
@@ -57,11 +68,9 @@ to_centroid = SwitchResidueTypeSetMover('centroid')
 to_centroid.apply(pose)
 
 
-print pose.pdb_info()
-print pose.fold_tree()
 
+### MOVERS & SCOREFXN
 
-# MOVER
 randomize1 = RigidBodyRandomizeMover(pose)
 randomize2 = RigidBodyRandomizeMover(pose)
 
@@ -73,13 +82,11 @@ slide_into_contact = DockingSlideIntoContact(1)
 sf = create_score_function('interchain_cen')
 sf.set_weight( atom_pair_constraint, 10 )
 
-
 movemap = MoveMap()
 movemap.set_jump(1, True)
 minmover = MinMover()
 minmover.movemap(movemap)
 minmover.score_function(sf)
-
 
 perturb = SequenceMover()
 perturb.add_mover(randomize1)
@@ -90,49 +97,29 @@ perturb.add_mover(slide_into_contact)
 perturb.add_mover(minmover)
 
 
-####################
-# in pose:
-# hres1 is hres1
-hterm1 = AtomID(1, hres1)
-# hres2 is hres1+1
-hterm2 = AtomID(1, hres1 + 1)
-# gres1 is first B
-gterm1 = AtomID(1, int(str(pose.fold_tree().jump_edge(1)).split()[2]) ) # please find a better way
-# gres2 is last B
-gterm2 = AtomID(1, pose.total_residue())
-####################
+### CONSTRAINTS
 
-# cst file
-#with open('temp.cst', 'w') as cst_file:
-#    cst_file.write( 'AtomPair CA '+str(hres1+1)+' CA '+str(pose.total_residue())+' GAUSSIANFUNC 8.0 2.0')
-    #AtomPair: Atom1_Name Atom1_ResNum Atom2_Name Atom2_ResNum Func_Type Func_Def
-    #Distance between Atom1 and Atom2
-    #GAUSSIANFUNC: mean sd
+hterm1 = AtomID(1, hres1) #hres1
+hterm2 = AtomID(1, hres1 + 1) #hres2
+gterm1 = AtomID(1, int(str(pose.fold_tree().jump_edge(1)).split()[2]) ) #chainB first res
+gterm2 = AtomID(1, pose.total_residue()) #chainB last res
 
-# pyrosetta tutorial method
-#sc = ConstraintSetMover()
-#sc.constraint_file('temp.cst')
-#sc.apply(pose)
-
-# whats this?
-#swf = constraints.ScalarWeightedFunc( 10, SOG )
-
+#swf = constraints.ScalarWeightedFunc( 10, SOG ) #what dis be?
 GF = constraints.GaussianFunc( 6.0, 2.0 )
 apc1 = constraints.AtomPairConstraint( hterm1, gterm1, GF )
 apc2 = constraints.AtomPairConstraint( hterm2, gterm2, GF )
 pose.add_constraint( apc1 )
 pose.add_constraint( apc2 )
 
-cs = pose.constraint_set()
+#cs = pose.constraint_set()
+#print cs
 
-print 'first ', sf.show(pose)
 starting_pose = Pose()
 starting_pose.assign(pose)
-print 'double first ', sf.show(starting_pose)
+print_if_desired = sf.show(pose)
 
-# show scores!
-print sf.show(pose)
 
+# DOCKER & JOB-DISTRIBUTOR
 
 docking_low = DockingLowRes(sf, 1)
 docking_low.set_scorefxn( sf )
@@ -141,7 +128,7 @@ AddPyMolObserver(pose, True)
 
 
 
-jd = PyJobDistributor('output', 20, sf)
+jd = PyJobDistributor('jd_output', 1, sf)
 jd.native_pose = pose 
 
 print jd.job_complete
@@ -149,11 +136,11 @@ jd.job_complete = False
 print jd.job_complete
 
 #while not jd.job_complete:
-for a in range(20):
+for a in range(1):
     # change pose name for PyMOL
     pose.pdb_info().name('O_O')
 
-    pose.assign(starting_pose)
+    pose.assign(starting_pose) # has centroids and constraints
 
     # perturb the structure
     print "now moving"
@@ -161,22 +148,19 @@ for a in range(20):
 
     # perform docking
     print "now docking"
-    print 'before ', cs
     sf.show(pose)
-    print 'before is done, '*5
+
     docking_low.apply(pose)
-    print 'after ', cs
+
     sf.show(pose)
-    print 'after is done, '*5
 
     jd.output_decoy(pose)
-    print 1
+
     recover_sidechains = ReturnSidechainMover(sidechain_pose)
     recover_sidechains.apply(pose)
-    print 2
+
     # dump scored pdb (manually)
-#TODO make job distributor dump pdbs and scorefiles
     filename = os.getcwd() + '/scored_' + str(a) + '.pdb'
     pose.dump_scored_pdb( filename, sf )
 
-    print "past last"
+    print 'klar'
