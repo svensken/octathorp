@@ -5,14 +5,20 @@ from rosetta import *
 from rosetta.protocols.rigid import *
 import time, os
 
-try:
+if False: #try:
+    print 'importing pymol...'
+    sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/')
     import __main__
     __main__.pymol_argv = ['pymol','-qc'] # Pymol: quiet and no GUI
     import pymol
     pymol.finish_launching()
+    pymol.cmd.do('run ~/Desktop/PyRosetta/PyMOLPyRosettaServer.py')
 
-    # start framing
-except:
+    pymol.cmd.do('print "heyllo"')
+
+    #pymol.cmd.ray()
+    #pymol.cmd.png
+else: #except:
     print 'hmm, no pymol.'
 
 
