@@ -12,7 +12,7 @@ args = utility.vector1_string()
 args.extend( opts )
 core.init( args )
 
-hier = os.path.dirname(os.path.realpath(__file__))
+hier = str(os.path.dirname(os.path.realpath(__file__)))
 
 # parameters
 hpose = Pose()
@@ -141,8 +141,8 @@ print jd.job_complete
 jd.job_complete = False
 print jd.job_complete
 
-while not jd.job_complete:
-#for a in range(20):
+#while not jd.job_complete:
+for a in range(3):
     # change pose name for PyMOL
     pose.pdb_info().name('O_O')
 
@@ -157,10 +157,10 @@ while not jd.job_complete:
     #docking_low.apply(pose)
 
     jd.output_decoy(pose)
-
+    print 1
     recover_sidechains = ReturnSidechainMover(starting_pose)
     recover_sidechains.apply(pose)
-
+    print 2
     # dump scored pdb (manually)
 #TODO make job distributor dump pdbs and scorefiles
     filename = os.getcwd() + '/scored_' + str(a) + '.pdb'
