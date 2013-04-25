@@ -40,8 +40,14 @@ hres2 = 212 #becomes 137
 gres1 = 113 #becomes 219
 gres2 = 185 #becomes 291
 
+viz_ = True
 
-
+if viz_:
+    pymover = PyMOL_Mover()
+    hpose.pdb_info().name('O_O')
+    pymover.apply(hpose)
+    pymover.apply(gpose)
+    raw_input('ready to delete hreses')
 
 ### POSES
 
@@ -51,6 +57,12 @@ pi=hpose.pdb_info()
 # list should be [ hres2-1, hres2-2, ... , hres1+1 ]
 for r in reversed(range(hres1+1, hres2)): # WILL SEGFAULT AT r = 1
     hpose.delete_polymer_residue( r )
+    if viz_:
+        hpose.pdb_info().name('O_O')
+        pymover.apply(hpose)
+
+if viz_:
+    raw_input('ready to add greses as chain B')
 
 #append_residue_by_jump(hpose, gpose.res, hres1, start_new_chain=True)
 hpose.append_residue_by_jump(gpose.residue(gres1), hres1, start_new_chain=True)
@@ -59,8 +71,10 @@ hpose.append_residue_by_jump(gpose.residue(gres1), hres1, start_new_chain=True)
 for r in reversed(range(gres1, gres2+1)):
     hpose.append_polymer_residue_after_seqpos(gpose.residue(r), hpose.total_residue(), 0)
     pi.chain( hpose.total_residue(), "B" )
-    #pymover.apply(hpose)
-    #time.sleep(.1)
+    if viz_:
+        hpose.pdb_info().name('O_O')
+        pymover.apply(hpose)
+
 
 hpose.dump_pdb(hier+'/temp.pdb')
 pose=Pose()
@@ -72,6 +86,11 @@ sidechain_pose.assign(pose)
 
 to_centroid = SwitchResidueTypeSetMover('centroid')
 to_centroid.apply(pose)
+
+raw_input('about to centroid')
+if viz_:
+    pose.pdb_info().name('O_O')
+    pymover.apply(pose)
 
 
 
@@ -137,10 +156,6 @@ AddPyMolObserver(pose, True)
 jd = PyJobDistributor('jd_output', 1, sf)
 jd.native_pose = pose 
 
-print jd.job_complete
-jd.job_complete = False
-print jd.job_complete
-
 #while not jd.job_complete:
 for a in range(1):
     # change pose name for PyMOL
@@ -155,7 +170,6 @@ for a in range(1):
     # perform docking
     print "now docking"
     sf.show(pose)
-
     docking_low.apply(pose)
 
     sf.show(pose)
