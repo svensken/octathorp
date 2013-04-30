@@ -28,6 +28,7 @@ args = utility.vector1_string()
 args.extend( opts )
 core.init( args )
 
+# path to script. seems like a dumb way to locate the pdbs.
 hier = str(os.path.dirname(os.path.realpath(__file__))) # unicode weirdness?
 
 # parameters
@@ -128,6 +129,18 @@ hterm1 = AtomID(1, hres1) #hres1
 hterm2 = AtomID(1, hres1 + 1) #hres2
 gterm1 = AtomID(1, int(str(pose.fold_tree().jump_edge(1)).split()[2]) ) #chainB first res
 gterm2 = AtomID(1, pose.total_residue()) #chainB last res
+
+#better way to get hterms
+# assume chB goes res r to total_residue() 
+#r = 1 
+#while pi.chain(r) != 'B':
+#r += 1
+#hterm1_res = pose.residue( hres1 )                  #136
+#hterm2_res = pose.residue( hres1+1 )                #137
+#
+#gterm1_res = pose.residue( r+1 )                    #219
+#gterm2_res = pose.residue( pose.total_residue() )   #291
+
 
 #swf = constraints.ScalarWeightedFunc( 10, SOG ) #what dis be?
 GF = constraints.GaussianFunc( 6.0, 2.0 )
