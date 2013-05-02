@@ -91,7 +91,6 @@ sidechain_pose.assign(pose)
 to_centroid = SwitchResidueTypeSetMover('centroid')
 to_centroid.apply(pose)
 
-raw_input('about to centroid')
 if viz_:
     pose.pdb_info().name('O_O')
     pymover.apply(pose)
