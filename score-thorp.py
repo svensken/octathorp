@@ -82,18 +82,20 @@ for root, dirnames, filenames in os.walk('./bashy'):
             pose.add_constraint( apc2 )
 
             # with our constraints
+            sf.show(pose)
             e = pose.energies()
             te = e.total_energy()
             #scores_list.append(te)
 
             # default scoring
             sf.set_weight( atom_pair_constraint, 0 )
+            sf.show(pose)
             d_e = pose.energies()
             d_te = e.total_energy()
 
 
             # RMSD
-            rmsd = CA_rmsd( rmsd_ref_pose, pose, r+1, pose.total_residue() )
+            rmsd = CA_rmsd( rmsd_ref_pose, pose )
 
             # record to csv
             # open and close every loop for a write every time
