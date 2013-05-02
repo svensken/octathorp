@@ -195,8 +195,8 @@ for a in range(400):
     recover_sidechains.apply(pose)
 
     # dump scored pdb (manually)
-    filename = os.getcwd() + '/scored_' + str(a) + '.pdb'
-    pose.dump_scored_pdb( filename, sf )
+    #filename = os.getcwd() + '/scored_' + str(a) + '.pdb'
+    #pose.dump_scored_pdb( filename, sf )
 
     with open(os.getcwd()+'/status.update', 'a') as statusupdate:
         statusupdate.write('klar med rund '+str(a)+', kl.'+str(time.strftime("%Y%m%d-%H%M%S"))+'\n')
