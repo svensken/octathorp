@@ -198,5 +198,5 @@ for a in range(20):
     filename = os.getcwd() + '/scored_' + str(a) + '.pdb'
     pose.dump_scored_pdb( filename, sf )
 
-    with open('status.update', 'a') as statusupdate:
+    with open(os.getcwd()+'status.update', 'a') as statusupdate:
         statusupdate.write('klar med rund '+str(a)+', kl.'+str(time.strftime("%Y%m%d-%H%M%S")))
