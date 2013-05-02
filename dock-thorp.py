@@ -6,6 +6,7 @@ from rosetta.protocols.rigid import *
 import time, os
 
 if False: #try:
+    viz_ = True
     print 'importing pymol...'
     sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/')
     import __main__
@@ -19,6 +20,7 @@ if False: #try:
     #pymol.cmd.ray()
     #pymol.cmd.png
 else: #except:
+    viz_ = False
     print 'hmm, no pymol.'
 
 
@@ -41,7 +43,6 @@ hres2 = 212 #becomes 137
 gres1 = 113 #becomes 219
 gres2 = 185 #becomes 291
 
-viz_ = True
 
 if viz_:
     pymover = PyMOL_Mover()
@@ -49,6 +50,8 @@ if viz_:
     pymover.apply(hpose)
     pymover.apply(gpose)
     raw_input('ready to delete hreses')
+
+
 
 ### POSES
 
@@ -95,6 +98,7 @@ if viz_:
 
 
 
+
 ### MOVERS & SCOREFXN
 
 randomize1 = RigidBodyRandomizeMover(pose)
@@ -131,8 +135,8 @@ gterm1 = AtomID(1, int(str(pose.fold_tree().jump_edge(1)).split()[2]) ) #chainB 
 gterm2 = AtomID(1, pose.total_residue()) #chainB last res
 
 #better way to get hterms
-# assume chB goes res r to total_residue() 
-#r = 1 
+# assume chB goes res r to total_residue()
+#r = 1
 #while pi.chain(r) != 'B':
 #r += 1
 #hterm1_res = pose.residue( hres1 )                  #136
@@ -165,12 +169,11 @@ docking_low.set_scorefxn( sf )
 AddPyMolObserver(pose, True)
 
 
-
-jd = PyJobDistributor('jd_output', 1, sf)
-jd.native_pose = pose 
+jd = PyJobDistributor('jd_output', 20, sf)
+jd.native_pose = pose
 
 #while not jd.job_complete:
-for a in range(1):
+for a in range(20):
     # change pose name for PyMOL
     pose.pdb_info().name('O_O')
 

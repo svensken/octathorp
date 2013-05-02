@@ -25,13 +25,18 @@ rmsd_ref_pose = Pose()
 pose_from_pdb( rmsd_ref_pose, './bashy/42/output_1.pdb' ) #lowest score
 
 
+#TODO backup if file exists
+with open('rmsd_vs_energy.csv', 'w') as csv:
+    csv.write( 'rmsd, with cst, default, filename \n' )
+
+
 
 # run from octathorp/ and search through bashy/##'s
 for root, dirnames, filenames in os.walk('./bashy'):
     for f in filenames:
         if f.startswith('output_') and f.endswith('.pdb'):
             this_pdb = os.path.join( root, f )
-            
+
             pose = Pose()
             pose_from_pdb( pose, this_pdb )
 
@@ -43,7 +48,7 @@ for root, dirnames, filenames in os.walk('./bashy'):
                 r += 1
             hterm1_res = pose.residue( hres1 )   #136
             hterm2_res = pose.residue( hres1+1 ) #137
-            
+
             gterm1_res = pose.residue( r+1 )
             gterm2_res = pose.residue( pose.total_residue() )
 
@@ -51,7 +56,7 @@ for root, dirnames, filenames in os.walk('./bashy'):
             dist1 = hterm1_res.xyz('CA').distance( gterm1_res.xyz('CA') )
             dist2 = hterm2_res.xyz('CA').distance( gterm2_res.xyz('CA') )
 
-            print 
+            print
             print this_pdb
             print hterm1_res.seqpos(), hterm2_res.seqpos(), gterm1_res.seqpos(), gterm2_res.seqpos()
             print dist1, dist2
@@ -100,4 +105,11 @@ for root, dirnames, filenames in os.walk('./bashy'):
             # record to csv
             # open and close every loop for a write every time
             with open('rmsd_vs_energy.csv', 'a') as csv:
-                csv.write( str(rmsd)+', '+str(te)+', '+str(d_te)+'\n' )
+                csv.write( str(rmsd)+', '+str(te)+', '+str(d_te)+', '+this_pdb+'\n' )
+
+
+
+
+
+
+

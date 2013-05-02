@@ -2,3 +2,4 @@
 all-transforms*
 matching_domains*
 pose-dump*
+bashy/*/*.pdb
