@@ -80,9 +80,9 @@ for r in reversed(range(gres1, gres2+1)):
         pymover.apply(hpose)
 
 
-hpose.dump_pdb(hier+'/temp.pdb')
+hpose.dump_pdb(os.getcwd()+'/temp.pdb')
 pose=Pose()
-pose_from_pdb(pose, hier+'/temp.pdb')
+pose_from_pdb(pose, os.getcwd()+'/temp.pdb')
 
 # (before centroid)
 sidechain_pose = Pose()
