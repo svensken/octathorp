@@ -168,11 +168,11 @@ docking_low.set_scorefxn( sf )
 AddPyMolObserver(pose, True)
 
 
-jd = PyJobDistributor('jd_output', 20, sf)
+jd = PyJobDistributor('jd_output', 400, sf)
 jd.native_pose = pose
 
 #while not jd.job_complete:
-for a in range(20):
+for a in range(400):
     # change pose name for PyMOL
     pose.pdb_info().name('O_O')
 
