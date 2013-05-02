@@ -80,9 +80,9 @@ for r in reversed(range(gres1, gres2+1)):
         pymover.apply(hpose)
 
 
-hpose.dump_pdb(os.getcwd()+'/temp.pdb')
+hpose.dump_pdb('temp.pdb')
 pose=Pose()
-pose_from_pdb(pose, os.getcwd()+'/temp.pdb')
+pose_from_pdb(pose, 'temp.pdb')
 
 # (before centroid)
 sidechain_pose = Pose()
@@ -195,8 +195,8 @@ for a in range(400):
     recover_sidechains.apply(pose)
 
     # dump scored pdb (manually)
-    #filename = os.getcwd() + '/scored_' + str(a) + '.pdb'
-    #pose.dump_scored_pdb( filename, sf )
+    filename = 'manual_' + str(a) + '.pdb'
+    pose.dump_scored_pdb( filename, sf )
 
-    with open(os.getcwd()+'/status.update', 'a') as statusupdate:
+    with open('status.update', 'a') as statusupdate:
         statusupdate.write('klar med rund '+str(a)+', kl.'+str(time.strftime("%Y%m%d-%H%M%S"))+'\n')
