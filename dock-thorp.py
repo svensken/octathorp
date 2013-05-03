@@ -171,8 +171,8 @@ AddPyMolObserver(pose, True)
 jd = PyJobDistributor('jd_output', 400, sf)
 jd.native_pose = pose
 
-#while not jd.job_complete:
-for a in range(400):
+while not jd.job_complete:
+#for a in range(400):
     # change pose name for PyMOL
     pose.pdb_info().name('O_O')
 
@@ -186,17 +186,17 @@ for a in range(400):
     print "now docking"
     sf.show(pose)
     docking_low.apply(pose)
-
+    print 'aaa'
     sf.show(pose)
-
-    jd.output_decoy(pose)
-
+    print 'bbb'
     recover_sidechains = ReturnSidechainMover(sidechain_pose)
     recover_sidechains.apply(pose)
-
+    print 'ccc'
+    #jd.output_decoy(pose)
+    print 'ddd'
     # dump scored pdb (manually)
-    filename = 'manual_' + str(a) + '.pdb'
-    pose.dump_scored_pdb( filename, sf )
-
+    #filename = 'manual_' + str(a) + '.pdb'
+    #pose.dump_scored_pdb( filename, sf )
+    print 'eee'
     with open('status.update', 'a') as statusupdate:
-        statusupdate.write('klar med rund '+str(a)+', kl.'+str(time.strftime("%Y%m%d-%H%M%S"))+'\n')
+        statusupdate.write('klar med rund kl.'+str(time.strftime("%Y%m%d-%H%M%S"))+'\n')
