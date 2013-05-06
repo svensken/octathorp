@@ -5,7 +5,7 @@ from rosetta import *
 from rosetta.protocols.rigid import *
 import time, os
 
-if False: #try:
+if False: 
     viz_ = True
     print 'importing pymol...'
     sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/')
@@ -19,7 +19,7 @@ if False: #try:
 
     #pymol.cmd.ray()
     #pymol.cmd.png
-else: #except:
+else: 
     viz_ = False
     print 'hmm, no pymol.'
 
