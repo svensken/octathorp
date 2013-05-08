@@ -199,4 +199,4 @@ for a in range(400): # 20 hours or so
     pose.dump_pdb( filename )#dump_scored_pdb( filename, sf )
     print 'eee'
     with open('status.update', 'a') as statusupdate:
-        statusupdate.write('klar med rund kl.'+str(time.strftime("%Y%m%d-%H%M%S"))+'\n')
+        statusupdate.write(str(time.strftime("%Y/%m/%d-%H:%M:%S"))+'\n')

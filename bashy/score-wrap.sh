@@ -8,3 +8,7 @@ do
     echo $!
     cd -
 done
+
+
+/home/svensken/octathorp/status-update.py &
+
