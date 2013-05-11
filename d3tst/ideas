@@ -1,12 +1,32 @@
-Max values
- - set markers to get_nstruct
-
 Ranges
  - predicted number for hour of running
  - number of ridiculous B-chain-in-infinity
  - number of negative energies
- - 
+
+Process management
+psutil
+ProcessManager (from Humanized.com)
+psi.process
+
+Display
+plot rms vs energy much like NYT "The Facebook Offering: How It Compares" complete with tooltips, zoom in on desirable region
+http://bost.ocks.org/mike/path/ - sparklines realtime howto
+http://bl.ocks.org/mbostock/4061961 - barchart. obviously.
+    details - http://projects.instantcognition.com/protovis/bulletchart/
+http://bl.ocks.org/mbostock/3808218 "General Update Pattern" ..?
+https://github.com/mbostock/d3/wiki/Requests - requestst (PUSHes?) for realtime (no refresh)
+http://stackoverflow.com/questions/13094426/bidirectional-flow-between-d3-js-frontend-and-python-backend-interactive-grap - returning json to client
+    looks good to me
+http://mbostock.github.io/d3/tutorial/bar-2.html - dynamic bar graphing (cool)
+http://www.d3noob.org/2013/02/update-d3js-data-dynamically-button.html - "D3 Tips n Tricks" excerpt on dynamic data load
+
+Directory changes
+pyinotify only for linux, seems too sophsoph
+watchdog testable on mac
+    https://pypi.python.org/pypi/watchdog/0.5.4 - overly basic example
+    http://ginstrom.com/scribbles/2012/05/10/continuous-integration-in-python-using-watchdog/ - good example
+    https://code.google.com/p/python-watchdog/source/browse/doc/examples/simple.py?r=b6b4ce34185c06c4e80f7d9487987f504eba247b - meh, decent example
 
 
-rmsd off of original cap, look for the highly unlikely pdb of LESS energy
-
+x(scrapped) - rmsd off of original cap, look for the highly unlikely pdb of LESS energy
+    scrapped because doesn't align with long term plans - hoping for very little similarity between original and new match (eventually)
