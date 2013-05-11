@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import json
+import os, json
 from datetime import datetime
 
 
@@ -15,18 +15,25 @@ from datetime import datetime
 initial_timestamp = datetime.now()
 
 
-def take_snapshot:
+def take_snapshot():
     
     json_data = []
 
-    for directory in bashy:
+    for root, dirs, files in os.walk("bashy-old"):
         
-        # finished decoys
-        ndone = len( [a for a in os.listdir(directory) if a.startswith('manual') and a.endswith('.pdb')] )
+        dirname = os.path.basename(root) # '12'
+        # skip unintended dirs
+        if not dirname.isdigit():
+            continue
+        print dirname
+
+        # number of decoys done
+        ndone = len( [f for f in files if f.startswith('output') and f.endswith('.pdb')] )
+        print ndone
 
         # fully worthless decoys
         losers = 0
-        for filename in directory:
+        if False:#for filename in directory:
             with open( filename, 'r' ) as f:
                 for line in f:
                     if '-nan' in line:
@@ -34,7 +41,7 @@ def take_snapshot:
         # should also check for 
         
         # time predictions
-        with open('status.update', 'r') as timely:
+        with open( os.path.join(root, 'status.update'), 'r') as timely:
             times = timely.readlines()
             delta_list = []
             for l in range(times):
@@ -49,23 +56,28 @@ def take_snapshot:
             # could potentially be more statusupdates than pdbs (append mode in dock-thorp.py)
             npdbs_1hr = 3600 / avg_delta
             npdbs_10hr = 36000 / avg_delta
-
+        print avg_delta
 
 
         # add a bar
         json_data.append( {
                             "title"     : str(dirname),
                             "subtitle"  : "decoys",
-                            "ranges"    : hmm,
-                            "measures"  : hmm,
-                            "markers"   : hmm
+                            "ranges"    : "50",
+                            "measures"  : "70",
+                            "markers"   : "90"
                           } )
 
 
+        with open("/home/svensken/octathorp/d3tst/otherbullets.json", 'w') as json_file:
+            print 'a'#json.dump( json_data, json_file )
 
 
-    with open("/home/svensken/octathorp/d3tst/bullets.json", 'w') as json_file:
-        json.dump( json_data, json_file )
+        print 'klar :D'
 
 
-    print 'klar :D'
+
+
+
+if True: # watchdog control goes here
+    take_snapshot()
