@@ -1,5 +1,5 @@
 *.swp
-all-transforms*
-matching_domains*
-pose-dump*
-**/*.pdb
+*.pdb
+*/*.pdb
+*/*/*.pdb
+# investigate **/*.pdb
