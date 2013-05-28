@@ -12,32 +12,56 @@ args.extend( opts )
 core.init( args )
 
 #print 'importing pymol...'
-#sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/')
+sys.path.append('/opt/local/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/site-packages/')
 # silence output, no GUI
-#import __main__
-#__main__.pymol_argv = ['pymol','-qc']
-#import pymol
-#pymol.finish_launching()
+import __main__
+__main__.pymol_argv = ['pymol','-qc']
+import pymol
+pymol.finish_launching()
 #pymol.cmd.do('run ~/Desktop/PyRosetta/PyMOLPyRosettaServer.py')
 
 
-def ce_align_poses(hpose, gpose):
-    #pymover.apply(hpose)
-    #pymover.apply(gpose)
-    hpose_name = ''
-    gpose_name = ''
+def ce_align_poses():
+    pymover = PyMOL_Mover()
+    pymover.apply(hpose)
+    pymover.apply(gpose)
+    #time.sleep(1)
+    pymol.cmd.load( hpose_filename )
+    pymol.cmd.load( gpose_filename )
+    hpose_name = '4fwb'
+    gpose_name = '2yas'
     pymol.cmd.cealign(hpose_name, gpose_name)
     pymol.cmd.save('ce_host_temp.pdb', hpose_name)
     pymol.cmd.save('ce_guest_temp.pdb', gpose_name)
-    pose = Pose()
-    pose = Pose()
+    #pose = Pose()
+    #pose = Pose()
     pose_from_pdb(hpose, 'ce_host_temp.pdb')
     pose_from_pdb(gpose, 'ce_guest_temp.pdb')
+    pymover.apply(hpose)
+    pymover.apply(gpose)
 
     return hpose, gpose
 
 def snip_poses():
-    pass
+    # delete between hres1 hres2
+    # list should be [ hres2-1, hres2-2, ... , hres1+1 ]
+    for r in reversed(range(hres1+1, hres2)): # WILL SEGFAULT AT r = 1
+        hpose.delete_polymer_residue( r )
+
+    # add guest domain to hpose as new chain
+    #append_residue_by_jump(hpose, gpose.res, hres1, start_new_chain=True)
+    hpose.append_residue_by_jump(gpose.residue(gres1), hres1, start_new_chain=True)
+    pi=hpose.pdb_info()
+    for r in reversed(range(gres1, gres2+1)):
+        hpose.append_polymer_residue_after_seqpos(gpose.residue(r), hpose.total_residue(), 0)
+        pi.chain( hpose.total_residue(), "B" )
+
+    # reload to make new chain behave correctly
+    hpose.dump_pdb('reload_temp.pdb')
+    pose=Pose()
+    pose_from_pdb(pose, 'reload_temp.pdb')
+
+    return pose
 
 def setup_movers_and_sf():
     pass
@@ -48,42 +72,27 @@ def setup_constraints():
 
 ##################################################
 
+hpose_filename = '4fwb.pdb'
+gpose_filename = '2yas.pdb'
 hpose = Pose()
-pose_from_pdb(hpose, '/home/svensken/octathorp/4fwb.pdb')
+pose_from_pdb(hpose, hpose_filename)
 gpose = Pose()
-pose_from_pdb(gpose, '/home/svensken/octathorp/2yas.pdb')
+pose_from_pdb(gpose, gpose_filename)
 hres1 = 136 #remains 136
 hres2 = 212 #becomes 137
 gres1 = 113 #becomes 219
 gres2 = 185 #becomes 291
 
 
-#hpose, gpose = ce_align_poses(hpose, gpose)
+hpose, gpose = ce_align_poses()
 
-# SNIP POSES
-# delete between hres1 hres2
-# list should be [ hres2-1, hres2-2, ... , hres1+1 ]
-for r in reversed(range(hres1+1, hres2)): # WILL SEGFAULT AT r = 1
-    hpose.delete_polymer_residue( r )
+pose = snip_poses()
 
-# add guest domain to hpose as new chain
-#append_residue_by_jump(hpose, gpose.res, hres1, start_new_chain=True)
-hpose.append_residue_by_jump(gpose.residue(gres1), hres1, start_new_chain=True)
-pi=hpose.pdb_info()
-for r in reversed(range(gres1, gres2+1)):
-    hpose.append_polymer_residue_after_seqpos(gpose.residue(r), hpose.total_residue(), 0)
-    pi.chain( hpose.total_residue(), "B" )
-
-# reload to make new chain behave correctly
-hpose.dump_pdb('reload_temp.pdb')
-pose=Pose()
-pose_from_pdb(pose, 'reload_temp.pdb')
 
 sidechain_pose = Pose()
 sidechain_pose.assign(pose)
 to_centroid = SwitchResidueTypeSetMover('centroid')
 to_centroid.apply(pose)
-#
 
 
 # SETUP MOVERS & SCOREFXN
@@ -146,7 +155,7 @@ docking_low.set_scorefxn( sf )
 
 print 'scorefxn set ok'
 
-#AddPyMolObserver(pose, True)
+AddPyMolObserver(pose, True)
 
 
 #jd = PyJobDistributor('jd_output', 400, sf)
