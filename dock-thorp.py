@@ -102,9 +102,6 @@ def setup_constraints():
     #cs = pose.constraint_set()
     #print cs
 
-    starting_pose = Pose()
-    starting_pose.assign(pose)
-
     return pose
     
 
@@ -124,16 +121,17 @@ hpose, gpose = ce_align_poses(hpose, gpose)
 
 pose = snip_poses()
 
-
 sidechain_pose = Pose()
 sidechain_pose.assign(pose)
 to_centroid = SwitchResidueTypeSetMover('centroid')
 to_centroid.apply(pose)
 
-
 sf, perturb = setup_movers_and_sf()
 
 pose = setup_constraints()
+
+starting_pose = Pose()
+starting_pose.assign(pose)
 
 sf.show(pose)
 
