@@ -4,23 +4,20 @@ print "importing rosetta"
 from rosetta import *
 import time, sys, os
 
-opts = [ 'app', '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ), '-mute', 'all', '-ignore_unrecognized_res' ]
+opts = [ 'app', '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ), '-mute', 'all', '-ignore_unrecognized_res', '-extra_res_cen', '/home/svensken/octathorp/molfiles/1WM1_PTB.cen.params', '-extra_res_fa', '/home/svensken/octathorp/molfiles/1WM1_PTB.fa.params' ]
 args = utility.vector1_string()
 args.extend( opts )
 core.init( args )
 
-# parameters
-hpose = Pose()
-pose_from_pdb(hpose, '/home/svensken/octathorp/4fwb.pdb')
-gpose = Pose()
-pose_from_pdb(gpose, '/home/svensken/octathorp/2yas.pdb')
-hres1 = 136 #remains 136
-hres2 = 212 #becomes 137
-gres1 = 113 #becomes 219
-gres2 = 185 #becomes 291
+
+# for benchmark
+hterm1 = AtomID(1, 137)
+hterm2 = AtomID(1, 138)
+gterm1 = AtomID(1, 205)
+gterm2 = AtomID(1, 310)
 
 
-# just find lowest rmsd
+# just find lowest energy
 lowest_find = False
 
 
@@ -35,7 +32,7 @@ if not this_directory.isdigit():
 # lowest rmsd ref
 if not lowest_find:
     rmsd_ref_pose = Pose()
-    pose_from_pdb( rmsd_ref_pose, '/home/svensken/octathorp/bashy/5/manual_0.pdb' ) #lowest score
+    pose_from_pdb( rmsd_ref_pose, '/home/svensken/octathorp/production/1WM1.pdb_3ANS.pdb/26/manual_135.pdb' ) #lowest score
 
     # backup
     if os.path.exists('rmsd_vs_energy.csv'):
@@ -59,23 +56,23 @@ for filename in os.listdir('.'):
         pi = pose.pdb_info()
 
         # assume chB goes res r to total_residue()
-        r = 1
-        while pi.chain(r) != 'B':
-            r += 1
-        hterm1_res = pose.residue( hres1 )   #136
-        hterm2_res = pose.residue( hres1+1 ) #137
+        #r = 1
+        #while pi.chain(r) != 'B':
+        #    r += 1
+        #hterm1_res = pose.residue( hres1 )   #136
+        #hterm2_res = pose.residue( hres1+1 ) #137
 
-        gterm1_res = pose.residue( r+1 )
-        gterm2_res = pose.residue( pose.total_residue() )
+        #gterm1_res = pose.residue( r+1 )
+        #gterm2_res = pose.residue( pose.total_residue() )
 
         # DISTANCES
-        dist1 = hterm1_res.xyz('CA').distance( gterm1_res.xyz('CA') )
-        dist2 = hterm2_res.xyz('CA').distance( gterm2_res.xyz('CA') )
+        #dist1 = hterm1_res.xyz('CA').distance( gterm1_res.xyz('CA') )
+        #dist2 = hterm2_res.xyz('CA').distance( gterm2_res.xyz('CA') )
 
-        print
-        print this_pdb
-        print hterm1_res.seqpos(), hterm2_res.seqpos(), gterm1_res.seqpos(), gterm2_res.seqpos()
-        print dist1, dist2
+        #print
+        #print this_pdb
+        #print hterm1_res.seqpos(), hterm2_res.seqpos(), gterm1_res.seqpos(), gterm2_res.seqpos()
+        #print dist1, dist2
 
         # TOTAL ENERGY
         # fullatom
@@ -96,9 +93,9 @@ for filename in os.listdir('.'):
         sf = create_score_function('interchain_cen')
         sf.set_weight( atom_pair_constraint, 10 )
 
-        GF = constraints.HarmonicFunc( 6.0, 2.0 ) #GaussianFunc( 6.0, 2.0 )
-        apc1 = constraints.AtomPairConstraint( AtomID(1,hres1), AtomID(1,r + 1), GF ) # hterm1, gterm1
-        apc2 = constraints.AtomPairConstraint( AtomID(1,hres1+1), AtomID(1,pose.total_residue()), GF ) # hterm2, gterm2
+        GF = constraints.GaussianFunc( 6.0, 2.0 )
+        apc1 = constraints.AtomPairConstraint( hterm1, gterm1, GF )
+        apc2 = constraints.AtomPairConstraint( hterm2, gterm2, GF )
         pose.add_constraint( apc1 )
         pose.add_constraint( apc2 )
 

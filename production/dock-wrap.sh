@@ -35,7 +35,7 @@ do
             # /path/to/script.py /path/to/host.pdb hr1 hr2 /path/to/guest.pdb gr1 gr2 &
             # if pdb's pre-preped:
             # /path/to/script.py /path/to/host.pdb /path/to/guest.pdb &
-            /home/svensken/octathorp/dock-thorp.py $octadir/forkenny/1WM1bot_3ANScap_input.pdb & #$host $octadir$guest &
+            /home/svensken/octathorp/docky.py $octadir/forkenny/1WM1bot_3ANScap_input.pdb & #$host $octadir$guest &
             waitforme+=($!)
             cd -
         done

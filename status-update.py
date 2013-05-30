@@ -20,11 +20,10 @@ def take_snapshot():
     json_data = []
 
     #TODO find way to extract nstruct
-    nstruct = 400
+    nstruct = 300
 
     full_total = 0
-
-    for root, dirs, files in os.walk('bashy'):
+    for root, dirs, files in os.walk('production/1WM1.pdb_3ANS.pdb'):
         
         dirname = os.path.basename(root) # '12'
         # skip unintended dirs
@@ -57,10 +56,15 @@ def take_snapshot():
                     delta_list.append( delta.seconds )
                 except:
                     pass
-            avg_delta = sum(delta_list) / len(delta_list)
-            # could potentially be more statusupdates than pdbs (append mode in dock-thorp.py)
-            n1hr = 3600 / avg_delta
-            n10hr = 36000 / avg_delta
+            try:
+                avg_delta = sum(delta_list) / len(delta_list)
+                # could potentially be more statusupdates than pdbs (append mode in dock-thorp.py)
+                n1hr = 3600 / avg_delta
+                n10hr = 36000 / avg_delta
+            except:
+                avg_delta = 0
+                n1hr = 0
+                n10hr = 0
         #print 'a',avg_delta
 
         nneg = 20 # how to get number of negative energy pdbs?

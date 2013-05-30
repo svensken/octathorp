@@ -1,7 +1,7 @@
 #! /bin/bash
 
 
-for i in {15..30}
+for i in {1..30}
 do
     cd $i
     /home/svensken/octathorp/score-thorp.py &
