@@ -1,5 +1,6 @@
-production/1WM1.pdb_3ANS.pdb
-klar :D
-total pdbs: 9000
-total scored: 9000
-time elapsed: 0:00:00.236274
+Traceback (most recent call last):
+  File "./status-update.py", line 115, in <module>
+    take_snapshot()
+  File "./status-update.py", line 27, in take_snapshot
+    latest_subdir = max(all_subdirs, key=os.path.getmtime)
+ValueError: max() arg is an empty sequence

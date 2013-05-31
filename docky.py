@@ -157,9 +157,9 @@ def setup_constraints():
 ##################################################
 
 
-pdbs_prepared = False
+pdbs_prepared = True
 #nonstandard_ligand = False # works better by passing extra_res flags to init()
-jump_number = 1
+jump_number = 2
 
 hterm1, hterm2, gterm1, gterm2, pose = setup_pose()
 
@@ -197,7 +197,7 @@ perturb.add_mover(randomize1)
 perturb.add_mover(randomize2)
 perturb.add_mover(pert_mover)
 perturb.add_mover(spin)
-#perturb.add_mover(slide_into_contact)
+perturb.add_mover(slide_into_contact)
 perturb.add_mover(minmover)
 #
 
@@ -235,7 +235,7 @@ docking_low.set_scorefxn( sf )
 #jd.native_pose = pose
 
 #while not jd.job_complete:
-for a in range(5):
+for a in range(50):
     # change pose name for PyMOL
     #pose.pdb_info().name('O_O')
 
@@ -243,7 +243,7 @@ for a in range(5):
 
 
     # perturb the structure
-    perturb.apply(pose)
+    #perturb.apply(pose)
 
 
     # perform docking
@@ -251,8 +251,8 @@ for a in range(5):
     docking_low.apply(pose)
     shh = sf.show(pose)
 
-    recover_sidechains = ReturnSidechainMover(sidechain_pose)
-    recover_sidechains.apply(pose)
+    #recover_sidechains = ReturnSidechainMover(sidechain_pose)
+    #recover_sidechains.apply(pose)
 
     #jd.output_decoy(pose)
 
