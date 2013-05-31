@@ -1,6 +1,16 @@
 #! /bin/bash
 
-octadir='/home/svensken/octathorp/'
+
+octadir='/home/svensken/octathorp'
+
+while true
+do
+    cd $octadir
+    ./status_update.py > d3tst/cronlog 2>&1
+    sleep 5
+done &
+updater=$!
+
 
 # pass pose numbers
 pdb1='1WM1.pdb' # 137 138'
@@ -28,24 +38,48 @@ do
         mkdir -p $pair
         cd $pair
 
+        if true #[ $1 != 'score_only' ]
+        then
+            waitforme=()
+            for i in {1..30}
+            do
+                mkdir -p $i
+                cd $i
+                # /path/to/script.py /path/to/host.pdb hr1 hr2 /path/to/guest.pdb gr1 gr2 &
+                # if pdb's pre-preped:
+                # /path/to/script.py /path/to/host.pdb /path/to/guest.pdb &
+                $octadir/docky.py $octadir/forkenny/1WM1bot_3ANScap_input.pdb & #/$host $octadir/$guest &
+                waitforme+=($!)
+                cd -
+            done
+
+            wait ${waitforme[@]} # wait for this round of processes
+        fi
+
         waitforme=()
         for i in {1..30}
         do
-            mkdir -p $i
             cd $i
-            # /path/to/script.py /path/to/host.pdb hr1 hr2 /path/to/guest.pdb gr1 gr2 &
-            # if pdb's pre-preped:
-            # /path/to/script.py /path/to/host.pdb /path/to/guest.pdb &
-            /home/svensken/octathorp/docky.py $octadir/forkenny/1WM1bot_3ANScap_input.pdb & #$host $octadir$guest &
+            $octadir/prepare_rmsd_plot.py & 
             waitforme+=($!)
             cd -
         done
-        
+
         wait ${waitforme[@]} # wait for this round of processes
+
+
+        echo "rmsd,cst,nocst,filename" > $octadir/tsttt
+
+        for file in */rmsds_energies.sc
+        do
+            cat $file >> $octadir/tsttt
+        done
 
         cd ..
     done
 
 done
 
+
+kill $updater
 

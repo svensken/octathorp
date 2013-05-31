@@ -20,6 +20,7 @@ core.init( args )
 #pymol.finish_launching()
 #pymol.cmd.do('run ~/Desktop/PyRosetta/PyMOLPyRosettaServer.py')
 
+this_dir = os.path.basename( os.getcwd() )
 
 def ce_align_poses():
     pymover = PyMOL_Mover()
@@ -179,12 +180,12 @@ to_centroid.apply(pose)
 ### (perturb would not return nicely... relies on the other variables in memory?)
 randomize1 = RigidBodyRandomizeMover(pose)
 randomize2 = RigidBodyRandomizeMover(pose)
-pert_mover = RigidBodyPerturbMover( jump_number, 30, 20 ) #(jump_num, rotation, translation)
+pert_mover = RigidBodyPerturbMover( jump_number, 3, 8 ) #(jump_num, translation, rotation)
 spin = RigidBodySpinMover( jump_number )
 slide_into_contact = DockingSlideIntoContact( jump_number )
 
 sf = create_score_function('interchain_cen')
-sf.set_weight( atom_pair_constraint, 3 )
+sf.set_weight( atom_pair_constraint, 1 )
 
 movemap = MoveMap()
 movemap.set_jump( jump_number, True )
@@ -197,14 +198,14 @@ perturb.add_mover(randomize1)
 perturb.add_mover(randomize2)
 perturb.add_mover(pert_mover)
 perturb.add_mover(spin)
-perturb.add_mover(slide_into_contact)
+#perturb.add_mover(slide_into_contact)
 perturb.add_mover(minmover)
 #
 
 
 # CONSTRAINTS
-GF1 = constraints.GaussianFunc( 14.1, 3.0 )
-GF2 = constraints.GaussianFunc( 11.5, 3.0 )
+GF1 = constraints.GaussianFunc( 14.1, 8.0 )
+GF2 = constraints.GaussianFunc( 11.5, 8.0 )
 apc1 = constraints.AtomPairConstraint( hterm1, gterm1, GF1 )
 apc2 = constraints.AtomPairConstraint( hterm2, gterm2, GF2 )
 pose.add_constraint( apc1 )
@@ -219,7 +220,7 @@ starting_pose = Pose()
 starting_pose.assign(pose)
 
 
-shh = sf.show(pose)
+sf.show(pose)
 
 
 # DOCKER & JOB-DISTRIBUTOR
@@ -231,11 +232,20 @@ docking_low.set_scorefxn( sf )
 #AddPyMolObserver(pose, True)
 
 
+# this not needed if we start with a clean 30 directories every time
+#if os.path.exists('energies.csv'):
+#    with open('energies.sc', 'w') as csv:
+#        csv.write( '' )
+
+
 #jd = PyJobDistributor('jd_output', 400, sf)
 #jd.native_pose = pose
 
 #while not jd.job_complete:
-for a in range(50):
+for i in range(700):
+    
+    filename = 'manual_' + str(i) + '.pdb'
+
     # change pose name for PyMOL
     #pose.pdb_info().name('O_O')
 
@@ -243,22 +253,31 @@ for a in range(50):
 
 
     # perturb the structure
-    #perturb.apply(pose)
+    perturb.apply(pose)
 
 
     # perform docking
-    shh = sf.show(pose)
+    sf.show(pose)
     docking_low.apply(pose)
-    shh = sf.show(pose)
+    sf.show(pose)
 
-    #recover_sidechains = ReturnSidechainMover(sidechain_pose)
-    #recover_sidechains.apply(pose)
+    # record scores
+    cen_score_with_cst = str(sf.score(pose))
+    sf.set_weight( atom_pair_constraint, 0 )
+    cen_score_without_cst = str(sf.score(pose))
+
+    # write scores
+    with open('energies.sc','a') as scorefile:
+        linetowrite = cen_score_with_cst+','+cen_score_without_cst+','+this_dir+'/'+filename
+        scorefile.write( linetowrite + '\n' )
+
+    recover_sidechains = ReturnSidechainMover(sidechain_pose)
+    recover_sidechains.apply(pose)
 
     #jd.output_decoy(pose)
 
-    # dump scored pdb (manually)
-    filename = 'manual_' + str(a) + '.pdb'
-    pose.dump_pdb( filename )#dump_scored_pdb( filename, sf )
+    # dump fullatom pdb (manually)
+    pose.dump_pdb( filename ) #dump_scored_pdb( filename, sf )
 
     with open('status.update', 'a') as statusupdate:
         statusupdate.write(str(time.strftime("%Y/%m/%d-%H:%M:%S"))+'\n')

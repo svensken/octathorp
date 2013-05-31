@@ -52,45 +52,48 @@ def take_snapshot():
         # should also check for 
         
         # time predictions
-        try:
-            with open( os.path.join(root, 'status.update'), 'r') as timely:
-                times = timely.readlines()
-                delta_list = []
-                for l in range(len(times)):
-                    t1 = datetime.strptime( times[l][-15:-1], "%Y%m%d-%H%M%S" )
-                    t2 = datetime.strptime( times[l+1][-15:-1], "%Y%m%d-%H%M%S" )
-                    delta = t2 - t1
-                    delta_list.append( delta.seconds )
-                avg_delta = sum(delta_list) / len(delta_list)
-                # could potentially be more statusupdates than pdbs (append mode in dock-thorp.py)
-                n1hr = 3600 / avg_delta
-                n10hr = 36000 / avg_delta
-            #print 'a',avg_delta
-        except:
-            avg_delta, n1hr, n10hr = 0,0,0
+        with open( os.path.join(root, 'status.update'), 'r') as timely:
+            times = timely.readlines()
+            delta_list = []
+        #try:
+            for l in range(len(times)-1):
+                t1 = datetime.strptime( times[l][:19], "%Y/%m/%d-%H:%M:%S" )
+                t2 = datetime.strptime( times[l+1][:19], "%Y/%m/%d-%H:%M:%S" )
+                delta = t2 - t1
+                delta_list.append( delta.seconds )
+            avg_delta = sum(delta_list) / len(delta_list)
+            n5min = 300 / avg_delta
+            n10min = 600 / avg_delta
+            n1hr = 3600 / avg_delta
+            n10hr = 36000 / avg_delta
+            #print 'a '+str(avg_delta)+'s'
+
+        #except:
+            #avg_delta, n1hr, n10hr = 0,0,0
+            # could potentially be more statusupdates than pdbs (append mode in dock-thorp.py)
 
         nneg = 20 # how to get number of negative energy pdbs?
 
         # number scored
-        try:
-            with open( os.path.join(root, 'rmsd_vs_energy.csv'), 'r') as scorelist:
-                scores = scorelist.readlines()
-                wc = len(scores) - 1 # number of lines
-        except:
-            wc = 0
+        #try:
+        #    with open( os.path.join(root, 'rmsd_vs_energy.csv'), 'r') as scorelist:
+        #        scores = scorelist.readlines()
+        #        wc = len(scores) - 1 # number of lines
+        #except:
+        #    wc = 0
 
         # add a bar
         json_data.append( {
-                            "title"     : latest_subdir + dirname,
+                            "title"     : latest_subdir+'/'+dirname,
                             "subtitle"  : "decoys",
-                            "ranges"    : [wc,wc], #[n1hr,n10hr],
+                            "ranges"    : [n5min,n5min],
                             "measures"  : [ndone,ndone],
                             "markers"   : [nstruct]
                           } )
 
         # i'll plug this in somewhere
         total_pdbs += ndone
-        total_scored += wc
+        #total_scored += wc
 
 
     with open("/home/svensken/octathorp/d3tst/otherbullets.json", 'w') as json_file:
@@ -99,7 +102,7 @@ def take_snapshot():
 
     print 'klar :D'
     print 'total pdbs:', total_pdbs
-    print 'total scored:', total_scored
+    #print 'total scored:', total_scored
     time_elapsed = datetime.now() - initial_timestamp
     print 'time elapsed:', time_elapsed
 
