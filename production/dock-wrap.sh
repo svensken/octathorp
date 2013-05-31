@@ -2,7 +2,8 @@
 
 octadir='/home/svensken/octathorp/'
 
-pdb1='1WM1.pdb' # 204 232'
+# pass pose numbers
+pdb1='1WM1.pdb' # 137 138'
 pdb2='2WUF.pdb' # 173 192'
 pdb3='3ANS.pdb' # 383 466'
 pdb4='3B12.pdb' # 149 212'

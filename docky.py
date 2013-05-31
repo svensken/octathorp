@@ -56,7 +56,27 @@ def setup_ligand_params():
 
     return res_set
 
-def snip_poses():
+def find_termini(pose, hres1):
+    pi = pose.pdb_info()
+    first_hit_B = True
+    r = 1
+    while r <= pose.total_residue():    
+        # detect ends of chain B
+        if pi.chain(r) == 'B':
+            if first_hit_B:
+                first_B = r
+                first_hit_B = False
+            last_B = r
+        r += 1
+
+    hterm1 = hres1
+    hterm2 = hres1+1
+    gterm1 = first_B
+    gterm2 = last_B
+
+    return hterm1, hterm2, gterm1, gterm2
+
+def snip_poses(hpose,hres1,hres2,gpose,gres1,gres2):
     # delete between hres1 hres2
     # list should be [ hres2-1, hres2-2, ... , hres1+1 ]
     for r in reversed(range(hres1+1, hres2)): # WILL SEGFAULT AT 3r = 1
@@ -81,21 +101,22 @@ def setup_pose():
     if pdbs_prepared:
         pose = Pose()
         pose_from_pdb( pose, sys.argv[1] )
+        # for benchmark, let's just define them manually
+        # POSE NUMBERING
+        hterm1 = 137 #140
+        hterm2 = 138 #251
+        gterm1 = 205
+        gterm2 = 310
+
         #if nonstandard_ligand:
         #    res_set = setup_ligand_params()
         #    # sys.argv = script.py mixture.pdb
         #    pose_from_pdb( pose, res_set, sys.argv[1] )
 
-        return pose
-        
     else:
         # sys.argv = script.py host hcut1 hcut2 guest gcut1 gcut2
         hpose_filename = sys.argv[1]
         gpose_filename = sys.argv[4]
-        hres1 = int( sys.argv[2] )
-        hres2 = int( sys.argv[3] )
-        gres1 = int( sys.argv[5] )
-        gres2 = int( sys.argv[6] )
         hpose = Pose()
         pose_from_pdb(hpose, hpose_filename)
         gpose = Pose()
@@ -103,44 +124,28 @@ def setup_pose():
         # convert to pose numbering
         hpi = hpose.pdb_info()
         gpi = gpose.pdb_info()
+        # sys.argv = script.py host hcut1 hcut2 guest gcut1 gcut2
+        hres1 = int( sys.argv[2] )
+        hres2 = int( sys.argv[3] )
+        gres1 = int( sys.argv[5] )
+        gres2 = int( sys.argv[6] )
         hres1 = hpi.pdb2pose( "A", hres1 )
         hres2 = hpi.pdb2pose( "A", hres2 )
         gres1 = gpi.pdb2pose( "A", gres1 )
         gres2 = gpi.pdb2pose( "A", gres2 )
 
-        hpose, gpose = ce_align_poses()
-
-        pose = snip_poses()
+        #hpose, gpose = ce_align_poses()
         
-        return pose
+        pose = snip_poses(hpose,hres1,hres2,gpose,gres1,gres2)
 
-def find_termini():
-    # can't think of way to detect hterms
-    # for benchmark, let's just define them manually
-    # POSE NUMBERING
-    hterm1 = 137 #140
-    hterm2 = 138 #251
-    gterm1 = 205
-    gterm2 = 310
+        hterm1, hterm2, gterm1, gterm2 = find_termini(pose, hres1)
 
-    #pi = pose.pdb_info()
-    #first_hit_B = True
-    #r = 1
-    #while r < pose.total_residue():    
-        # detect ends of chain B
-    #    if pi.chain(r) == 'B':
-    #        if first_hit_B:
-    #            first_B = r
-    #            first_hit_B = False
-    #        last_B = r
-    #    r += 1
-    
     hterm1 = AtomID( 1, hterm1 ) #hres1
     hterm2 = AtomID( 1, hterm2 ) #hres2
     gterm1 = AtomID( 1, gterm1 )#int(str(pose.fold_tree().jump_edge(1)).split()[2]) ) #chainB first res
     gterm2 = AtomID( 1, gterm2 )#pose.total_residue()) #chainB last res
 
-    return hterm1, hterm2, gterm1, gterm2
+    return hterm1, hterm2, gterm1, gterm2, pose
 
 def setup_movers_and_sf():
     pass
@@ -152,20 +157,21 @@ def setup_constraints():
 ##################################################
 
 
-pdbs_prepared = True
+pdbs_prepared = False
 #nonstandard_ligand = False # works better by passing extra_res flags to init()
-jump_number = 2
+jump_number = 1
 
-pose = setup_pose()
+hterm1, hterm2, gterm1, gterm2, pose = setup_pose()
 
+print hterm1
+print hterm2
+print gterm1
+print gterm2
 
 sidechain_pose = Pose()
 sidechain_pose.assign(pose)
 to_centroid = SwitchResidueTypeSetMover('centroid')
 to_centroid.apply(pose)
-
-
-hterm1, hterm2, gterm1, gterm2 = find_termini()
 
 
 # SETUP MOVERS & SCOREFXN
@@ -178,7 +184,7 @@ spin = RigidBodySpinMover( jump_number )
 slide_into_contact = DockingSlideIntoContact( jump_number )
 
 sf = create_score_function('interchain_cen')
-sf.set_weight( atom_pair_constraint, 10 )
+sf.set_weight( atom_pair_constraint, 1 )
 
 movemap = MoveMap()
 movemap.set_jump( jump_number, True )
@@ -213,7 +219,7 @@ starting_pose = Pose()
 starting_pose.assign(pose)
 
 
-sf.show(pose)
+shh = sf.show(pose)
 
 
 # DOCKER & JOB-DISTRIBUTOR
@@ -229,7 +235,7 @@ docking_low.set_scorefxn( sf )
 #jd.native_pose = pose
 
 #while not jd.job_complete:
-for a in range(300):
+for a in range(5):
     # change pose name for PyMOL
     #pose.pdb_info().name('O_O')
 
@@ -241,9 +247,9 @@ for a in range(300):
 
 
     # perform docking
-    sf.show(pose)
+    shh = sf.show(pose)
     docking_low.apply(pose)
-    sf.show(pose)
+    shh = sf.show(pose)
 
     recover_sidechains = ReturnSidechainMover(sidechain_pose)
     recover_sidechains.apply(pose)

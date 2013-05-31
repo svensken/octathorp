@@ -22,7 +22,8 @@ def take_snapshot():
     #TODO find way to extract nstruct
     nstruct = 300
 
-    full_total = 0
+    total_pdbs = 0
+    total_scored = 0
     for root, dirs, files in os.walk('production/1WM1.pdb_3ANS.pdb'):
         
         dirname = os.path.basename(root) # '12'
@@ -69,17 +70,23 @@ def take_snapshot():
 
         nneg = 20 # how to get number of negative energy pdbs?
 
+        # number scored
+        with open( os.path.join(root, 'rmsd_vs_energy.csv'), 'r') as scorelist:
+            scores = scorelist.readlines()
+            wc = len(scores) - 1 # number of lines
+
         # add a bar
         json_data.append( {
                             "title"     : dirname,
                             "subtitle"  : "decoys",
-                            "ranges"    : [n1hr,n10hr],
-                            "measures"  : [nneg,ndone],
+                            "ranges"    : [wc,wc], #[n1hr,n10hr],
+                            "measures"  : [ndone,ndone],
                             "markers"   : [nstruct]
                           } )
 
         # i'll plug this in somewhere
-        full_total += ndone
+        total_pdbs += ndone
+        total_scored += wc
 
 
     with open("/home/svensken/octathorp/d3tst/otherbullets.json", 'w') as json_file:
@@ -87,7 +94,8 @@ def take_snapshot():
 
 
     print 'klar :D'
-    print 'full total:', full_total
+    print 'total pdbs:', total_pdbs
+    print 'total scored:', total_scored
     time_elapsed = datetime.now() - initial_timestamp
     print 'time elapsed:', time_elapsed
 

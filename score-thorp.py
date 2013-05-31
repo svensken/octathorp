@@ -32,7 +32,7 @@ if not this_directory.isdigit():
 # lowest rmsd ref
 if not lowest_find:
     rmsd_ref_pose = Pose()
-    pose_from_pdb( rmsd_ref_pose, '/home/svensken/octathorp/production/1WM1.pdb_3ANS.pdb/26/manual_135.pdb' ) #lowest score
+    pose_from_pdb( rmsd_ref_pose, '/home/svensken/octathorp/production/1WM1.pdb_3ANS.pdb/6/manual_113.pdb' ) #lowest score
 
     # backup
     if os.path.exists('rmsd_vs_energy.csv'):
@@ -91,7 +91,7 @@ for filename in os.listdir('.'):
 
 
         sf = create_score_function('interchain_cen')
-        sf.set_weight( atom_pair_constraint, 10 )
+        sf.set_weight( atom_pair_constraint, 1 )
 
         GF = constraints.GaussianFunc( 6.0, 2.0 )
         apc1 = constraints.AtomPairConstraint( hterm1, gterm1, GF )
