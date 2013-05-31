@@ -3,7 +3,9 @@
 octadir='/home/svensken/octathorp/'
 
 # pass pdb numbers
-pdb1='1WM1.pdb 142 242'
+pdb1='1WM1.pdb 142 242' # pose_from_pdb(pose, '1WM1.pdb')
+                        # ERROR: too many tries in fill_missing_atoms!
+                        # ERROR:: Exit from: src/core/conformation/Conformation.cc line: 2664
 pdb2='2WUF.pdb 144 221'
 pdb3='3ANS.pdb 366 471'
 pdb4='3B12.pdb 133 222'

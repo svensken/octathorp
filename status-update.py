@@ -22,11 +22,17 @@ def take_snapshot():
     #TODO find way to extract nstruct
     nstruct = 300
 
+    # for combo runs, jump into newest directory
+    all_subdirs = ['production/'+d for d in os.listdir('production/') if os.path.isdir('production/'+d)]
+    latest_subdir = max(all_subdirs, key=os.path.getmtime)
+    print latest_subdir
+
     total_pdbs = 0
     total_scored = 0
-    for root, dirs, files in os.walk('production/1WM1.pdb_3ANS.pdb'):
+    for root, dirs, files in os.walk( latest_subdir ):
         
         dirname = os.path.basename(root) # '12'
+        
         # skip unintended dirs
         if not dirname.isdigit():
             continue
@@ -77,7 +83,7 @@ def take_snapshot():
 
         # add a bar
         json_data.append( {
-                            "title"     : dirname,
+                            "title"     : latest_subdir + dirname,
                             "subtitle"  : "decoys",
                             "ranges"    : [wc,wc], #[n1hr,n10hr],
                             "measures"  : [ndone,ndone],

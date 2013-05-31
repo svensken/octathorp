@@ -184,7 +184,7 @@ spin = RigidBodySpinMover( jump_number )
 slide_into_contact = DockingSlideIntoContact( jump_number )
 
 sf = create_score_function('interchain_cen')
-sf.set_weight( atom_pair_constraint, 1 )
+sf.set_weight( atom_pair_constraint, 3 )
 
 movemap = MoveMap()
 movemap.set_jump( jump_number, True )
