@@ -20,7 +20,7 @@ def take_snapshot():
     json_data = []
 
     #TODO find way to extract nstruct
-    nstruct = 50
+    nstruct = 700
 
     # for combo runs, jump into newest directory
     all_subdirs = ['testing/'+d for d in os.listdir('testing/') if os.path.isdir('testing/'+d)]
@@ -86,7 +86,7 @@ def take_snapshot():
         json_data.append( {
                             "title"     : latest_subdir+'/'+dirname,
                             "subtitle"  : "decoys",
-                            "ranges"    : [n5min,n5min],
+                            "ranges"    : [n1hr,n1hr],
                             "measures"  : [ndone,ndone],
                             "markers"   : [nstruct]
                           } )

@@ -63,9 +63,13 @@ SimpleGraph = function(elemid, options) {
     dataset = data.map(function(d) { return [ +d["rmsd"], +d["with cst"] ]; });
     console.log(dataset);
   }, self);*/
-  this.points = d3.csv("tsttt.csv", function(d) {
-    return { x: +d.rmsd, y: +d.cst };
-    }, self);
+  /*this.points = d3.csv("tsttt.csv", function(d) {
+    return { x: parseFloat(d.rmsd), y: parseFloat(d.cst) };
+    }, function(error, rows) {
+          console.log(rows);});*/
+  this.points = d3.csv("tsttt.csv")
+      .row(function(d) { return {x: parseFloat(d.rmsd), y: parseFloat(d.cst)};
+      }, self);
 
   this.vis = d3.select(this.chart).append("svg")
       .attr("width",  this.cx)
