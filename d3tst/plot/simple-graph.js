@@ -55,9 +55,9 @@ SimpleGraph = function(elemid, options) {
       yrange4 = yrange2 / 2,
       datacount = this.size.width/30;
 
-  /*this.points = d3.range(datacount).map(function(i) { 
+  this.points = d3.range(datacount).map(function(i) { 
     return { x: i * xrange / datacount, y: this.options.ymin + yrange4 + Math.random() * yrange2 }; 
-  }, self);*/
+  }, self);
 
   /*this.points = d3.csv("tsttt.csv", function(data) {
     dataset = data.map(function(d) { return [ +d["rmsd"], +d["with cst"] ]; });
@@ -67,9 +67,9 @@ SimpleGraph = function(elemid, options) {
     return { x: parseFloat(d.rmsd), y: parseFloat(d.cst) };
     }, function(error, rows) {
           console.log(rows);});*/
-  this.points = d3.csv("tsttt.csv")
+  /*this.points = d3.csv("tsttt.csv")
       .row(function(d) { return {x: parseFloat(d.rmsd), y: parseFloat(d.cst)};
-      }, self);
+      }, self);*/
 
   this.vis = d3.select(this.chart).append("svg")
       .attr("width",  this.cx)

@@ -20,7 +20,7 @@ def take_snapshot():
     json_data = []
 
     #TODO find way to extract nstruct
-    nstruct = 700
+    nstruct = 100
 
     # for combo runs, jump into newest directory
     all_subdirs = ['testing/'+d for d in os.listdir('testing/') if os.path.isdir('testing/'+d)]

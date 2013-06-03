@@ -169,64 +169,71 @@ print hterm2
 print gterm1
 print gterm2
 
-sidechain_pose = Pose()
-sidechain_pose.assign(pose)
+#sidechain_pose = Pose()
+#sidechain_pose.assign(pose)
+#to_centroid = SwitchResidueTypeSetMover('centroid')
+#to_centroid.apply(pose)
 to_centroid = SwitchResidueTypeSetMover('centroid')
-to_centroid.apply(pose)
+to_fullatom = SwitchResidueTypeSetMover('fa_standard')
 
+recover_sidechains = ReturnSidechainMover(pose)
+
+to_centroid.apply(pose)
+centroid_pose = Pose()
+centroid_pose.assign(pose)
 
 # SETUP MOVERS & SCOREFXN
-## figure out how to wrap into a function
-### (perturb would not return nicely... relies on the other variables in memory?)
-randomize1 = RigidBodyRandomizeMover(pose)
-randomize2 = RigidBodyRandomizeMover(pose)
+randomize_upstream = RigidBodyRandomizeMover(pose, jump_number, partner_upstream)
+randomize_downstream = RigidBodyRandomizeMover(pose, jump_number, partner_downstream)
 pert_mover = RigidBodyPerturbMover( jump_number, 3, 8 ) #(jump_num, translation, rotation)
 spin = RigidBodySpinMover( jump_number )
 slide_into_contact = DockingSlideIntoContact( jump_number )
 
-sf = create_score_function('interchain_cen')
-sf.set_weight( atom_pair_constraint, 1 )
+#sf = create_score_function('interchain_cen')
+scorefxn_low = create_score_function('interchain_cen')
+scorefxn_low.set_weight( atom_pair_constraint, 5 )
+scorefxn_high = create_score_function('docking')
+scorefxn_high.set_weight( atom_pair_constraint, 5 )
+scorefxn_high_min = create_score_function_ws_patch('docking', 'docking_min')
+scorefxn_high_min.set_weight( atom_pair_constraint, 5 )
 
 movemap = MoveMap()
 movemap.set_jump( jump_number, True )
 minmover = MinMover()
 minmover.movemap(movemap)
-minmover.score_function(sf)
+minmover.score_function(scorefxn_high)
 
 perturb = SequenceMover()
-perturb.add_mover(randomize1)
-perturb.add_mover(randomize2)
+perturb.add_mover(randomize_upstream)
+perturb.add_mover(randomize_downstream)
 perturb.add_mover(pert_mover)
 perturb.add_mover(spin)
 #perturb.add_mover(slide_into_contact)
+perturb.add_mover(to_fullatom)
+perturb.add_mover(recover_sidechains)
 perturb.add_mover(minmover)
 #
 
 
 # CONSTRAINTS
-GF1 = constraints.GaussianFunc( 14.1, 8.0 )
-GF2 = constraints.GaussianFunc( 11.5, 8.0 )
+GF1 = constraints.GaussianFunc( 14.1, 2.0 )
+GF2 = constraints.GaussianFunc( 11.5, 2.0 )
 apc1 = constraints.AtomPairConstraint( hterm1, gterm1, GF1 )
 apc2 = constraints.AtomPairConstraint( hterm2, gterm2, GF2 )
 pose.add_constraint( apc1 )
 pose.add_constraint( apc2 )
 
-#cs = pose.constraint_set()
-#print cs
-#
 
 
-starting_pose = Pose()
-starting_pose.assign(pose)
-
-
-sf.show(pose)
+#scorefxn_high.show(pose)
 
 
 # DOCKER & JOB-DISTRIBUTOR
 
-docking_low = DockingLowRes( sf, jump_number )
-docking_low.set_scorefxn( sf )
+dock_prot = DockingProtocol()    # contains many docking functions
+dock_prot.set_movable_jumps(Vector1([ jump_number ]))
+dock_prot.set_lowres_scorefxn(scorefxn_low)
+dock_prot.set_highres_scorefxn(scorefxn_high_min)
 
 
 #AddPyMolObserver(pose, True)
@@ -242,42 +249,50 @@ docking_low.set_scorefxn( sf )
 #jd.native_pose = pose
 
 #while not jd.job_complete:
-for i in range(700):
+for i in range(100):
     
     filename = 'manual_' + str(i) + '.pdb'
+    print filename
 
-    # change pose name for PyMOL
-    #pose.pdb_info().name('O_O')
-
-    pose.assign(starting_pose) # has centroids and constraints
-
+    centroid_pose.assign(pose)
 
     # perturb the structure
-    perturb.apply(pose)
+    perturb.apply(centroid_pose)
 
+    print 'perturbed'
 
     # perform docking
-    sf.show(pose)
-    docking_low.apply(pose)
-    sf.show(pose)
+    #sf.show(pose)
+    dock_prot.apply(centroid_pose)
+    #sf.show(pose)
+
+    print 'docked'
 
     # record scores
-    cen_score_with_cst = str(sf.score(pose))
-    sf.set_weight( atom_pair_constraint, 0 )
-    cen_score_without_cst = str(sf.score(pose))
+    cen_score_with_cst = str(scorefxn_low.score(centroid_pose))
+    scorefxn_low.set_weight( atom_pair_constraint, 0 )
+    cen_score_without_cst = str(scorefxn_low.score(centroid_pose))
+
+    print 'scores saved'
 
     # write scores
     with open('energies.sc','a') as scorefile:
         linetowrite = cen_score_with_cst+','+cen_score_without_cst+','+this_dir+'/'+filename
         scorefile.write( linetowrite + '\n' )
 
-    recover_sidechains = ReturnSidechainMover(sidechain_pose)
-    recover_sidechains.apply(pose)
+    print 'written'
+
+    #recover_sidechains.apply(pose)
+    to_fullatom.apply(centroid_pose) 
+
+    print 'fullatomed'
 
     #jd.output_decoy(pose)
 
     # dump fullatom pdb (manually)
-    pose.dump_pdb( filename ) #dump_scored_pdb( filename, sf )
+    centroid_pose.dump_pdb( filename ) #dump_scored_pdb( filename, sf )
+
+    print filename, 'dumped'
 
     with open('status.update', 'a') as statusupdate:
         statusupdate.write(str(time.strftime("%Y/%m/%d-%H:%M:%S"))+'\n')
