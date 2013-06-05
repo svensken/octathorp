@@ -125,8 +125,8 @@ caps = {'1WM1cap.pdb':'140_238', '2WUFcap.pdb':'145_216', '3ANScap.pdb':'369_474
 for bot in bottoms:
     for cap in caps:
 
-        os.mkdir( 'combos/'+bot+'_'+cap )
-        os.chdir( 'combos/'+bot+'_'+cap )
+        os.mkdir( 'combos/'+bot+'_'+cap+'.dir' )
+        os.chdir( 'combos/'+bot+'_'+cap+'.dir' )
 
         with open( p+bot, 'r' ) as mr_bottom:
             lines = mr_bottom.readlines()
