@@ -3,3 +3,4 @@
 */*.pdb
 */*/*.pdb
 # investigate **/*.pdb
+patchdock/build/
