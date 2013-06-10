@@ -12,18 +12,30 @@ def distance(x1, y1, z1, x2, y2, z2):
 
 p = '/home/svensken/octathorp/patchdock/'
 
-bottoms = {'1WM1bot.pdb':'138_248', '2WUFbot.pdb':'139_222', '3ANSbot.pdb':'361_485', '3B12bot.pdb':'128_230', '3GZJbot.pdb':'111_198'}
-caps = {'1WM1cap.pdb':'140_238', '2WUFcap.pdb':'145_216', '3ANScap.pdb':'369_474', '3B12cap.pdb':'139_226', '3GZJcap.pdb':'121_195'}
+#bottoms = {'1WM1bot.pdb':'138_248', '2WUFbot.pdb':'139_222', '3ANSbot.pdb':'361_485', '3B12bot.pdb':'128_230', '3GZJbot.pdb':'111_198'}
+#caps = {'1WM1cap.pdb':'140_238', '2WUFcap.pdb':'145_216', '3ANScap.pdb':'369_474', '3B12cap.pdb':'139_226', '3GZJcap.pdb':'121_195'}
+
+# for lu
+bottoms = {'1WM1':'138_248', '2WUF':'139_222', '3ANS':'361_485', '3B12':'128_230', '3GZJ':'111_198'}
+caps = {'1WM1':'140_238', '2WUF':'145_216', '3ANS':'369_474', '3B12':'139_226', '3GZJ':'121_195'}
 
 
-for bot in bottoms:
-    for cap in caps:
+#for bot in bottoms:
+#    for cap in caps:
+
+# for lu
+for bot in [ bottoms['1WM1'] ]:
+    for cap in [ caps['1WM1'] ]:
 
         if bot[:4] == cap[:4]:
             # assuming cealigned
-            
+            print "NATIVE :D"
 
+        #os.chdir( 'combos/'+bot+'_'+cap )
+        
+        # for lu
         os.chdir( 'combos/'+bot+'_'+cap )
+
 
         with open('dists.csv','w') as d:
             d.write('dir,dist1,dist2\n') 

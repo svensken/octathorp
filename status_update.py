@@ -20,26 +20,28 @@ def take_snapshot():
     json_data = []
 
     #TODO find way to extract nstruct
-    nstruct = 100
+    nstruct = 1120 + 790
 
     # for combo runs, jump into newest directory
-    all_subdirs = ['testing/'+d for d in os.listdir('testing/') if os.path.isdir('testing/'+d)]
-    latest_subdir = max(all_subdirs, key=os.path.getmtime)
-    print latest_subdir
+    #all_subdirs = ['testing/'+d for d in os.listdir('testing/') if os.path.isdir('testing/'+d)]
+    #latest_subdir = max(all_subdirs, key=os.path.getmtime)
+    #print latest_subdir
 
     total_pdbs = 0
     total_scored = 0
-    for root, dirs, files in os.walk( latest_subdir ):
+    if True: #for root, dirs, files in os.walk( latest_subdir ):
         
-        dirname = os.path.basename(root) # '12'
+        #dirname = os.path.basename(root) # '12'
         
         # skip unintended dirs
-        if not dirname.isdigit():
-            continue
+        #if not dirname.isdigit():
+        #    continue
         #print 'd',dirname
 
         # number of decoys done
-        ndone = len( [f for f in files if f.startswith('manual') and f.endswith('.pdb')] )
+        #ndone = len( [f for f in files if f.startswith('manual') and f.endswith('.pdb')] )
+        with open('matching/all_matched/status.update','r') as a:
+            ndone = int(a.read())
         #print 'n',ndone
 
         # fully worthless decoys
@@ -52,7 +54,7 @@ def take_snapshot():
         # should also check for 
         
         # time predictions
-        with open( os.path.join(root, 'status.update'), 'r') as timely:
+        if False: #with open( os.path.join(root, 'status.update'), 'r') as timely:
             times = timely.readlines()
             delta_list = []
         #try:
@@ -84,9 +86,9 @@ def take_snapshot():
 
         # add a bar
         json_data.append( {
-                            "title"     : latest_subdir+'/'+dirname,
+                            "title"     : 'decoys', #latest_subdir+'/'+dirname,
                             "subtitle"  : "decoys",
-                            "ranges"    : [n1hr,n1hr],
+                            "ranges"    : [nneg],
                             "measures"  : [ndone,ndone],
                             "markers"   : [nstruct]
                           } )
