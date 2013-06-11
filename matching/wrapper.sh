@@ -3,28 +3,24 @@
 ncpu=10
 
 matchexe="/home/svensken/Rosetta/main/source/bin/match.linuxgccrelease"
-flagdir="/home/svensken/octathorp/matching/flags"
-match="$matchexe @$flagdir/general_match.flags @$flagdir/scaf_gfp.flags @$flagdir/substrate_gfp.flags -s "
-
 statusupdate="/home/svensken/octathorp/status.update"
 
 
-# for output of matching executable
-cd /home/svensken/octathorp/matches/all_matched
-
-
-combopath="/home/svensken/octathorp/patchdock/combos"
+combopath="/home/svensken/octathorp/matching/combos"
 for combodir in $combopath/*/
 do
-    echo $combodir
+    cd $combodir
+    id=${combodir: -10:4}
+    flagdir="/home/svensken/octathorp/matching/flags/"$id
+    flags="@$flagdir/general_match.flags @$flagdir/scaf_gfp.flags @$flagdir/substrate_gfp.flags"
+
     t1=$(date +%s)
-    ls $combodir*.pdb | xargs -n 1 -P $ncpu   $match
+    ls $combodir/*.pdb | xargs -n 1 -P $ncpu    $matchexe $flags 
     t2=$(date +%s)
     echo "$combodir $(expr $t2 - $t1)" >> $statusupdate
 done
 
 
-cd -
 
 
 

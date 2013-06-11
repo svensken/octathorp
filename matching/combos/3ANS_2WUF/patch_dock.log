@@ -1,0 +1,574 @@
+00:00:00.00| INFO: START DOCKING /home/svensken/octathorp/patchdock/3ANSbot.pdb with /home/svensken/octathorp/patchdock/2WUFcap.pdb
+00:00:00.00| INFO: Start reading PDB and MS for receptor molecule
+00:00:01.37| INFO: ASA of the molecule = 2431.83
+00:00:01.37| INFO: Chem molecule: 1548 atoms were read
+00:00:01.38| INFO: Hydrogen molecule: 1548 atoms were read
+00:00:01.58| INFO: Surface: 72310 surface points were read
+00:00:01.58| INFO: Start reading PDB and MS for ligand molecule
+00:00:02.01| INFO: ASA of the molecule = 1627.93
+00:00:02.01| INFO: Chem molecule: 555 atoms were read
+00:00:02.01| INFO: Hydrogen molecule: 588 atoms were read
+00:00:02.14| INFO: Surface: 42370 surface points were read
+00:00:02.17| INFO: Start building docking surface for receptor molecule
+00:00:02.17| INFO: Start building molecule grid and distance function
+00:00:05.44| INFO: Start calculating Volume function and Normals for surface points
+00:00:05.55| INFO: Shuo surface size = 3691
+00:00:05.73| INFO: 3000sp processed
+00:00:05.94| INFO: Start calculating Active Site patches
+00:00:05.96| INFO: Running segmentation for KNB
+00:00:06.26| INFO: Running segmentation for FLT
+00:00:06.28| INFO: Running segmentation for HLE
+00:00:06.73| INFO: Final # of patches: 41
+00:00:06.73| INFO: Final # of patches: 24
+00:00:06.73| INFO: Start calculating Geodesical distances
+00:00:06.73| INFO: Start building docking surface for ligand molecule
+00:00:06.73| INFO: Start building molecule grid and distance function
+00:00:08.38| INFO: Start calculating Volume function and Normals for surface points
+00:00:08.44| INFO: Shuo surface size = 1970
+00:00:08.64| INFO: Start calculating Active Site patches
+00:00:08.65| INFO: Running segmentation for KNB
+00:00:08.68| INFO: Running segmentation for FLT
+00:00:08.69| INFO: Running segmentation for HLE
+00:00:08.85| INFO: Final # of patches: 20
+00:00:08.85| INFO: Final # of patches: 12
+00:00:08.85| INFO: Start calculating Geodesical distances
+00:00:08.85| INFO: Start docking
+00:00:08.85| INFO: Initializing cluster parameters
+00:00:08.85| INFO: Building scoring trees
+00:00:08.97| INFO: Running distance constrained matching algorithm
+00:00:08.97| INFO: Initializing Matching Data Structure
+00:00:08.97| INFO: DCDocking: matchType_ 2
+00:00:08.98| INFO: Initializing cluster parameters
+00:00:08.98| INFO: Start Preprocessing
+00:00:09.03| INFO: Start Docking hole-knob patches
+00:00:09.46| INFO: Prossesing patch # 1 out of 24
+00:00:09.46| INFO: Start checking distance constraints 301086 transforms
+00:00:09.52| INFO: Start clustering 301086 transforms
+00:00:10.85| INFO: Clustered transforms size: 5662
+00:00:11.14| INFO: Filtered transforms size: 1919
+00:00:11.14| INFO: Backbone filtered transforms size: 1621
+00:00:11.15| INFO: RMSD Clustered transforms size: 1316
+00:00:13.52| INFO: Scored transforms size: 499
+00:00:13.72| INFO: Prossesing patch # 2 out of 24
+00:00:13.72| INFO: Start checking distance constraints 91605 transforms
+00:00:13.72| INFO: Start clustering 91605 transforms
+00:00:14.11| INFO: Clustered transforms size: 837
+00:00:14.14| INFO: Filtered transforms size: 96
+00:00:14.14| INFO: Backbone filtered transforms size: 86
+00:00:14.14| INFO: RMSD Clustered transforms size: 79
+00:00:14.26| INFO: Scored transforms size: 35
+00:00:14.47| INFO: Prossesing patch # 3 out of 24
+00:00:14.47| INFO: Start checking distance constraints 190424 transforms
+00:00:14.52| INFO: Start clustering 190424 transforms
+00:00:15.36| INFO: Clustered transforms size: 3255
+00:00:15.64| INFO: Filtered transforms size: 2061
+00:00:15.64| INFO: Backbone filtered transforms size: 1725
+00:00:15.65| INFO: RMSD Clustered transforms size: 1290
+00:00:17.97| INFO: Scored transforms size: 566
+00:00:18.20| INFO: Prossesing patch # 4 out of 24
+00:00:18.20| INFO: Start checking distance constraints 201246 transforms
+00:00:18.23| INFO: Start clustering 201246 transforms
+00:00:19.14| INFO: Clustered transforms size: 3812
+00:00:19.42| INFO: Filtered transforms size: 2301
+00:00:19.43| INFO: Backbone filtered transforms size: 2110
+00:00:19.45| INFO: RMSD Clustered transforms size: 1611
+00:00:22.14| INFO: Scored transforms size: 951
+00:00:22.26| INFO: Prossesing patch # 5 out of 24
+00:00:22.26| INFO: Start checking distance constraints 45858 transforms
+00:00:22.26| INFO: Start clustering 45858 transforms
+00:00:22.45| INFO: Clustered transforms size: 687
+00:00:22.47| INFO: Filtered transforms size: 151
+00:00:22.47| INFO: Backbone filtered transforms size: 136
+00:00:22.47| INFO: RMSD Clustered transforms size: 117
+00:00:22.71| INFO: Scored transforms size: 50
+00:00:23.00| INFO: Prossesing patch # 6 out of 24
+00:00:23.00| INFO: Start checking distance constraints 243434 transforms
+00:00:23.04| INFO: Start clustering 243434 transforms
+00:00:24.18| INFO: Clustered transforms size: 4133
+00:00:24.48| INFO: Filtered transforms size: 2467
+00:00:24.50| INFO: Backbone filtered transforms size: 2290
+00:00:24.53| INFO: RMSD Clustered transforms size: 1741
+00:00:27.53| INFO: Scored transforms size: 943
+00:00:27.82| INFO: Prossesing patch # 7 out of 24
+00:00:27.84| INFO: Start checking distance constraints 260153 transforms
+00:00:27.87| INFO: Start clustering 260153 transforms
+00:00:29.04| INFO: Clustered transforms size: 4392
+00:00:29.26| INFO: Filtered transforms size: 1509
+00:00:29.27| INFO: Backbone filtered transforms size: 1301
+00:00:29.28| INFO: RMSD Clustered transforms size: 1056
+00:00:31.25| INFO: Scored transforms size: 456
+00:00:31.50| INFO: Prossesing patch # 8 out of 24
+00:00:31.50| INFO: Start checking distance constraints 214194 transforms
+00:00:31.54| INFO: Start clustering 214194 transforms
+00:00:32.52| INFO: Clustered transforms size: 4612
+00:00:32.84| INFO: Filtered transforms size: 2632
+00:00:32.84| INFO: Backbone filtered transforms size: 2282
+00:00:32.86| INFO: RMSD Clustered transforms size: 1661
+00:00:35.49| INFO: Scored transforms size: 884
+00:00:35.56| INFO: Prossesing patch # 9 out of 24
+00:00:35.56| INFO: Start checking distance constraints 28805 transforms
+00:00:35.58| INFO: Start clustering 28805 transforms
+00:00:35.68| INFO: Clustered transforms size: 576
+00:00:35.70| INFO: Filtered transforms size: 2
+00:00:35.70| INFO: Backbone filtered transforms size: 0
+00:00:35.70| INFO: RMSD Clustered transforms size: 0
+00:00:35.70| INFO: Scored transforms size: 0
+00:00:35.77| INFO: Prossesing patch # 10 out of 24
+00:00:35.77| INFO: Start checking distance constraints 46615 transforms
+00:00:35.77| INFO: Start clustering 46615 transforms
+00:00:35.95| INFO: Clustered transforms size: 555
+00:00:35.99| INFO: Filtered transforms size: 259
+00:00:36.00| INFO: Backbone filtered transforms size: 197
+00:00:36.00| INFO: RMSD Clustered transforms size: 176
+00:00:36.38| INFO: Scored transforms size: 91
+00:00:36.45| INFO: Prossesing patch # 11 out of 24
+00:00:36.45| INFO: Start checking distance constraints 34932 transforms
+00:00:36.47| INFO: Start clustering 34932 transforms
+00:00:36.59| INFO: Clustered transforms size: 474
+00:00:36.63| INFO: Filtered transforms size: 254
+00:00:36.63| INFO: Backbone filtered transforms size: 234
+00:00:36.63| INFO: RMSD Clustered transforms size: 175
+00:00:36.93| INFO: Scored transforms size: 85
+00:00:37.04| INFO: Prossesing patch # 12 out of 24
+00:00:37.04| INFO: Start checking distance constraints 34860 transforms
+00:00:37.04| INFO: Start clustering 34860 transforms
+00:00:37.18| INFO: Clustered transforms size: 428
+00:00:37.20| INFO: Filtered transforms size: 26
+00:00:37.20| INFO: Backbone filtered transforms size: 24
+00:00:37.20| INFO: RMSD Clustered transforms size: 23
+00:00:37.25| INFO: Scored transforms size: 6
+00:00:37.43| INFO: Prossesing patch # 13 out of 24
+00:00:37.43| INFO: Start checking distance constraints 145484 transforms
+00:00:37.45| INFO: Start clustering 145484 transforms
+00:00:38.11| INFO: Clustered transforms size: 2694
+00:00:38.27| INFO: Filtered transforms size: 1501
+00:00:38.29| INFO: Backbone filtered transforms size: 1450
+00:00:38.31| INFO: RMSD Clustered transforms size: 1094
+00:00:40.09| INFO: Scored transforms size: 697
+00:00:40.22| INFO: Prossesing patch # 14 out of 24
+00:00:40.22| INFO: Start checking distance constraints 123182 transforms
+00:00:40.24| INFO: Start clustering 123182 transforms
+00:00:40.72| INFO: Clustered transforms size: 1022
+00:00:40.81| INFO: Filtered transforms size: 713
+00:00:40.81| INFO: Backbone filtered transforms size: 590
+00:00:40.81| INFO: RMSD Clustered transforms size: 475
+00:00:41.61| INFO: Scored transforms size: 272
+00:00:41.74| INFO: Prossesing patch # 15 out of 24
+00:00:41.74| INFO: Start checking distance constraints 63950 transforms
+00:00:41.75| INFO: Start clustering 63950 transforms
+00:00:42.02| INFO: Clustered transforms size: 1166
+00:00:42.09| INFO: Filtered transforms size: 553
+00:00:42.09| INFO: Backbone filtered transforms size: 527
+00:00:42.09| INFO: RMSD Clustered transforms size: 385
+00:00:42.77| INFO: Scored transforms size: 275
+00:00:42.81| INFO: Prossesing patch # 16 out of 24
+00:00:42.81| INFO: Start checking distance constraints 15397 transforms
+00:00:42.81| INFO: Start clustering 15397 transforms
+00:00:42.86| INFO: Clustered transforms size: 114
+00:00:42.86| INFO: Filtered transforms size: 14
+00:00:42.86| INFO: Backbone filtered transforms size: 10
+00:00:42.86| INFO: RMSD Clustered transforms size: 8
+00:00:42.88| INFO: Scored transforms size: 3
+00:00:43.04| INFO: Prossesing patch # 17 out of 24
+00:00:43.04| INFO: Start checking distance constraints 96989 transforms
+00:00:43.06| INFO: Start clustering 96989 transforms
+00:00:43.50| INFO: Clustered transforms size: 2100
+00:00:43.65| INFO: Filtered transforms size: 1334
+00:00:43.65| INFO: Backbone filtered transforms size: 1286
+00:00:43.68| INFO: RMSD Clustered transforms size: 876
+00:00:45.04| INFO: Scored transforms size: 628
+00:00:45.16| INFO: Prossesing patch # 18 out of 24
+00:00:45.16| INFO: Start checking distance constraints 69171 transforms
+00:00:45.18| INFO: Start clustering 69171 transforms
+00:00:45.47| INFO: Clustered transforms size: 1181
+00:00:45.56| INFO: Filtered transforms size: 909
+00:00:45.58| INFO: Backbone filtered transforms size: 853
+00:00:45.59| INFO: RMSD Clustered transforms size: 628
+00:00:46.66| INFO: Scored transforms size: 443
+00:00:46.72| INFO: Prossesing patch # 19 out of 24
+00:00:46.72| INFO: Start checking distance constraints 19727 transforms
+00:00:46.72| INFO: Start clustering 19727 transforms
+00:00:46.79| INFO: Clustered transforms size: 90
+00:00:46.81| INFO: Filtered transforms size: 20
+00:00:46.81| INFO: Backbone filtered transforms size: 15
+00:00:46.81| INFO: RMSD Clustered transforms size: 14
+00:00:46.83| INFO: Scored transforms size: 6
+00:00:46.86| INFO: Prossesing patch # 20 out of 24
+00:00:46.86| INFO: Start checking distance constraints 20921 transforms
+00:00:46.86| INFO: Start clustering 20921 transforms
+00:00:46.95| INFO: Clustered transforms size: 115
+00:00:46.95| INFO: Filtered transforms size: 80
+00:00:46.95| INFO: Backbone filtered transforms size: 77
+00:00:46.95| INFO: RMSD Clustered transforms size: 73
+00:00:47.09| INFO: Scored transforms size: 40
+00:00:47.15| INFO: Prossesing patch # 21 out of 24
+00:00:47.15| INFO: Start checking distance constraints 43090 transforms
+00:00:47.16| INFO: Start clustering 43090 transforms
+00:00:47.33| INFO: Clustered transforms size: 471
+00:00:47.36| INFO: Filtered transforms size: 311
+00:00:47.36| INFO: Backbone filtered transforms size: 272
+00:00:47.38| INFO: RMSD Clustered transforms size: 210
+00:00:47.68| INFO: Scored transforms size: 140
+00:00:47.77| INFO: Prossesing patch # 22 out of 24
+00:00:47.77| INFO: Start checking distance constraints 59608 transforms
+00:00:47.77| INFO: Start clustering 59608 transforms
+00:00:48.00| INFO: Clustered transforms size: 298
+00:00:48.02| INFO: Filtered transforms size: 112
+00:00:48.02| INFO: Backbone filtered transforms size: 89
+00:00:48.02| INFO: RMSD Clustered transforms size: 83
+00:00:48.18| INFO: Scored transforms size: 46
+00:00:48.20| INFO: Prossesing patch # 23 out of 24
+00:00:48.20| INFO: Start checking distance constraints 5717 transforms
+00:00:48.20| INFO: Start clustering 5717 transforms
+00:00:48.22| INFO: Clustered transforms size: 11
+00:00:48.22| INFO: Filtered transforms size: 1
+00:00:48.22| INFO: Backbone filtered transforms size: 1
+00:00:48.22| INFO: RMSD Clustered transforms size: 1
+00:00:48.22| INFO: Scored transforms size: 0
+00:00:48.27| INFO: Prossesing patch # 24 out of 24
+00:00:48.27| INFO: Start checking distance constraints 21079 transforms
+00:00:48.27| INFO: Start clustering 21079 transforms
+00:00:48.34| INFO: Clustered transforms size: 62
+00:00:48.36| INFO: Filtered transforms size: 3
+00:00:48.36| INFO: Backbone filtered transforms size: 3
+00:00:48.36| INFO: RMSD Clustered transforms size: 3
+00:00:48.36| INFO: Scored transforms size: 1
+00:00:48.36| INFO: Start Docking flat-flat patches
+00:00:48.36| INFO: Start Docking knob-hole patches
+00:00:51.11| INFO: Prossesing patch # 1 out of 41
+00:00:51.11| INFO: Start checking distance constraints 1338110 transforms
+00:00:51.33| INFO: Start clustering 1338110 transforms
+00:00:58.70| INFO: Clustered transforms size: 21023
+00:01:00.11| INFO: Filtered transforms size: 10074
+00:01:00.13| INFO: Backbone filtered transforms size: 8920
+00:01:00.25| INFO: RMSD Clustered transforms size: 6652
+00:01:12.94| INFO: Scored transforms size: 3321
+00:01:12.98| INFO: Prossesing patch # 2 out of 41
+00:01:12.98| INFO: Start checking distance constraints 13239 transforms
+00:01:12.98| INFO: Start clustering 13239 transforms
+00:01:13.02| INFO: Clustered transforms size: 57
+00:01:13.04| INFO: Filtered transforms size: 48
+00:01:13.04| INFO: Backbone filtered transforms size: 47
+00:01:13.04| INFO: RMSD Clustered transforms size: 43
+00:01:13.11| INFO: Scored transforms size: 29
+00:01:13.16| INFO: Prossesing patch # 3 out of 41
+00:01:13.16| INFO: Start checking distance constraints 38537 transforms
+00:01:13.16| INFO: Start clustering 38537 transforms
+00:01:13.30| INFO: Clustered transforms size: 388
+00:01:13.31| INFO: Filtered transforms size: 179
+00:01:13.31| INFO: Backbone filtered transforms size: 156
+00:01:13.33| INFO: RMSD Clustered transforms size: 131
+00:01:13.55| INFO: Scored transforms size: 84
+00:01:13.56| INFO: Prossesing patch # 4 out of 41
+00:01:13.56| INFO: Start checking distance constraints 3199 transforms
+00:01:13.56| INFO: Start clustering 3199 transforms
+00:01:13.58| INFO: Clustered transforms size: 4
+00:01:13.58| INFO: Filtered transforms size: 3
+00:01:13.58| INFO: Backbone filtered transforms size: 3
+00:01:13.58| INFO: RMSD Clustered transforms size: 3
+00:01:13.58| INFO: Scored transforms size: 2
+00:01:13.59| INFO: Prossesing patch # 5 out of 41
+00:01:13.59| INFO: Start checking distance constraints 5894 transforms
+00:01:13.59| INFO: Start clustering 5894 transforms
+00:01:13.62| INFO: Clustered transforms size: 15
+00:01:13.62| INFO: Filtered transforms size: 7
+00:01:13.62| INFO: Backbone filtered transforms size: 7
+00:01:13.62| INFO: RMSD Clustered transforms size: 6
+00:01:13.62| INFO: Scored transforms size: 3
+00:01:13.68| INFO: Prossesing patch # 6 out of 41
+00:01:13.68| INFO: Start checking distance constraints 31445 transforms
+00:01:13.69| INFO: Start clustering 31445 transforms
+00:01:13.80| INFO: Clustered transforms size: 348
+00:01:13.83| INFO: Filtered transforms size: 303
+00:01:13.83| INFO: Backbone filtered transforms size: 292
+00:01:13.83| INFO: RMSD Clustered transforms size: 222
+00:01:14.18| INFO: Scored transforms size: 170
+00:01:14.20| INFO: Prossesing patch # 7 out of 41
+00:01:14.20| INFO: Start checking distance constraints 12347 transforms
+00:01:14.20| INFO: Start clustering 12347 transforms
+00:01:14.25| INFO: Clustered transforms size: 25
+00:01:14.25| INFO: Filtered transforms size: 0
+00:01:14.25| INFO: Backbone filtered transforms size: 0
+00:01:14.25| INFO: RMSD Clustered transforms size: 0
+00:01:14.25| INFO: Scored transforms size: 0
+00:01:14.26| INFO: Prossesing patch # 8 out of 41
+00:01:14.26| INFO: Start checking distance constraints 18127 transforms
+00:01:14.27| INFO: Start clustering 18127 transforms
+00:01:14.33| INFO: Clustered transforms size: 123
+00:01:14.34| INFO: Filtered transforms size: 63
+00:01:14.34| INFO: Backbone filtered transforms size: 62
+00:01:14.34| INFO: RMSD Clustered transforms size: 60
+00:01:14.44| INFO: Scored transforms size: 43
+00:01:14.48| INFO: Prossesing patch # 9 out of 41
+00:01:14.48| INFO: Start checking distance constraints 7045 transforms
+00:01:14.48| INFO: Start clustering 7045 transforms
+00:01:14.51| INFO: Clustered transforms size: 25
+00:01:14.51| INFO: Filtered transforms size: 0
+00:01:14.51| INFO: Backbone filtered transforms size: 0
+00:01:14.51| INFO: RMSD Clustered transforms size: 0
+00:01:14.51| INFO: Scored transforms size: 0
+00:01:14.52| INFO: Prossesing patch # 10 out of 41
+00:01:14.52| INFO: Start checking distance constraints 11015 transforms
+00:01:14.52| INFO: Start clustering 11015 transforms
+00:01:14.56| INFO: Clustered transforms size: 57
+00:01:14.58| INFO: Filtered transforms size: 27
+00:01:14.58| INFO: Backbone filtered transforms size: 26
+00:01:14.58| INFO: RMSD Clustered transforms size: 23
+00:01:14.62| INFO: Scored transforms size: 18
+00:01:14.63| INFO: Prossesing patch # 11 out of 41
+00:01:14.63| INFO: Start checking distance constraints 3022 transforms
+00:01:14.63| INFO: Start clustering 3022 transforms
+00:01:14.65| INFO: Clustered transforms size: 17
+00:01:14.65| INFO: Filtered transforms size: 0
+00:01:14.65| INFO: Backbone filtered transforms size: 0
+00:01:14.65| INFO: RMSD Clustered transforms size: 0
+00:01:14.65| INFO: Scored transforms size: 0
+00:01:14.68| INFO: Prossesing patch # 12 out of 41
+00:01:14.68| INFO: Start checking distance constraints 28687 transforms
+00:01:14.69| INFO: Start clustering 28687 transforms
+00:01:14.77| INFO: Clustered transforms size: 133
+00:01:14.80| INFO: Filtered transforms size: 91
+00:01:14.80| INFO: Backbone filtered transforms size: 83
+00:01:14.80| INFO: RMSD Clustered transforms size: 67
+00:01:14.93| INFO: Scored transforms size: 37
+00:01:14.98| INFO: Prossesing patch # 13 out of 41
+00:01:14.98| INFO: Start checking distance constraints 39233 transforms
+00:01:14.98| INFO: Start clustering 39233 transforms
+00:01:15.12| INFO: Clustered transforms size: 207
+00:01:15.13| INFO: Filtered transforms size: 68
+00:01:15.13| INFO: Backbone filtered transforms size: 43
+00:01:15.13| INFO: RMSD Clustered transforms size: 40
+00:01:15.22| INFO: Scored transforms size: 26
+00:01:15.30| INFO: Prossesing patch # 14 out of 41
+00:01:15.30| INFO: Start checking distance constraints 67875 transforms
+00:01:15.30| INFO: Start clustering 67875 transforms
+00:01:15.55| INFO: Clustered transforms size: 674
+00:01:15.62| INFO: Filtered transforms size: 529
+00:01:15.62| INFO: Backbone filtered transforms size: 441
+00:01:15.62| INFO: RMSD Clustered transforms size: 340
+00:01:16.23| INFO: Scored transforms size: 209
+00:01:16.26| INFO: Prossesing patch # 15 out of 41
+00:01:16.26| INFO: Start checking distance constraints 8869 transforms
+00:01:16.26| INFO: Start clustering 8869 transforms
+00:01:16.29| INFO: Clustered transforms size: 12
+00:01:16.29| INFO: Filtered transforms size: 1
+00:01:16.29| INFO: Backbone filtered transforms size: 0
+00:01:16.29| INFO: RMSD Clustered transforms size: 0
+00:01:16.29| INFO: Scored transforms size: 0
+00:01:16.33| INFO: Prossesing patch # 16 out of 41
+00:01:16.33| INFO: Start checking distance constraints 13701 transforms
+00:01:16.33| INFO: Start clustering 13701 transforms
+00:01:16.37| INFO: Clustered transforms size: 179
+00:01:16.37| INFO: Filtered transforms size: 0
+00:01:16.37| INFO: Backbone filtered transforms size: 0
+00:01:16.37| INFO: RMSD Clustered transforms size: 0
+00:01:16.37| INFO: Scored transforms size: 0
+00:01:16.43| INFO: Prossesing patch # 17 out of 41
+00:01:16.43| INFO: Start checking distance constraints 38520 transforms
+00:01:16.44| INFO: Start clustering 38520 transforms
+00:01:16.58| INFO: Clustered transforms size: 286
+00:01:16.59| INFO: Filtered transforms size: 221
+00:01:16.59| INFO: Backbone filtered transforms size: 199
+00:01:16.61| INFO: RMSD Clustered transforms size: 164
+00:01:16.91| INFO: Scored transforms size: 92
+00:01:16.97| INFO: Prossesing patch # 18 out of 41
+00:01:16.97| INFO: Start checking distance constraints 12626 transforms
+00:01:16.97| INFO: Start clustering 12626 transforms
+00:01:17.01| INFO: Clustered transforms size: 48
+00:01:17.01| INFO: Filtered transforms size: 0
+00:01:17.01| INFO: Backbone filtered transforms size: 0
+00:01:17.01| INFO: RMSD Clustered transforms size: 0
+00:01:17.01| INFO: Scored transforms size: 0
+00:01:17.02| INFO: Prossesing patch # 19 out of 41
+00:01:17.02| INFO: Start checking distance constraints 4200 transforms
+00:01:17.02| INFO: Start clustering 4200 transforms
+00:01:17.04| WARNING: Reducing ignoreClustersSmaller parameter
+00:01:17.04| INFO: Clustered transforms size: 3
+00:01:17.04| INFO: Filtered transforms size: 2
+00:01:17.04| INFO: Backbone filtered transforms size: 2
+00:01:17.04| INFO: RMSD Clustered transforms size: 2
+00:01:17.05| INFO: Scored transforms size: 2
+00:01:17.12| INFO: Prossesing patch # 20 out of 41
+00:01:17.12| INFO: Start checking distance constraints 55901 transforms
+00:01:17.12| INFO: Start clustering 55901 transforms
+00:01:17.34| INFO: Clustered transforms size: 886
+00:01:17.41| INFO: Filtered transforms size: 492
+00:01:17.41| INFO: Backbone filtered transforms size: 467
+00:01:17.41| INFO: RMSD Clustered transforms size: 353
+00:01:18.08| INFO: Scored transforms size: 230
+00:01:18.12| INFO: Prossesing patch # 21 out of 41
+00:01:18.12| INFO: Start checking distance constraints 16823 transforms
+00:01:18.12| INFO: Start clustering 16823 transforms
+00:01:18.19| INFO: Clustered transforms size: 110
+00:01:18.19| INFO: Filtered transforms size: 25
+00:01:18.19| INFO: Backbone filtered transforms size: 23
+00:01:18.19| INFO: RMSD Clustered transforms size: 20
+00:01:18.23| INFO: Scored transforms size: 7
+00:01:18.33| INFO: Prossesing patch # 22 out of 41
+00:01:18.33| INFO: Start checking distance constraints 84899 transforms
+00:01:18.36| INFO: Start clustering 84899 transforms
+00:01:18.69| INFO: Clustered transforms size: 1091
+00:01:18.77| INFO: Filtered transforms size: 739
+00:01:18.77| INFO: Backbone filtered transforms size: 700
+00:01:18.79| INFO: RMSD Clustered transforms size: 508
+00:01:19.66| INFO: Scored transforms size: 329
+00:01:19.76| INFO: Prossesing patch # 23 out of 41
+00:01:19.76| INFO: Start checking distance constraints 83898 transforms
+00:01:19.77| INFO: Start clustering 83898 transforms
+00:01:20.09| INFO: Clustered transforms size: 1560
+00:01:20.16| INFO: Filtered transforms size: 368
+00:01:20.16| INFO: Backbone filtered transforms size: 341
+00:01:20.16| INFO: RMSD Clustered transforms size: 247
+00:01:20.62| INFO: Scored transforms size: 95
+00:01:20.66| INFO: Prossesing patch # 24 out of 41
+00:01:20.66| INFO: Start checking distance constraints 23571 transforms
+00:01:20.66| INFO: Start clustering 23571 transforms
+00:01:20.76| INFO: Clustered transforms size: 345
+00:01:20.79| INFO: Filtered transforms size: 253
+00:01:20.79| INFO: Backbone filtered transforms size: 238
+00:01:20.79| INFO: RMSD Clustered transforms size: 175
+00:01:21.12| INFO: Scored transforms size: 121
+00:01:21.16| INFO: Prossesing patch # 25 out of 41
+00:01:21.16| INFO: Start checking distance constraints 25372 transforms
+00:01:21.16| INFO: Start clustering 25372 transforms
+00:01:21.25| INFO: Clustered transforms size: 112
+00:01:21.26| INFO: Filtered transforms size: 33
+00:01:21.26| INFO: Backbone filtered transforms size: 19
+00:01:21.26| INFO: RMSD Clustered transforms size: 18
+00:01:21.30| INFO: Scored transforms size: 6
+00:01:21.31| INFO: Prossesing patch # 26 out of 41
+00:01:21.31| INFO: Start checking distance constraints 4746 transforms
+00:01:21.31| INFO: Start clustering 4746 transforms
+00:01:21.33| INFO: Clustered transforms size: 9
+00:01:21.33| INFO: Filtered transforms size: 4
+00:01:21.33| INFO: Backbone filtered transforms size: 4
+00:01:21.33| INFO: RMSD Clustered transforms size: 4
+00:01:21.34| INFO: Scored transforms size: 2
+00:01:21.41| INFO: Prossesing patch # 27 out of 41
+00:01:21.41| INFO: Start checking distance constraints 51218 transforms
+00:01:21.41| INFO: Start clustering 51218 transforms
+00:01:21.62| INFO: Clustered transforms size: 997
+00:01:21.69| INFO: Filtered transforms size: 627
+00:01:21.69| INFO: Backbone filtered transforms size: 526
+00:01:21.69| INFO: RMSD Clustered transforms size: 366
+00:01:22.33| INFO: Scored transforms size: 210
+00:01:22.36| INFO: Prossesing patch # 28 out of 41
+00:01:22.36| INFO: Start checking distance constraints 7746 transforms
+00:01:22.36| INFO: Start clustering 7746 transforms
+00:01:22.37| INFO: Clustered transforms size: 17
+00:01:22.37| INFO: Filtered transforms size: 17
+00:01:22.37| INFO: Backbone filtered transforms size: 17
+00:01:22.37| INFO: RMSD Clustered transforms size: 16
+00:01:22.40| INFO: Scored transforms size: 15
+00:01:22.43| INFO: Prossesing patch # 29 out of 41
+00:01:22.43| INFO: Start checking distance constraints 19141 transforms
+00:01:22.43| INFO: Start clustering 19141 transforms
+00:01:22.50| INFO: Clustered transforms size: 270
+00:01:22.52| INFO: Filtered transforms size: 264
+00:01:22.52| INFO: Backbone filtered transforms size: 257
+00:01:22.52| INFO: RMSD Clustered transforms size: 185
+00:01:22.76| INFO: Scored transforms size: 147
+00:01:22.80| INFO: Prossesing patch # 30 out of 41
+00:01:22.80| INFO: Start checking distance constraints 36163 transforms
+00:01:22.80| INFO: Start clustering 36163 transforms
+00:01:22.91| INFO: Clustered transforms size: 139
+00:01:22.93| INFO: Filtered transforms size: 109
+00:01:22.93| INFO: Backbone filtered transforms size: 102
+00:01:22.93| INFO: RMSD Clustered transforms size: 84
+00:01:23.05| INFO: Scored transforms size: 62
+00:01:23.06| INFO: Prossesing patch # 31 out of 41
+00:01:23.06| INFO: Start checking distance constraints 1550 transforms
+00:01:23.06| INFO: Start clustering 1550 transforms
+00:01:23.06| WARNING: Reducing ignoreClustersSmaller parameter
+00:01:23.08| INFO: Clustered transforms size: 1
+00:01:23.08| INFO: Filtered transforms size: 1
+00:01:23.08| INFO: Backbone filtered transforms size: 1
+00:01:23.08| INFO: RMSD Clustered transforms size: 1
+00:01:23.08| INFO: Scored transforms size: 1
+00:01:23.13| INFO: Prossesing patch # 32 out of 41
+00:01:23.13| INFO: Start checking distance constraints 38614 transforms
+00:01:23.13| INFO: Start clustering 38614 transforms
+00:01:23.27| INFO: Clustered transforms size: 489
+00:01:23.31| INFO: Filtered transforms size: 316
+00:01:23.31| INFO: Backbone filtered transforms size: 300
+00:01:23.31| INFO: RMSD Clustered transforms size: 240
+00:01:23.69| INFO: Scored transforms size: 143
+00:01:23.73| INFO: Prossesing patch # 33 out of 41
+00:01:23.73| INFO: Start checking distance constraints 25699 transforms
+00:01:23.73| INFO: Start clustering 25699 transforms
+00:01:23.81| INFO: Clustered transforms size: 202
+00:01:23.83| INFO: Filtered transforms size: 146
+00:01:23.83| INFO: Backbone filtered transforms size: 129
+00:01:23.83| INFO: RMSD Clustered transforms size: 111
+00:01:24.05| INFO: Scored transforms size: 62
+00:01:24.05| INFO: Prossesing patch # 34 out of 41
+00:01:24.05| INFO: Start checking distance constraints 4010 transforms
+00:01:24.05| INFO: Start clustering 4010 transforms
+00:01:24.06| INFO: Clustered transforms size: 16
+00:01:24.06| INFO: Filtered transforms size: 6
+00:01:24.06| INFO: Backbone filtered transforms size: 6
+00:01:24.06| INFO: RMSD Clustered transforms size: 5
+00:01:24.08| INFO: Scored transforms size: 3
+00:01:24.11| INFO: Prossesing patch # 35 out of 41
+00:01:24.12| INFO: Start checking distance constraints 17477 transforms
+00:01:24.12| INFO: Start clustering 17477 transforms
+00:01:24.16| INFO: Clustered transforms size: 25
+00:01:24.18| INFO: Filtered transforms size: 20
+00:01:24.18| INFO: Backbone filtered transforms size: 20
+00:01:24.18| INFO: RMSD Clustered transforms size: 18
+00:01:24.19| INFO: Scored transforms size: 14
+00:01:24.23| INFO: Prossesing patch # 36 out of 41
+00:01:24.23| INFO: Start checking distance constraints 9010 transforms
+00:01:24.23| INFO: Start clustering 9010 transforms
+00:01:24.26| INFO: Clustered transforms size: 38
+00:01:24.27| INFO: Filtered transforms size: 11
+00:01:24.27| INFO: Backbone filtered transforms size: 11
+00:01:24.27| INFO: RMSD Clustered transforms size: 11
+00:01:24.30| INFO: Scored transforms size: 4
+00:01:24.33| INFO: Prossesing patch # 37 out of 41
+00:01:24.33| INFO: Start checking distance constraints 40169 transforms
+00:01:24.34| INFO: Start clustering 40169 transforms
+00:01:24.48| INFO: Clustered transforms size: 388
+00:01:24.51| INFO: Filtered transforms size: 142
+00:01:24.51| INFO: Backbone filtered transforms size: 117
+00:01:24.51| INFO: RMSD Clustered transforms size: 102
+00:01:24.72| INFO: Scored transforms size: 46
+00:01:24.76| INFO: Prossesing patch # 38 out of 41
+00:01:24.77| INFO: Start checking distance constraints 25514 transforms
+00:01:24.77| INFO: Start clustering 25514 transforms
+00:01:24.86| INFO: Clustered transforms size: 346
+00:01:24.90| INFO: Filtered transforms size: 309
+00:01:24.90| INFO: Backbone filtered transforms size: 304
+00:01:24.90| INFO: RMSD Clustered transforms size: 206
+00:01:25.22| INFO: Scored transforms size: 162
+00:01:25.23| INFO: Prossesing patch # 39 out of 41
+00:01:25.23| INFO: Start checking distance constraints 6284 transforms
+00:01:25.23| INFO: Start clustering 6284 transforms
+00:01:25.26| INFO: Clustered transforms size: 9
+00:01:25.26| INFO: Filtered transforms size: 8
+00:01:25.26| INFO: Backbone filtered transforms size: 8
+00:01:25.26| INFO: RMSD Clustered transforms size: 8
+00:01:25.26| INFO: Scored transforms size: 7
+00:01:25.29| INFO: Prossesing patch # 40 out of 41
+00:01:25.29| INFO: Start checking distance constraints 3276 transforms
+00:01:25.29| INFO: Start clustering 3276 transforms
+00:01:25.30| INFO: Clustered transforms size: 9
+00:01:25.30| INFO: Filtered transforms size: 0
+00:01:25.30| INFO: Backbone filtered transforms size: 0
+00:01:25.30| INFO: RMSD Clustered transforms size: 0
+00:01:25.30| INFO: Scored transforms size: 0
+00:01:25.34| INFO: Prossesing patch # 41 out of 41
+00:01:25.36| INFO: Start checking distance constraints 42028 transforms
+00:01:25.36| INFO: Start clustering 42028 transforms
+00:01:25.51| INFO: Clustered transforms size: 453
+00:01:25.55| INFO: Filtered transforms size: 292
+00:01:25.55| INFO: Backbone filtered transforms size: 283
+00:01:25.55| INFO: RMSD Clustered transforms size: 206
+00:01:25.88| INFO: Scored transforms size: 127
+00:01:25.88| INFO: ProgTime: prog_time: 00:01:16.84
+00:01:25.88| INFO: Initial results size: 12486
+00:01:25.88| INFO: After removal of low scoring: 11761
+00:01:26.23| INFO: Results size after final clustering: 1684
+00:01:38.79| INFO: Full scored transforms size: 1684
+00:01:38.79| INFO: After full scoring: 1684
+00:01:38.80| INFO: Finish docking
