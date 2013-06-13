@@ -1,4 +1,4 @@
--s /home/svensken/octathorp/matching/natives/3ANS_S38.pdb
+#-s /home/svensken/octathorp/matching/natives/3ANS_S38.pdb
 -match:scaffold_active_site_residues_for_geomcsts /home/svensken/octathorp/matching/flags/3ANS/scaffold_clean.pos
 #match:scaffold_active_site_residues /work/jiri/matching/match/1cqw/1cqw_nohet_1.pdb_2.pos 
 #match:grid_boundary  /work/jiri/matching/match/1cqw/1cqw_nohet_1.pdb.gridlig

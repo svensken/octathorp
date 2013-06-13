@@ -7,7 +7,7 @@ statusupdate="/home/svensken/octathorp/status.update"
 
 
 combopath="/home/svensken/octathorp/matching/combos"
-for combodir in $combopath/*/
+for combodir in $combopath/3ANS*/ #$combopath/*/
 do
     cd $combodir
     id=${combodir: -10:4}
@@ -15,27 +15,10 @@ do
     flags="@$flagdir/general_match.flags @$flagdir/scaf_gfp.flags @$flagdir/substrate_gfp.flags"
 
     t1=$(date +%s)
-    ls $combodir/*.pdb | xargs -n 1 -P $ncpu    $matchexe $flags 
+    ls $combodir/*.pdb | xargs -n 1 -P $ncpu    $matchexe $flags -s #arg
     t2=$(date +%s)
     echo "$combodir $(expr $t2 - $t1)" >> $statusupdate
 done
-
-
-
-
-
-#for a in {1..1120}
-#do
-#    /home/svensken/Rosetta/main/source/bin/match.linuxgccrelease @../flags/general_match.flags @../flags/scaf_gfp.flags @../flags/substrate_gfp.flags -s /home/svensken/octathorp/patchdock/combos/3ANSbot.pdb_3ANScap.pdb.dir/output.txt.$a.pdb
-#    echo $a > status.update
-#done
-
-#for b in {1..790}
-#do
-#    /home/svensken/Rosetta/main/source/bin/match.linuxgccrelease @../flags/general_match.flags @../flags/scaf_gfp.flags @../flags/substrate_gfp.flags -s /home/svensken/octathorp/patchdock/combos/3ANSbot.pdb_3B12cap.pdb.dir/output.txt.$b.pdb
-#    total=$(expr 1120 + $b)
-#    echo $total > status.update
-#done
 
 
 

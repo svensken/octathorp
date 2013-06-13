@@ -1,0 +1,60 @@
+CST::BEGIN
+    TEMPLATE::  ATOM_MAP: 1 atom_name:  O06 C05 C04
+    TEMPLATE::  ATOM_MAP: 1 residue3:   KEM
+
+    TEMPLATE::  ATOM_MAP: 2 atom_name:   NE1 CD1 CG 
+    TEMPLATE::  ATOM_MAP: 2 residue1:    W
+
+    CONSTRAINT:: distanceAB:    13.6   0.3  60.0 1     1 
+    CONSTRAINT::    angle_A:    80.8   10.0 10.0 360.  1
+    CONSTRAINT::    angle_B:    95.9   10.0 10.0 360.  1
+    CONSTRAINT::  torsion_A:   -132.3  10.0 10.0 360.  1
+    CONSTRAINT:: torsion_AB:    158.3  10.0 10.0 360.  1
+    CONSTRAINT::  torsion_B:    157.9  10.0 10.0 360.  1
+CST::END
+
+CST::BEGIN
+    TEMPLATE::  ATOM_MAP: 1 atom_name:  O06 C05 C04
+    TEMPLATE::  ATOM_MAP: 1 residue3:   KEM
+
+    TEMPLATE::  ATOM_MAP: 2 atom_name:   ND2 CG CB  
+    TEMPLATE::  ATOM_MAP: 2 residue1:    N
+
+    CONSTRAINT:: distanceAB:    4.0   0.3  60.0 1     1
+    CONSTRAINT::    angle_A:    165.8 10.0 10.0 360.  1
+    CONSTRAINT::    angle_B:    120.6 10.0 10.0 360.  1
+    CONSTRAINT::  torsion_A:    156.0 30.0 10.0 360.  1
+    CONSTRAINT:: torsion_AB:   -116.3 30.0 10.0 360.  1
+    CONSTRAINT::  torsion_B:   -107.7 30.0 10.0 360.  1
+CST::END
+
+CST::BEGIN
+    TEMPLATE::  ATOM_MAP: 1 atom_name:  O06 C05 C04
+    TEMPLATE::  ATOM_MAP: 1 residue3:   KEM
+
+    TEMPLATE::  ATOM_MAP: 2 atom_name:   ND2 CG CB
+    TEMPLATE::  ATOM_MAP: 2 residue1:    N
+
+    CONSTRAINT:: distanceAB:    4.3   0.3  60.0 1     1
+    CONSTRAINT::    angle_A:    105.9 10.0 10.0 360.  1
+    CONSTRAINT::    angle_B:    127.3 10.0 10.0 360.  1
+    CONSTRAINT::  torsion_A:    150.5 30.0 10.0 360.  1
+    CONSTRAINT:: torsion_AB:   -154.2 30.0 10.0 360.  1
+    CONSTRAINT::  torsion_B:    165.5 30.0 10.0 360.  1
+CST::END
+
+CST::BEGIN
+    TEMPLATE::  ATOM_MAP: 1 atom_name:  O08 C07 C05
+    TEMPLATE::  ATOM_MAP: 1 residue3:   KEM
+
+    TEMPLATE::  ATOM_MAP: 2 atom_name:   NH2 CZ NE 
+    TEMPLATE::  ATOM_MAP: 2 residue1:    R
+
+    CONSTRAINT:: distanceAB:    3.1   0.3  60.0 1     1
+    CONSTRAINT::    angle_A:    121.4 10.0 10.0 360.  1
+    CONSTRAINT::    angle_B:    128.7 10.0 10.0 360.  1
+    CONSTRAINT::  torsion_A:   -153.4 30.0 10.0 360.  1
+    CONSTRAINT:: torsion_AB:   -53.0  30.0 10.0 360.  1
+    CONSTRAINT::  torsion_B:    176.5 30.0 10.0 360.  1
+CST::END
+
