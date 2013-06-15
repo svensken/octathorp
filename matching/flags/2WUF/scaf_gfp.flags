@@ -1,6 +1,5 @@
 #-s /home/svensken/octathorp/matching/natives/3ANS_S38.pdb
-#-s /home/luyang/matchtest2/clean_scaffold/@@@.pdb
--match:scaffold_active_site_residues_for_geomcsts /home/svensken/octathorp/matching/scaffold_clean.pos
+-match:scaffold_active_site_residues_for_geomcsts /home/svensken/octathorp/matching/flags/2WUF/scaffold_clean.pos
 #match:scaffold_active_site_residues /work/jiri/matching/match/1cqw/1cqw_nohet_1.pdb_2.pos 
 #match:grid_boundary  /work/jiri/matching/match/1cqw/1cqw_nohet_1.pdb.gridlig
 #match:active_site_definition_by_gridlig /work/jiri/matching/match/1cqw/1cqw_nohet_1.pdb.gridlig

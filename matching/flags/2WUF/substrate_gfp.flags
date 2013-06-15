@@ -1,5 +1,5 @@
--extra_res_fa /home/svensken/octathorp/matching/params/S38.fa.params
+-extra_res_fa /home/svensken/octathorp/matching/params/KEM.fa.params
 #-extra_res_fa /home/luyang/matchtest2/BTM_H.params
--match:lig_name S38
--match:geometric_constraint_file /home/svensken/octathorp/matching/csts/3ANS.cst
+-match:lig_name KEM
+-match:geometric_constraint_file /home/svensken/octathorp/matching/csts/2WUF.cst
 #match: BTM_H1.cst /home/luyang/cstfiles/BTM_H1.cst 
