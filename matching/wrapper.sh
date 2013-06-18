@@ -7,8 +7,9 @@ statusupdate="/home/svensken/octathorp/status.update"
 
 
 combopath="/home/svensken/octathorp/matching/combos"
-for combodir in $combopath/3GZJ_3GZJ/ #$combopath/2WUF*/ $combopath/3ANS*/ $combopath/3B12*/ $combopath/3GZJ*/ #$combopath/*/
+for combodir in $combopath/2WUF*/ $combopath/3ANS*/ $combopath/3B12*/ $combopath/3GZJ*/ #$combopath/*/
 do
+    echo $combodir
     cd $combodir
     id=${combodir: -10:4}
     flagdir="/home/svensken/octathorp/matching/flags/"$id
