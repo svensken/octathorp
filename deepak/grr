@@ -5,6 +5,37 @@ from rosetta import *
 from rosetta.protocols.rigid import *
 import structural_alignment
 
+opts = ['app',
+        '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ),
+        '-ignore_unrecognized_res' ]
+args = utility.vector1_string()
+args.extend( opts )
+core.init( args )
+
+
+ap1_params = ['AP1.params']
+type_set = generate_nonstandard_residue_set( ap1_params )
+pose = pose_from_pdb( type_set, 'AP1_0001.pdb' )
+
+tst_params = ['TST.params']
+tst_type_set = generate_nonstandard_residue_set( tst_params )
+
+tstpose = pose_from_pdb( tst_type_set, 'test.pdb')
+
+
+
+
+
+
+
+
+#!/usr/bin/env python
+
+import os
+from rosetta import *
+from rosetta.protocols.rigid import *
+import structural_alignment
+
 opts = ['app', 
         '-database', os.path.abspath( os.environ['PYROSETTA_DATABASE'] ), 
         '-ignore_unrecognized_res' ]
@@ -57,20 +88,9 @@ ap3_c3  = [ ap3_c3[0], ap3_c3[1], ap3_c3[2] ]
 
 
 for filename in os.listdir('/home/deegupta/matching/matches_all'):
-    # don't recycle!!!!!!
-    ap1_tmp = None
-    ap1_tmp = Pose()
-    ap1_tmp.assign(ap1)
-    ap2_tmp = None
-    ap2_tmp = Pose()
-    ap2_tmp.assign(ap2)
-    ap3_tmp = None
-    ap3_tmp = Pose()
-    ap3_tmp.assign(ap3)
+    filename = '/home/deegupta/matching/matches_all/'+filename
 
-    pathname = '/home/deegupta/matching/matches_all/'+filename
-
-    with open(pathname, 'r') as pdbfile:
+    with open(filename, 'r') as pdbfile:
         lines = pdbfile.readlines()
         for line in lines:
             terms = line.split()
@@ -88,10 +108,21 @@ for filename in os.listdir('/home/deegupta/matching/matches_all'):
             except:
                 pass
     
-    pose = pose_from_pdb( tst_type_set, pathname )
+    pose = pose_from_pdb( tst_type_set, filename )
+
+    st1 = [   ap1_c33,
+                                                            ap1_s1,
+                                                            ap1_o9,
+                                                            ap1_c29  ]
+    st2 = [   tst_c1,
+                                                            tst_s1,
+                                                            tst_o1,
+                                                            tst_c2   ]
+
     
 
-    ap1_tmp, pose1 = structural_alignment.kabsch_alignment( ap1_tmp, 
+    raw_input('.')
+    ap1, pose = structural_alignment.kabsch_alignment(  ap1, 
                                                         pose, 
                                                         [   ap1_c33,
                                                             ap1_s1,
@@ -101,39 +132,13 @@ for filename in os.listdir('/home/deegupta/matching/matches_all'):
                                                             tst_s1,
                                                             tst_o1,
                                                             tst_c2   ] )
-    #ap2_tmp, pose2 = structural_alignment.kabsch_alignment( ap2_tmp, 
-    #                                                    pose, 
-    #                                                    [   ap2_c1,
-    #                                                        ap2_s1,
-    #                                                        ap2_o1,
-    #                                                        ap2_c3  ], 
-    #                                                    [   tst_c1,
-    #                                                        tst_s1,
-    #                                                        tst_o1,
-    #                                                        tst_c2   ] )
-    #ap3_tmp, pose3 = structural_alignment.kabsch_alignment( ap3_tmp, 
-    #                                                    pose, 
-    #                                                    [   ap3_c1,
-    #                                                        ap3_s1,
-    #                                                        ap3_o1,
-    #                                                        ap3_c3  ], 
-    #                                                    [   tst_c1,
-    #                                                        tst_s1,
-    #                                                        tst_o1,
-    #                                                        tst_c2   ] )
-    #print ap1_tmp
-    #print pose
-
-    dump_pdb(ap1_tmp, 'tmp/ap1.pdb')
-    #dump_pdb(ap2_tmp, 'tmp/ap2.pdb')
-    #dump_pdb(ap3_tmp, 'tmp/ap3.pdb')
-    dump_pdb(pose1, 'tmp/pose1.pdb')
-    #dump_pdb(pose2, 'tmp/pose2.pdb')
-    #dump_pdb(pose3, 'tmp/pose3.pdb')
 
 
-    os.system('cat tmp/pose1.pdb tmp/ap1.pdb >> '+filename+'.ap1.pdb')
-    #os.system('cat tmp/pose2.pdb tmp/ap2.pdb >> '+filename+'.ap2.pdb')
-    #os.system('cat tmp/pose3.pdb tmp/ap3.pdb >> '+filename+'.ap3.pdb')
+    print ap1
+    print pose
 
-    raw_input('one done')
+    dump_pdb(ap1, 'ap1.pdb')
+    dump_pdb(pose, 'pose.pdb')
+
+    #system cat pepfile >> posefile
+
