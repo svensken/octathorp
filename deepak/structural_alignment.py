@@ -80,12 +80,16 @@ def kabsch_alignment( pose1, pose2 , pose1sel = [], pose2sel =[] ):
                 [14.716, -10.800, -36.578], #C33
                 [14.417, -12.009, -37.779], #S1
                 [16.035, -11.081, -35.807] ] #C29
+    stsel1 = pose1sel
+
     #stsel1 = extract_coordinates_from_pose_1x3(pose1, [5, 10, 15],['CA'])
     #stsel2 = extract_coordinates_from_pose_1x3(pose2,pose2sel,['CA'])
     stsel2 = [  [41.350,  12.253,  59.442], #O1
                 [42.322,  11.317,  59.642], #C1
                 [42.397,  11.078,  61.354], #S1
                 [42.091,   9.976,  58.893] ] #C2
+    stsel2 = pose2sel
+
     """
     stsel1 = []
     for r in pose1sel:
@@ -184,5 +188,6 @@ def kabsch_alignment( pose1, pose2 , pose1sel = [], pose2sel =[] ):
             dummy.z = v[2]
             pose2.residue(r+1).set_xyz(a+1,dummy)
 
+    return pose1, pose2
     print 'RMSD=%f' % RMSD
 

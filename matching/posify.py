@@ -10,16 +10,16 @@ core.init( args )
 #pose_from_pdb( wm, 'new.1WM1.pdb' )
 
 wu = Pose()
-pose_from_pdb( wu, 'new.2WUF.pdb' )
+pose_from_pdb( wu, 'natives/new.2WUF.pdb' )
 
 an = Pose()
-pose_from_pdb( an, 'new.3ANS.pdb' )
+pose_from_pdb( an, 'natives/new.3ANS.pdb' )
 
 b1 = Pose()
-pose_from_pdb( b1, 'new.3B12.pdb' )
+pose_from_pdb( b1, 'natives/new.3B12.pdb' )
 
 gz = Pose()
-pose_from_pdb( gz, 'new.3GZJ.pdb' )
+pose_from_pdb( gz, 'natives/3GZJ.pdb' )
 
 
 

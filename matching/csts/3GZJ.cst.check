@@ -6,11 +6,11 @@ CST::BEGIN #resi 87
     TEMPLATE::  ATOM_MAP: 2 residue1:    S
 
     CONSTRAINT:: distanceAB:    1.5    0.3  60.0 1     1 
-    CONSTRAINT::    angle_A:    109.0  10.0 10.0 360.  1
-    CONSTRAINT::    angle_B:    117.9  10.0 10.0 360.  1
-    CONSTRAINT::  torsion_A:    162.6  10.0 10.0 360.  1
-    CONSTRAINT:: torsion_AB:   -163.3  10.0 10.0 360.  1
-    CONSTRAINT::  torsion_B:   -94.1   10.0 10.0 360.  1
+    CONSTRAINT::    angle_A:    109.0  10.0 10.0 360.  0
+    CONSTRAINT::    angle_B:    117.9  10.0 10.0 360.  0
+    CONSTRAINT::  torsion_A:    162.6  10.0 10.0 360.  0
+    CONSTRAINT:: torsion_AB:   -163.3  10.0 10.0 360.  0
+    CONSTRAINT::  torsion_B:   -94.1   10.0 10.0 360.  0
 CST::END
 
 CST::BEGIN #resi 244
@@ -21,11 +21,11 @@ CST::BEGIN #resi 244
     TEMPLATE::  ATOM_MAP: 2 residue1:    H
 
     CONSTRAINT:: distanceAB:    3.0   0.3  60.0 1     0
-    CONSTRAINT::    angle_A:    94.9  10.0 10.0 360.  1
-    CONSTRAINT::    angle_B:    83.9  10.0 10.0 360.  1
-    CONSTRAINT::  torsion_A:    123.9 30.0 10.0 360.  1
-    CONSTRAINT:: torsion_AB:   -97.5  30.0 10.0 360.  1
-    CONSTRAINT::  torsion_B:   -178.2 30.0 10.0 360.  1
+    CONSTRAINT::    angle_A:    94.9  10.0 10.0 360.  0
+    CONSTRAINT::    angle_B:    83.9  10.0 10.0 360.  0
+    CONSTRAINT::  torsion_A:    123.9 30.0 10.0 360.  0
+    CONSTRAINT:: torsion_AB:   -97.5  30.0 10.0 360.  0
+    CONSTRAINT::  torsion_B:   -178.2 30.0 10.0 360.  0
 
     ALGORITHM_INFO:: match
         SECONDARY_MATCH: UPSTREAM_CST 1 
@@ -40,11 +40,11 @@ CST::BEGIN #resi 216
     TEMPLATE::  ATOM_MAP: 2 residue1:    D
 
     CONSTRAINT:: distanceAB:    2.3   0.3  60.0 1     0 
-    CONSTRAINT::    angle_A:    128.9 10.0 10.0 360.  1
-    CONSTRAINT::    angle_B:    111.7 10.0 10.0 360.  1
-    CONSTRAINT::  torsion_A:   -170.6 30.0 10.0 360.  1
-    CONSTRAINT:: torsion_AB:   -138.5 30.0 10.0 360.  1
-    CONSTRAINT::  torsion_B:   -145.7 30.0 10.0 360.  1
+    CONSTRAINT::    angle_A:    128.9 10.0 10.0 360.  0
+    CONSTRAINT::    angle_B:    111.7 10.0 10.0 360.  0
+    CONSTRAINT::  torsion_A:   -170.6 30.0 10.0 360.  0
+    CONSTRAINT:: torsion_AB:   -138.5 30.0 10.0 360.  0
+    CONSTRAINT::  torsion_B:   -145.7 30.0 10.0 360.  0
 
     ALGORITHM_INFO:: match
         SECONDARY_MATCH: UPSTREAM_CST 2 
@@ -59,11 +59,11 @@ CST::BEGIN #resi 128
     TEMPLATE::  ATOM_MAP: 2 residue1:    Y
 
     CONSTRAINT:: distanceAB:    3.8   0.3  60.0 1     0
-    CONSTRAINT::    angle_A:    110.8 10.0 10.0 360.  1
-    CONSTRAINT::    angle_B:    67.6  10.0 10.0 360.  1
-    CONSTRAINT::  torsion_A:   -92.6  30.0 10.0 360.  1
-    CONSTRAINT:: torsion_AB:    14.9  30.0 10.0 360.  1
-    CONSTRAINT::  torsion_B:    101.3 30.0 10.0 360.  1
+    CONSTRAINT::    angle_A:    110.8 10.0 10.0 360.  0
+    CONSTRAINT::    angle_B:    67.6  10.0 10.0 360.  0
+    CONSTRAINT::  torsion_A:   -92.6  30.0 10.0 360.  0
+    CONSTRAINT:: torsion_AB:    14.9  30.0 10.0 360.  0
+    CONSTRAINT::  torsion_B:    101.3 30.0 10.0 360.  0
 CST::END
 
 # BE SURE TO CHANGE .pos FILE!
