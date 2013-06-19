@@ -101,39 +101,51 @@ for filename in os.listdir('/home/deegupta/matching/matches_all'):
                                                             tst_s1,
                                                             tst_o1,
                                                             tst_c2   ] )
-    #ap2_tmp, pose2 = structural_alignment.kabsch_alignment( ap2_tmp, 
-    #                                                    pose, 
-    #                                                    [   ap2_c1,
-    #                                                        ap2_s1,
-    #                                                        ap2_o1,
-    #                                                        ap2_c3  ], 
-    #                                                    [   tst_c1,
-    #                                                        tst_s1,
-    #                                                        tst_o1,
-    #                                                        tst_c2   ] )
-    #ap3_tmp, pose3 = structural_alignment.kabsch_alignment( ap3_tmp, 
-    #                                                    pose, 
-    #                                                    [   ap3_c1,
-    #                                                        ap3_s1,
-    #                                                        ap3_o1,
-    #                                                        ap3_c3  ], 
-    #                                                    [   tst_c1,
-    #                                                        tst_s1,
-    #                                                        tst_o1,
-    #                                                        tst_c2   ] )
+    ap1_out = None
+    ap1_out = Pose()
+    ap1_out.assign(ap1_tmp)
+    pose = pose_from_pdb( tst_type_set, pathname )
+    ap2_tmp, pose2 = structural_alignment.kabsch_alignment( ap2_tmp, 
+                                                        pose, 
+                                                        [   ap2_c1,
+                                                            ap2_s1,
+                                                            ap2_o1,
+                                                            ap2_c3  ], 
+                                                        [   tst_c1,
+                                                            tst_s1,
+                                                            tst_o1,
+                                                            tst_c2   ] )
+    ap2_out = None
+    ap2_out = Pose()
+    ap2_out.assign(ap2_tmp)
+    pose = pose_from_pdb( tst_type_set, pathname )
+    ap3_tmp, pose3 = structural_alignment.kabsch_alignment( ap3_tmp, 
+                                                        pose, 
+                                                        [   ap3_c1,
+                                                            ap3_s1,
+                                                            ap3_o1,
+                                                            ap3_c3  ], 
+                                                        [   tst_c1,
+                                                            tst_s1,
+                                                            tst_o1,
+                                                            tst_c2   ] )
+    ap3_out = None
+    ap3_out = Pose()
+    ap3_out.assign(ap3_tmp)
+    pose = pose_from_pdb( tst_type_set, pathname )
+
     #print ap1_tmp
     #print pose
 
-    dump_pdb(ap1_tmp, 'tmp/ap1.pdb')
-    #dump_pdb(ap2_tmp, 'tmp/ap2.pdb')
-    #dump_pdb(ap3_tmp, 'tmp/ap3.pdb')
+    dump_pdb(ap1_out, 'tmp/ap1.pdb')
+    dump_pdb(ap2_out, 'tmp/ap2.pdb')
+    dump_pdb(ap3_out, 'tmp/ap3.pdb')
     dump_pdb(pose1, 'tmp/pose1.pdb')
-    #dump_pdb(pose2, 'tmp/pose2.pdb')
-    #dump_pdb(pose3, 'tmp/pose3.pdb')
+    dump_pdb(pose2, 'tmp/pose2.pdb')
+    dump_pdb(pose3, 'tmp/pose3.pdb')
 
 
-    os.system('cat tmp/pose1.pdb tmp/ap1.pdb >> '+filename+'.ap1.pdb')
-    #os.system('cat tmp/pose2.pdb tmp/ap2.pdb >> '+filename+'.ap2.pdb')
-    #os.system('cat tmp/pose3.pdb tmp/ap3.pdb >> '+filename+'.ap3.pdb')
+    os.system('cat tmp/pose1.pdb tmp/ap1.pdb >> results/'+filename+'.ap1.pdb')
+    os.system('cat tmp/pose2.pdb tmp/ap2.pdb >> results/'+filename+'.ap2.pdb')
+    os.system('cat tmp/pose3.pdb tmp/ap3.pdb >> results/'+filename+'.ap3.pdb')
 
-    raw_input('one done')
