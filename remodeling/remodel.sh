@@ -1,0 +1,1 @@
+/home/svensken/Rosetta/main/source/bin/remodel.default.linuxgccrelease -database /home/svensken/Rosetta/main/database/ -s 3ANS_trimmed.pdbA.pdb -remodel:blueprint perl.blueprint -run:chain A -remodel:quick_and_dirty -num_trajectory 1 -ex1 -ex2 -correct -overwrite

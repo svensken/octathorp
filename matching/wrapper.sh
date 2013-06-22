@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ncpu=30
+ncpu=50
 
 matchexe="/home/svensken/Rosetta/main/source/bin/match.default.linuxgccrelease"
 statusupdate="/home/svensken/octathorp/status.update"

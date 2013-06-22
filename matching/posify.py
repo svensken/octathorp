@@ -34,7 +34,7 @@ pose_from_pdb( w1, 'combos/3B12_3B12/output.txt.11.pdb.new.pdb')#'natives/new.2W
 
 p1 = w1.pdb_info()
 print 'wu_an, wu_b1'
-for i in [104, 271, 128, 105, 108, 150, 149, 212]: # 269 too far away
+for i in [104, 271, 128, 150, 212]: # 269 too far away
     print i, p1.pdb2pose('A', i)
 #pi = wu.pdb_info()
 #print 'wu'
