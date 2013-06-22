@@ -5,12 +5,12 @@ CST::BEGIN #resi 104
     TEMPLATE::  ATOM_MAP: 2 atom_name:   OD1 CG CB
     TEMPLATE::  ATOM_MAP: 2 residue1:    D
 
-    CONSTRAINT:: distanceAB:    2.4    0.3  60.0 1     0 #TODO 0?
-    CONSTRAINT::    angle_A:    91.2   10.0 10.0 360.  1
-    CONSTRAINT::    angle_B:    111.6  10.0 10.0 360.  1
-    CONSTRAINT::  torsion_A:   -70.6   10.0 10.0 360.  1
-    CONSTRAINT:: torsion_AB:    44.5   10.0 10.0 360.  1
-    CONSTRAINT::  torsion_B:    133.1  10.0 10.0 360.  1
+    CONSTRAINT:: distanceAB:    2.4    0.3  60.0 0     0 
+    CONSTRAINT::    angle_A:    91.2   20.0 10.0 360.  1
+    CONSTRAINT::    angle_B:    111.6  20.0 10.0 360.  1
+    CONSTRAINT::  torsion_A:   -70.6   20.0 10.0 360.  1
+    CONSTRAINT:: torsion_AB:    44.5   20.0 10.0 360.  1
+    CONSTRAINT::  torsion_B:    133.1  20.0 10.0 360.  1
 CST::END
 
 CST::BEGIN #resi 271
@@ -20,12 +20,12 @@ CST::BEGIN #resi 271
     TEMPLATE::  ATOM_MAP: 2 atom_name:   NE2 CE1 ND1
     TEMPLATE::  ATOM_MAP: 2 residue1:    H
 
-    CONSTRAINT:: distanceAB:    2.4    0.3  60.0 1     0
-    CONSTRAINT::    angle_A:    125.7  10.0 10.0 360.  1
-    CONSTRAINT::    angle_B:    99.6   10.0 10.0 360.  1
-    CONSTRAINT::  torsion_A:    178.2  10.0 10.0 360.  1
-    CONSTRAINT:: torsion_AB:   -76.0   10.0 10.0 360.  1
-    CONSTRAINT::  torsion_B:   -152.1  10.0 10.0 360.  1
+    CONSTRAINT:: distanceAB:    2.4    0.3  60.0 0     0
+    CONSTRAINT::    angle_A:    125.7  20.0 10.0 360.  1
+    CONSTRAINT::    angle_B:    99.6   20.0 10.0 360.  1
+    CONSTRAINT::  torsion_A:    178.2  20.0 10.0 360.  1
+    CONSTRAINT:: torsion_AB:   -76.0   20.0 10.0 360.  1
+    CONSTRAINT::  torsion_B:   -152.1  20.0 10.0 360.  1
 
     ALGORITHM_INFO:: match
         SECONDARY_MATCH: UPSTREAM_CST 1
@@ -39,46 +39,16 @@ CST::BEGIN #resi 128
     TEMPLATE::  ATOM_MAP: 2 atom_name:   OD2 CG OD1 
     TEMPLATE::  ATOM_MAP: 2 residue1:    D
 
-    CONSTRAINT:: distanceAB:    2.8    0.3  60.0 1     0
-    CONSTRAINT::    angle_A:    137.1  10.0 10.0 360.  1
-    CONSTRAINT::    angle_B:    121.8  10.0 10.0 360.  1
-    CONSTRAINT::  torsion_A:   -171.9  10.0 10.0 360.  1
-    CONSTRAINT:: torsion_AB:    50.1   10.0 10.0 360.  1
-    CONSTRAINT::  torsion_B:   -179.3  10.0 10.0 360.  1
+    CONSTRAINT:: distanceAB:    2.8    0.3  60.0 0     0
+    CONSTRAINT::    angle_A:    137.1  20.0 10.0 360.  1
+    CONSTRAINT::    angle_B:    121.8  20.0 10.0 360.  1
+    CONSTRAINT::  torsion_A:   -171.9  20.0 10.0 360.  1
+    CONSTRAINT:: torsion_AB:    50.1   20.0 10.0 360.  1
+    CONSTRAINT::  torsion_B:   -179.3  20.0 10.0 360.  1
 
     ALGORITHM_INFO:: match
         SECONDARY_MATCH: UPSTREAM_CST 2
     ALGORITHM_INFO::END
-CST::END
-
-CST::BEGIN #resi 105
-    TEMPLATE::  ATOM_MAP: 1 atom_name:  O2 C1 C2
-    TEMPLATE::  ATOM_MAP: 1 residue3:   FAH
-
-    TEMPLATE::  ATOM_MAP: 2 atom_name:   NH1 CZ NH2
-    TEMPLATE::  ATOM_MAP: 2 residue1:    R
-
-    CONSTRAINT:: distanceAB:    2.9   0.3  60.0 1     0
-    CONSTRAINT::    angle_A:    125.3 10.0 10.0 360.  1
-    CONSTRAINT::    angle_B:    132.8 10.0 10.0 360.  1
-    CONSTRAINT::  torsion_A:   -179.5 30.0 10.0 360.  1
-    CONSTRAINT:: torsion_AB:    106.2 30.0 10.0 360.  1
-    CONSTRAINT::  torsion_B:    174.0 30.0 10.0 360.  1
-CST::END
-
-CST::BEGIN #resi 108
-    TEMPLATE::  ATOM_MAP: 1 atom_name:  O2 C1 C2
-    TEMPLATE::  ATOM_MAP: 1 residue3:   FAH
-
-    TEMPLATE::  ATOM_MAP: 2 atom_name:   NE CZ NH1 
-    TEMPLATE::  ATOM_MAP: 2 residue1:    R
-
-    CONSTRAINT:: distanceAB:    3.1   0.3  60.0 1     0
-    CONSTRAINT::    angle_A:    149.6 10.0 10.0 360.  1
-    CONSTRAINT::    angle_B:    106.5 10.0 10.0 360.  1
-    CONSTRAINT::  torsion_A:    48.6  30.0 10.0 360.  1
-    CONSTRAINT:: torsion_AB:    15.1  30.0 10.0 360.  1
-    CONSTRAINT::  torsion_B:    158.8 30.0 10.0 360.  1
 CST::END
 
 CST::BEGIN #resi 150 cap
@@ -88,27 +58,12 @@ CST::BEGIN #resi 150 cap
     TEMPLATE::  ATOM_MAP: 2 atom_name:   NE1 CD1 CG
     TEMPLATE::  ATOM_MAP: 2 residue1:    W
 
-    CONSTRAINT:: distanceAB:    2.9   0.3  60.0 1     0
+    CONSTRAINT:: distanceAB:    2.9   0.3  60.0 0     0
     CONSTRAINT::    angle_A:    107.8 10.0 10.0 360.  1
     CONSTRAINT::    angle_B:    127.7 10.0 10.0 360.  1
     CONSTRAINT::  torsion_A:    71.1  30.0 10.0 360.  1
     CONSTRAINT:: torsion_AB:    175.7 30.0 10.0 360.  1
     CONSTRAINT::  torsion_B:    156.4 30.0 10.0 360.  1
-CST::END
-
-CST::BEGIN #resi 149 cap
-    TEMPLATE::  ATOM_MAP: 1 atom_name:  O1 C1 O2
-    TEMPLATE::  ATOM_MAP: 1 residue3:   FAH
-
-    TEMPLATE::  ATOM_MAP: 2 atom_name:   NE2 CE1 ND1
-    TEMPLATE::  ATOM_MAP: 2 residue1:    H
-
-    CONSTRAINT:: distanceAB:    3.1   0.3  60.0 1     0
-    CONSTRAINT::    angle_A:    155.7 10.0 10.0 360.  1
-    CONSTRAINT::    angle_B:    128.9 10.0 10.0 360.  1
-    CONSTRAINT::  torsion_A:    156.1 30.0 10.0 360.  1
-    CONSTRAINT:: torsion_AB:   -34.0  30.0 10.0 360.  1
-    CONSTRAINT::  torsion_B:   -153.8 30.0 10.0 360.  1
 CST::END
 
 CST::BEGIN #resi 212 cap
@@ -118,7 +73,7 @@ CST::BEGIN #resi 212 cap
     TEMPLATE::  ATOM_MAP: 2 atom_name:   OH CZ CE2  
     TEMPLATE::  ATOM_MAP: 2 residue1:    Y
 
-    CONSTRAINT:: distanceAB:    2.7   0.3  60.0 1     0
+    CONSTRAINT:: distanceAB:    2.7   0.3  60.0 0     0
     CONSTRAINT::    angle_A:    119.4 10.0 10.0 360.  1
     CONSTRAINT::    angle_B:    120.8 10.0 10.0 360.  1
     CONSTRAINT::  torsion_A:   -51.5  30.0 10.0 360.  1
