@@ -240,8 +240,18 @@
 233 R .
 234 N .
 235 W .
-236 K .
-237 L .
+236 K H
+0   x H PIKAA W
+0   x H PIKAA A
+0   x H PIKAA C
+0   x H PIKAA K
+0   x H PIKAA S
+0   x H PIKAA L
+0   x L PIKAA G
+0   x L PIKAA R
+0   x L PIKAA K
+0   x L PIKAA I
+237 L L
 238 I .
 239 P .
 240 A .
