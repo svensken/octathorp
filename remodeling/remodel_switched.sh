@@ -1,0 +1,1 @@
+/home/svensken/Rosetta/main/source/bin/remodel.default.linuxgccrelease -database /home/svensken/Rosetta/main/database/ -s /home/svensken/octathorp/remodeling/3ANS_trimmed.pdbA.pdb -remodel:blueprint /home/svensken/octathorp/remodeling/perl.blueprint -run:chain A -remodel:num_trajectory 1 -nstruct 100 -ex1 -ex2 -correct -overwrite -swap_refine_confirm_protocols

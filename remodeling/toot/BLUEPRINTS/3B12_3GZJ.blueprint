@@ -1,0 +1,328 @@
+#### SS_Info 
+# Helix  1: 38-41
+# Helix  2: 44-50
+# Helix  3: 75-77
+# Helix  4: 79-93
+# Helix  5: 105-116
+# Helix  6: 118-120
+# Helix  7: 131-139
+# Helix  8: 167-174
+# Helix  9: 180-189
+# Helix  10: 197-202
+# Helix  11: 218-222
+# Helix  12: 225-232
+# Helix  13: 247-250
+# Helix  14: 252-267
+# Strand 1: 6-11
+# Strand 2: 16-23
+# Strand 3: 27-31
+# Strand 4: 53-57
+# Strand 5: 98-103
+# Strand 6: 121-127
+# Strand 7: 149-153
+# Strand 8: 160-164
+# Strand 9: 193-193
+# Strand 10: 205-205
+# Strand 11: 209-214
+# Strand 12: 233-233
+# Strand 13: 236-241
+#### StrandPairingSet Info 
+# 1-2.A.-2;10-12.P.0;11-13.P.0;2-4.A.3;3-4.P.0;3-5.P.0;5-6.P.0;6-11.P.3;7-8.A.0;8-9.A.3
+# 1-2.A.-2: 6-11.21-16
+# 10-12.P.0: 205-205.233-233
+# 11-13.P.0: 209-214.236-241
+# 2-4.A.3: 19-23.57-53
+# 3-4.P.0: 27-31.53-57
+# 3-5.P.0: 28-31.99-102
+# 5-6.P.0: 98-103.121-127
+# 6-11.P.3: 124-127.209-212
+# 7-8.A.0: 149-153.164-160
+# 8-9.A.3: 163-163.193-193
+SSPAIR 1-2.A.-2;10-12.P.0;11-13.P.0;2-4.A.3;3-4.P.0;3-5.P.0;5-6.P.0;6-11.P.3;7-8.A.0;8-9.A.3
+#### Sheet Info 
+## Sheet 1:
+#Strand 1: 1,1
+#Strand 2: 2,-1
+#Strand 3: 4,1
+#Strand 4: 3,1
+#Strand 5: 5,1
+#Strand 6: 6,1
+#Strand 7: 11,1
+#Strand 8: 13,1
+## Sheet 2:
+#Strand 1: 7,1
+#Strand 2: 8,-1
+#Strand 3: 9,1
+## Sheet 3:
+#Strand 1: 10,1
+#Strand 2: 12,1
+### BetaAlphaBetaMotif Info 
+# helix,strand1-strand2.num_crossover hsheet_dist hs_angl hsheet_elev_angl hs1_dist hs2_dist helix_cycle 
+1 M LE .
+2 F LG .
+3 E LB .
+4 G LG .
+5 F LB .
+6 E EB .
+7 R EB .
+8 R EB .
+9 L EB .
+10 V EB .
+11 D EB .
+12 V LA .
+13 G LE .
+14 D LA .
+15 V LB .
+16 T EB .
+17 I EB .
+18 N EB .
+19 C EB .
+20 V EB .
+21 V EB .
+22 G EB .
+23 G EE .
+24 S LB .
+25 G LE .
+26 P LB .
+27 A EB .
+28 L EB .
+29 L EB .
+30 L EB .
+31 L EB .
+32 H LB .
+33 G LB .
+34 F LO .
+35 P LB .
+36 Q LB .
+37 N LB .
+38 L HA .
+39 H HA .
+40 M HA .
+41 W HA .
+42 A LA .
+43 R LA .
+44 V HA .
+45 A HA .
+46 P HA .
+47 L HA .
+48 L HA .
+49 A HA .
+50 N HA .
+51 E LA .
+52 Y LB .
+53 T EB .
+54 V EB .
+55 V EB .
+56 C EB .
+57 A EB .
+58 D LB .
+59 L LB .
+60 R LB .
+61 G LG .
+62 Y LB .
+63 G LE .
+64 G LA .
+65 S LB .
+66 S LB .
+67 K LB .
+68 P LB .
+69 V LB .
+70 G LB .
+71 A LB .
+72 P LA .
+73 D LA .
+74 H LG .
+75 A HA .
+76 N HA .
+77 Y HA .
+78 S LB .
+79 F HA .
+80 R HA .
+81 A HA .
+82 M HA .
+83 A HA .
+84 S HA .
+85 D HA .
+86 Q HA .
+87 R HA .
+88 E HA .
+89 L HA .
+90 M HA .
+91 R HA .
+92 T HA .
+93 L HA .
+94 G LG .
+95 F LB .
+96 E LA .
+97 R LB .
+98 F EB .
+99 H EB .
+100 L EB .
+101 V EB .
+102 G EB .
+103 H EB .
+104 D LE .
+105 R HA .
+106 G HA .
+107 G HA .
+108 R HA .
+109 T HA .
+110 G HA .
+111 H HA .
+112 R HA .
+113 M HA .
+114 A HA .
+115 L HA .
+116 D HA .
+117 H LB .
+118 P HA .
+119 D HA .
+120 S HA .
+121 V EB .
+122 L EA .
+123 S EB .
+124 L EB .
+125 A EB .
+126 V EB .
+127 L EB .
+128 D LE .
+129 L LA .
+130 T LA .
+131 Y HA .
+132 P HA .
+133 F HA .
+134 E HA .
+135 K HA .
+136 Y HA .
+137 N HA .
+138 E HA .
+139 K HA .
+140 C LB .
+141 P LB .
+142 A LA .
+143 D LA .
+144 M LA .
+145 M LA .
+146 L LE .
+147 D LA .
+148 S LB .
+149 Q EB .
+150 F EB .
+151 S EB .
+152 T EB .
+153 Y EB .
+154 G LE .
+155 N LB .
+156 P LA .
+157 E LA .
+158 N LB .
+159 P LB .
+160 G EB .
+161 M EB .
+162 S EB .
+163 M EB .
+164 I EB .
+165 L LB .
+166 G LB .
+167 P HA .
+168 Q HA .
+169 F HA .
+170 M HA .
+171 A HA .
+172 L HA .
+173 K HA .
+174 W HA .
+175 F LA .
+176 Q LA .
+177 N LA .
+178 C LB .
+179 S LB .
+180 V HA .
+181 E HA .
+182 D HA .
+183 L HA .
+184 E HA .
+185 L HA .
+186 Y HA .
+187 K HA .
+188 M HA .
+189 L HA .
+190 T LB .
+191 R LB .
+192 P LB .
+193 G EB .
+194 S LB .
+195 L LA .
+196 F LG .
+197 F HA .
+198 Q HA .
+199 D HA .
+200 L HA .
+201 A HA .
+202 K HA .
+203 A LB .
+204 Q LB .
+205 V EB .
+206 Q LA .
+207 C LB .
+208 P LB .
+209 A EB .
+210 L EB .
+211 V EB .
+212 F EB .
+213 S EB .
+214 G EB .
+215 S LA .
+216 A LA .
+217 G LB .
+218 L HA .
+219 M HA .
+220 H HA .
+221 S HA .
+222 L HA .
+223 F LB .
+224 E LB .
+225 M HA .
+226 Q HA .
+227 V HA .
+228 V HA .
+229 W HA .
+230 A HA .
+231 P HA .
+232 R HA .
+233 L EB .
+234 A LA .
+235 N LB .
+236 M EB .
+237 R EB .
+238 F EB .
+239 A EB .
+240 S EB .
+241 L EB .
+242 P LB .
+243 G LB .
+244 G LB .
+245 H LA .
+246 F LA .
+247 F HA .
+248 V HA .
+249 D HA .
+250 R HA .
+251 F LB .
+252 P HA .
+253 D HA .
+254 D HA .
+255 T HA .
+256 A HA .
+257 R HA .
+258 I HA .
+259 L HA .
+260 R HA .
+261 E HA .
+262 F HA .
+263 L HA .
+264 S HA .
+265 D HA .
+266 A HA .
+267 R HA .
+268 S LO .

@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score ch_bond_bb_bb dslf_ca_dih dslf_cs_ang dslf_ss_dih dslf_ss_dst      fa_atr fa_cust_pair_dist            fa_dun fa_intra_rep      fa_pair       fa_rep       fa_sol hbond_bb_sc hbond_lr_bb    hbond_sc hbond_sr_bb       omega     p_aa_pp pro_close      rama       ref description 
+SCORE:    8097.666       -11.693       0.000       0.000       0.000       0.000   -1238.134             0.639          1025.612        8.468      -20.949     7819.578      588.964     -20.347     -58.213     -17.801     -75.972      58.214      -7.446    22.031    18.748     5.967 3ANS_3B12_0001

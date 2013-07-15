@@ -1,0 +1,1 @@
+/home/svensken/Rosetta/main/source/bin/remodel.default.linuxgccrelease -database /home/svensken/Rosetta/main/database/ -s /home/svensken/octathorp/remodeling/toot/remodelable/3ANS_3GZJ.pdb -remodel:blueprint /home/svensken/octathorp/remodeling/toot/BLUEPRINTS/3ANS_3GZJ.blueprint -run:chain A -remodel:num_trajectory 1 -nstruct 10 -ex1 -ex2 -correct -overwrite #-random_delay
