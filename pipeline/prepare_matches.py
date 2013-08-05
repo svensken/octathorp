@@ -25,9 +25,10 @@ temp_resnum_dict = { '1WM1botA' : 138,
                      '3GZJbotB' : 198 }
 
 
-os.chdir('matched')
+### REORDER
+os.chdir('matched/')
 for match in os.listdir('.'):
-  print match
+  print 'will reorder: '+match
   this_id = match[:4]
   
   straight_As = []
@@ -41,7 +42,7 @@ for match in os.listdir('.'):
           #print 'prev: ',prev_resi
           #print 'resi: ',resi
           #print 'delta: ', delta
-          straight_As.append('\nrepwace_me\n')
+          straight_As.append('repwace_me')
           straight_As.append(''.join(linelist))
         elif linelist[21] == 'B':
           linelist[21] = "A"
@@ -58,3 +59,12 @@ for match in os.listdir('.'):
   
   with open('../ready_to_remodel/'+match,'w') as pdb_out:
     pdb_out.write(straight_As)
+os.chdir('..')
+
+### REARRANGE
+os.chdir('ready_to_remodel/')
+for remodelready in os.listdir('.'):
+  print 'will renumber: '+remodelready
+  os.system('../clean_pdb.py '+remodelready+' A')
+
+### BLUEPRINTS
