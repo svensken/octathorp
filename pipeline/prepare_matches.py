@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, sys
+import os, sys, subprocess
 
 
 temp_resnum_dict = { '1WM1' : { 'botA' : 138,
@@ -121,4 +121,34 @@ for remodelready in os.listdir('.'):
           new_blueprint.append(''.join(linelist))
       with open( this_id+'.'+str(this_length)+'.blueprint', 'w') as blueprint_out:
         blueprint_out.write(''.join(new_blueprint))
+os.chdir('..')
+
+### REMODEL
+print 'combos to remodel: ', temp_pose_num_dict.keys() #(hacky)
+os.chdir('remodeled')
+for blueprint in os.listdir('../ready_to_remodel/'):
+  this_id = blueprint[:4]
+  combo_of_interest = this_id+'_trim.pdbA.pdb'
+  remodel_call = '/home/svensken/Rosetta/main/source/bin/remodel.default.linuxgccrelease \
+                  -database /home/svensken/Rosetta/main/database/ \
+                  -s ../ready_to_remodel/'+combo_of_interest+' \
+                  -remodel:blueprint ../ready_to_remodel/'+blueprint+' \
+                  -remodel:num_trajectory 1 \
+                  -remodel:quick_and_dirty \
+                  -nstruct 2 \
+                  -ex1 \
+                  -ex2 \
+                  -overwrite'
+                  # -run:chain A
+
+  bash_call = """# waitforme=()
+                 for i in {1..10}
+                 do
+                   sleep $i ##  ; echo heeeyyy """+combo_of_interest+""" ) & ## """+remodel_call+""" &
+                   ## waitforme+=($!)
+                 done
+                 # wait ${waitforme[@]} """
+
+  #os.system( bash_call )
+  subprocess.Popen( bash_call, shell=True, executable="bash") 
 
