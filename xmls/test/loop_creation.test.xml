@@ -1,0 +1,18 @@
+<dock_design>
+
+    <MOVERS>
+        <CCDLoopCloser name=ccd/>
+        loopA
+        <LoophashLoopInserter name=lhA max_torsion_rms=100 min_torsion_rms=0 max_lh_radius=4 loop_anchor=%%anchorA%% loop_sizes=2,3,4,5,6,7,8,9,10,11/>
+        <LoopCreationMover name=makeloopA dump_pdbs=1 attempts_per_anchor=10 filter_by_lam=1 loop_closer=ccd loop_inserter=lhA/>
+        loopB
+        <LoophashLoopInserter name=lhB max_torsion_rms=100 min_torsion_rms=0 max_lh_radius=4 loop_anchor=%%anchorB%% loop_sizes=2,3,4,5,6,7,8,9,10,11/>
+        <LoopCreationMover name=makeloopB dump_pdbs=1 attempts_per_anchor=10 filter_by_lam=1 loop_closer=ccd loop_inserter=lhB/>
+    </MOVERS>
+
+    <PROTOCOLS>
+        <Add mover_name=makeloopA/>
+        <Add mover_name=makeloopB/>
+    </PROTOCOLS>
+
+</dock_design>

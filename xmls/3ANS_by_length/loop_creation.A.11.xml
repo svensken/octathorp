@@ -1,0 +1,14 @@
+<dock_design>
+
+    <MOVERS>
+        <CCDLoopCloser name=ccd/>
+        <LoophashLoopInserter name=lh max_torsion_rms=100 min_torsion_rms=0 max_lh_radius=4 loop_anchor=%%anchorA%% loop_sizes=11/>
+
+        <LoopCreationMover name=makeloop dump_pdbs=1 attempts_per_anchor=100 filter_by_lam=1 loop_closer=ccd loop_inserter=lh/>
+    </MOVERS>
+
+    <PROTOCOLS>
+        <Add mover_name=makeloop/>
+    </PROTOCOLS>
+
+</dock_design>

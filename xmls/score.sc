@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score dslf_fa13    fa_atr    fa_dun   fa_elec fa_intra_rep       fa_rep       fa_sol hbond_bb_sc hbond_lr_bb    hbond_sc hbond_sr_bb max_loop_chainbreak max_loop_omega max_loop_pbond max_loop_rama         omega       p_aa_pp pro_close      rama       ref total_loop_score description 
+SCORE:     156.176     0.000 -1350.548   563.721   -93.379        3.657      441.051      761.728     -26.553     -39.755     -14.287     -84.769               5.638          7.304         -2.806         5.600         8.909       -27.803    24.627   -16.598     6.176           -4.274 1WM1.apo_0001

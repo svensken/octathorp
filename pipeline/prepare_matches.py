@@ -3,26 +3,26 @@
 import os, sys, subprocess
 
 
-temp_resnum_dict = { '1WM1' : { 'botA' : 138,
-                                'capA' : 140,
-                                'capB' : 238,
-                                'botB' : 248 },
-                     '2WUF' : { 'botA' : 139,
-                                'capA' : 145,
-                                'capB' : 216,
-                                'botB' : 222 },
-                     '3ANS' : { 'botA' : 361,
-                                'capA' : 369,
-                                'capB' : 474,
-                                'botB' : 485 },
-                     '3B12' : { 'botA' : 128,
-                                'capA' : 139,
-                                'capB' : 226,
-                                'botB' : 230 },
-                     '3GZJ' : { 'botA' : 111,
-                                'capA' : 121,
-                                'capB' : 195,
-                                'botB' : 198 } }
+temp_resnum_dict = { '1WM1' : { 'botA' : 136,#138,
+                                'capA' : 142,#140,
+                                'capB' : 240,#238,
+                                'botB' : 246},#248 },
+                     '2WUF' : { 'botA' : 139,#139,
+                                'capA' : 145,#145,
+                                'capB' : 216,#216,
+                                'botB' : 222},#222 },
+                     '3ANS' : { 'botA' : 362,#361,
+                                'capA' : 368,#369,
+                                'capB' : 477,#474,
+                                'botB' : 483},#485 },
+                     '3B12' : { 'botA' : 131,#128,
+                                'capA' : 137,#139,
+                                'capB' : 225,#226,
+                                'botB' : 231},#230 },
+                     '3GZJ' : { 'botA' : 113,#111,
+                                'capA' : 119,#121,
+                                'capB' : 194,#195,
+                                'botB' : 200}}#198 } }
 
 temp_pose_num_dict = {}
 
@@ -77,7 +77,6 @@ for match in os.listdir('.'):
       if res_num == temp_resnum_dict[this_id]['botB']:
         temp_pose_num_dict[this_id]['botB'] = pose_num
       pose_num += 1
-      print pose_num
 
   with open('../ready_to_remodel/'+match,'w') as pdb_out:
     pdb_out.write(straight_As)
@@ -88,17 +87,18 @@ os.chdir('ready_to_remodel/')
 for remodelready in os.listdir('.'):
   if remodelready.endswith('.pdbA.pdb'):
     continue
-  print 'will renumber: '+remodelready
-  os.system('../clean_pdb.py '+remodelready+' A')
+  if remodelready.endswith('.pdb'):
+    print 'will renumber: '+remodelready
+    os.system('../clean_pdb.py '+remodelready+' A')
 os.chdir('..')
 
 ### BLUEPRINTS
-print temp_pose_num_dict
+print "pose numbers:",temp_pose_num_dict
 os.chdir('ready_to_remodel/')
 for remodelready in os.listdir('.'):
   if remodelready.endswith('.pdbA.pdb'):
     this_id = remodelready[:4]
-    blu_name = this_id + '.blueprint'
+    blu_name = this_id + '.blueprint.template'
     os.system('../getBluePrintFromCoords.pl -pdbfile '+remodelready+' > '+blu_name)
     
     for this_length in range(3,9):
@@ -125,30 +125,16 @@ os.chdir('..')
 
 ### REMODEL
 print 'combos to remodel: ', temp_pose_num_dict.keys() #(hacky)
-os.chdir('remodeled')
-for blueprint in os.listdir('../ready_to_remodel/'):
-  this_id = blueprint[:4]
-  combo_of_interest = this_id+'_trim.pdbA.pdb'
-  remodel_call = '/home/svensken/Rosetta/main/source/bin/remodel.default.linuxgccrelease \
-                  -database /home/svensken/Rosetta/main/database/ \
-                  -s ../ready_to_remodel/'+combo_of_interest+' \
-                  -remodel:blueprint ../ready_to_remodel/'+blueprint+' \
-                  -remodel:num_trajectory 1 \
-                  -remodel:quick_and_dirty \
-                  -nstruct 2 \
-                  -ex1 \
-                  -ex2 \
-                  -overwrite'
-                  # -run:chain A
-
-  bash_call = """# waitforme=()
-                 for i in {1..10}
-                 do
-                   sleep $i ##  ; echo heeeyyy """+combo_of_interest+""" ) & ## """+remodel_call+""" &
-                   ## waitforme+=($!)
-                 done
-                 # wait ${waitforme[@]} """
-
-  #os.system( bash_call )
-  subprocess.Popen( bash_call, shell=True, executable="bash") 
+os.chdir('remodeled.fa.ALLAA')
+bluelist = [ blue for blue in os.listdir('../ready_to_remodel/') ]
+bluelist.sort()
+for blueprint in bluelist:
+  if blueprint.endswith('.blueprint'):
+    this_id = blueprint[:4]
+    combo_of_interest = this_id+'.trim.pdbA.pdb'
+    print blueprint
+    os.system( '../wrapper.sh '+combo_of_interest+' '+blueprint )
+    
+    if '.8.' in blueprint:
+      print "this round complete" #raw_input('first combo done')
 

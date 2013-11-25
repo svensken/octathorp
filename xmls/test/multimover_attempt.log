@@ -1,0 +1,140 @@
+core.init: Rosetta version b428df545ea92c9969267879410a481662fc1c4c 2013-10-08 13:11:50 -0400 from git@github.com:RosettaCommons/main.git
+core.init: command: /home/svensken/Rosetta/main/source/bin/rosetta_scripts.linuxgccrelease -database /home/svensken/Rosetta/main/database -lh:db_path ../2011vall/ -parser:script_vars anchorA=130 anchorB=236 -parser:protocol loop_creation.test.xml -in::file::s ../combos/3ANS_3ANS/UM_4_D335H524D496Y465Y384_output_3ANS_1.pdb.massaged.pdbA.pdb
+core.init: 'RNG device' seed mode, using '/dev/urandom', seed=175596537 seed_offset=0 real_seed=175596537
+core.init.random: RandomGenerator:init: Normal mode, seed=175596537 RG_type=mt19937
+protocols.jd2.PDBJobInputter: Instantiate PDBJobInputter
+protocols.jd2.PDBJobInputter: PDBJobInputter::fill_jobs
+protocols.jd2.PDBJobInputter: pushed ../combos/3ANS_3ANS/UM_4_D335H524D496Y465Y384_output_3ANS_1.pdb.massaged.pdbA.pdb nstruct index 1
+protocols.evaluation.ChiWellRmsdEvaluatorCreator: Evaluation Creator active ... 
+protocols.jd2.JobDistributor: Parser is present.  Input mover will be overwritten with whatever the parser creates.
+protocols.jd2.PDBJobInputter: PDBJobInputter::pose_from_job
+protocols.jd2.PDBJobInputter: filling pose from PDB ../combos/3ANS_3ANS/UM_4_D335H524D496Y465Y384_output_3ANS_1.pdb.massaged.pdbA.pdb
+core.chemical.ResidueTypeSet: Finished initializing fa_standard residue type set.  Created 9280 residue types
+core.io.pdb.file_data: [ WARNING ] discarding 3 atoms at position 131 in file ../combos/3ANS_3ANS/UM_4_D335H524D496Y465Y384_output_3ANS_1.pdb.massaged.pdbA.pdb. Best match rsd_type:  MET
+core.io.pdb.file_data: [ WARNING ] discarding 1 atoms at position 236 in file ../combos/3ANS_3ANS/UM_4_D335H524D496Y465Y384_output_3ANS_1.pdb.massaged.pdbA.pdb. Best match rsd_type:  LYS
+core.io.pdb.file_data: [ WARNING ] can't find atom for res 131 atom 1H   (trying to set temp)
+core.io.pdb.file_data: [ WARNING ] can't find atom for res 131 atom 2H   (trying to set temp)
+core.io.pdb.file_data: [ WARNING ] can't find atom for res 131 atom 3H   (trying to set temp)
+core.io.pdb.file_data: [ WARNING ] can't find atom for res 236 atom  OXT (trying to set temp)
+core.pack.task: Packer task: initialize from command line() 
+protocols.jd2.DockDesignParser: dock_design_filename=loop_creation.test.xml
+protocols.jd2.DockDesignParser: Variable substitution will occur with the following values: '%%anchorA%%'='130';  '%%anchorB%%'='236';  
+protocols.jd2.DockDesignParser: Substituted script:
+<dock_design>
+
+    <MOVERS>
+        <CCDLoopCloser name=ccd/>
+        loopA
+        <LoophashLoopInserter name=lhA max_torsion_rms=100 min_torsion_rms=0 max_lh_radius=4 loop_anchor=130 loop_sizes=2,3,4,5,6,7,8,9,10,11/>
+        <LoopCreationMover name=makeloopA dump_pdbs=1 attempts_per_anchor=10 filter_by_lam=1 loop_closer=ccd loop_inserter=lhA/>
+        loopB
+        <LoophashLoopInserter name=lhB max_torsion_rms=100 min_torsion_rms=0 max_lh_radius=4 loop_anchor=236 loop_sizes=2,3,4,5,6,7,8,9,10,11/>
+        <LoopCreationMover name=makeloopB dump_pdbs=1 attempts_per_anchor=10 filter_by_lam=1 loop_closer=ccd loop_inserter=lhB/>
+    </MOVERS>
+
+    <PROTOCOLS>
+        <Add mover_name=makeloopA/>
+        <Add mover_name=makeloopB/>
+    </PROTOCOLS>
+
+</dock_design>
+protocols.jd2.DockDesignParser: Parsed script:
+<dock_design>
+	<MOVERS>
+		<CCDLoopCloser name=ccd/>
+		<LoophashLoopInserter loop_anchor=130 loop_sizes=2,3,4,5,6,7,8,9,10,11 max_lh_radius=4 max_torsion_rms=100 min_torsion_rms=0 name=lhA/>
+		<LoopCreationMover attempts_per_anchor=10 dump_pdbs=1 filter_by_lam=1 loop_closer=ccd loop_inserter=lhA name=makeloopA/>
+		<LoophashLoopInserter loop_anchor=236 loop_sizes=2,3,4,5,6,7,8,9,10,11 max_lh_radius=4 max_torsion_rms=100 min_torsion_rms=0 name=lhB/>
+		<LoopCreationMover attempts_per_anchor=10 dump_pdbs=1 filter_by_lam=1 loop_closer=ccd loop_inserter=lhB name=makeloopB/>
+	</MOVERS>
+	<PROTOCOLS>
+		<Add mover_name=makeloopA/>
+		<Add mover_name=makeloopB/>
+	</PROTOCOLS>
+</dock_design>
+core.scoring.ScoreFunctionFactory: SCOREFUNCTION: talaris2013
+core.scoring.etable: Starting energy table calculation
+core.scoring.etable: smooth_etable: changing atr/rep split to bottom of energy well
+core.scoring.etable: smooth_etable: spline smoothing lj etables (maxdis = 6)
+core.scoring.etable: smooth_etable: spline smoothing solvation etables (max_dis = 6)
+core.scoring.etable: Finished calculating energy tables.
+basic.io.database: Database file opened: scoring/score_functions/hbonds/sp2_elec_params/HBPoly1D.csv
+basic.io.database: Database file opened: scoring/score_functions/hbonds/sp2_elec_params/HBFadeIntervals.csv
+basic.io.database: Database file opened: scoring/score_functions/hbonds/sp2_elec_params/HBEval.csv
+basic.io.database: Database file opened: scoring/score_functions/rama/Rama_smooth_dyn.dat_ss_6.4
+basic.io.database: Database file opened: scoring/score_functions/P_AA_pp/P_AA
+basic.io.database: Database file opened: scoring/score_functions/P_AA_pp/P_AA_n
+basic.io.database: Database file opened: scoring/score_functions/P_AA_pp/P_AA_pp
+basic.io.database: Database file opened: scoring/score_functions/PairEPotential/pdb_pair_stats_fine
+core.scoring.etable: Using alternate parameters: LJ_RADIUS_SOFT in Etable construction.
+core.scoring.etable: Starting energy table calculation
+core.scoring.etable: smooth_etable: changing atr/rep split to bottom of energy well
+core.scoring.etable: smooth_etable: spline smoothing lj etables (maxdis = 6)
+core.scoring.etable: smooth_etable: spline smoothing solvation etables (max_dis = 6)
+core.scoring.etable: Finished calculating energy tables.
+basic.io.database: Database file opened: scoring/score_functions/EnvPairPotential/env_log.txt
+basic.io.database: Database file opened: scoring/score_functions/EnvPairPotential/cbeta_den.txt
+basic.io.database: Database file opened: scoring/score_functions/EnvPairPotential/pair_log.txt
+basic.io.database: Database file opened: scoring/score_functions/EnvPairPotential/cenpack_log.txt
+basic.io.database: Database file opened: scoring/score_functions/InterchainPotential/interchain_env_log.txt
+basic.io.database: Database file opened: scoring/score_functions/InterchainPotential/interchain_pair_log.txt
+basic.io.database: Database file opened: scoring/score_functions/EnvPairPotential/env_log.txt
+basic.io.database: Database file opened: scoring/score_functions/EnvPairPotential/cbeta_den.txt
+basic.io.database: Database file opened: scoring/score_functions/EnvPairPotential/pair_log.txt
+basic.io.database: Database file opened: scoring/score_functions/EnvPairPotential/cenpack_log.txt
+protocols.jd2.DockDesignParser: Defined mover named "ccd" of type CCDLoopCloser
+protocols.jd2.DockDesignParser: Defined mover named "lhA" of type LoophashLoopInserter
+devel.loop_creation.LoopCreationMover: Parsing tag for LoopCreationMover
+protocols.jd2.DockDesignParser: Defined mover named "makeloopA" of type LoopCreationMover
+protocols.jd2.DockDesignParser: Defined mover named "lhB" of type LoophashLoopInserter
+devel.loop_creation.LoopCreationMover: Parsing tag for LoopCreationMover
+protocols.jd2.DockDesignParser: Defined mover named "makeloopB" of type LoopCreationMover
+protocols.rosetta_scripts.ParsedProtocol: ParsedProtocol mover with the following movers and filters
+added mover "makeloopA" with filter "true_filter"
+added mover "makeloopB" with filter "true_filter"
+protocols.jd2.PDBJobInputter: PDBJobInputter::pose_from_job
+protocols.jd2.PDBJobInputter: filling pose from saved copy ../combos/3ANS_3ANS/UM_4_D335H524D496Y465Y384_output_3ANS_1.pdb.massaged.pdbA.pdb
+protocols.rosetta_scripts.ParsedProtocol: =======================BEGIN MOVER LoopCreationMover - makeloopA=======================
+{
+devel.loop_creation.LoopCreationMover: Beginning loop creation attempt 1 of 10, for loop anchor 1 of 1
+protocols.loophash.LoophashLoopInserter: Initializing lh library from command line
+basic.io.database: Database file opened: scoring/score_functions/SecondaryStructurePotential/phi.theta.36.HS.resmooth
+basic.io.database: Database file opened: scoring/score_functions/SecondaryStructurePotential/phi.theta.36.SS.resmooth
+LoopHashLibrary: HASHSIZE: 8
+LoopHashMap: Setting up hash_: Size:  8
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashLibrary: HASHSIZE: 9
+LoopHashMap: Setting up hash_: Size:  9
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashLibrary: HASHSIZE: 10
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashLibrary: HASHSIZE: 11
+LoopHashMap: Setting up hash_: Size:  11
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashLibrary: HASHSIZE: 12
+LoopHashMap: Setting up hash_: Size:  12
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashLibrary: HASHSIZE: 13
+LoopHashMap: Setting up hash_: Size:  13
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashLibrary: HASHSIZE: 14
+LoopHashMap: Setting up hash_: Size:  14
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashLibrary: HASHSIZE: 15
+LoopHashMap: Setting up hash_: Size:  15
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashLibrary: HASHSIZE: 16
+LoopHashMap: Setting up hash_: Size:  16
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashLibrary: HASHSIZE: 17
+LoopHashMap: Setting up hash_: Size:  17
+LoopHashMap: Setting up hash_: Size:  10
+LoopHashLibrary: Reading merged bbdb_ (BackboneDatabase)  with extras
+LoopHashLibrary: Reading ../2011vall/backbone.db
+BackboneDB: Reading in proteins 0 to 25863 out of 25863 , partition: 1/1
+BackboneDB: Read in 25863 proteins
+BackboneDB: Data_ size 25863
+LoopHashLibrary: Reading loopdb (LoopHashDatabase)  with loop size 8
+Got some signal... It is:2
+Ctrl-c was pressed!

@@ -1,0 +1,23 @@
+<dock_design>
+
+    <MOVERS>
+    </MOVERS>
+
+    <FILTERS>
+        <Rmsd name=rmsA threshold=100 superimpose=0>
+            <span begin_res_num=127 end_res_num=141/>
+        </Rmsd>
+        <Rmsd name=rmsB threshold=100 superimpose=0>
+            <span begin_res_num=240 end_res_num=257/>
+        </Rmsd>
+        <Rmsd name=rmstot chains=AA threshold=100 superimpose=0>
+        </Rmsd>
+    </FILTERS>
+
+    <PROTOCOLS>
+        <Add filter_name=rmsA/>
+        <Add filter_name=rmsB/>
+        <Add filter_name=rmstot/>
+    </PROTOCOLS>
+
+</dock_design>

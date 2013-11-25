@@ -1,0 +1,1 @@
+/home/svensken/Rosetta/main/source/bin/rosetta_scripts.linuxgccrelease -database /home/svensken/Rosetta/main/database -lh:db_path ../2011vall/ -parser:script_vars anchorA=130 anchorB=236 -parser:protocol loop_creation.test.xml -in::file::s  ../combos/3ANS_3ANS/UM_4_D335H524D496Y465Y384_output_3ANS_1.pdb.massaged.pdbA.pdb

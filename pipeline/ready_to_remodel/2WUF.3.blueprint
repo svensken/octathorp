@@ -210,12 +210,12 @@
 207 W .
 208 R .
 209 E .
-210 V .
+210 V L
+0   x L ALLAA
+0   x L ALLAA
+0   x L ALLAA
 211 Y L
-0   x L ALLAA
-0   x L ALLAA
-0   x L ALLAA
-212 R L
+212 R .
 213 L .
 214 R .
 215 Q .
