@@ -1,0 +1,14 @@
+building linker loops
+---------------------
+(any combo, any lengths)
+
+- edit master_combo, linker lengths
+
+- mkdir 3ans3ans_[B]_[10]
+- cd !$
+- ../command_B.sh [10] ../master_combos/[3ans3ans]/[UM...]
+
+- mv 3ans3ans_[B]_[10] 3ans3ans_[A]_[7]_[B]_[10]
+- cd !$
+- ../command_A.sh 7 
+

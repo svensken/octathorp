@@ -1,3 +1,0 @@
-SEQUENCE: 
-SCORE: total_score dslf_fa13    fa_atr    fa_dun   fa_elec fa_intra_rep       fa_rep       fa_sol hbond_bb_sc hbond_lr_bb    hbond_sc hbond_sr_bb max_loop_chainbreak max_loop_omega max_loop_pbond max_loop_rama         omega       p_aa_pp pro_close      rama       ref total_loop_score description 
-SCORE:    2565.271     0.000 -1256.843   610.220   -97.494        6.424     2685.102      696.140     -28.304     -35.457     -16.525     -76.934               1.601          1.000         -2.402         4.339        78.645       -17.602    35.489   -10.318    -7.270          -36.756 UM_4_D335H524D496Y465Y384_output_3ANS_1.pdb.massaged.pdbA_0001

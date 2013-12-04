@@ -4,7 +4,7 @@
         <CCDLoopCloser name=ccd/>
         <LoophashLoopInserter name=lh max_torsion_rms=100 min_torsion_rms=0 max_lh_radius=4 loop_anchor=%%anchorB%% loop_sizes=%%lengthB%%/>
 
-        <LoopCreationMover name=makeloop dump_pdbs=1 attempts_per_anchor=200 filter_by_lam=1 loop_closer=ccd loop_inserter=lh/>
+        <LoopCreationMover name=makeloop dump_pdbs=1 attempts_per_anchor=%%tries%% filter_by_lam=1 loop_closer=ccd loop_inserter=lh/>
     </MOVERS>
 
     <PROTOCOLS>
